@@ -5,10 +5,22 @@
 ** main.c
 */
 
-#include <unistd.h>
+#include "map.h"
+#include <stdio.h>
 
 int	main(void)
 {
-	write(1, "OK\n", 3);
+	map_t *map = new(MAP, 2, 2);
+	if (!map)
+		return (84);
+	printf("map_size : %d,%d\n", map->size.x, map->size.y);
+	for (int y = 0; y < map->size.y; ++y) {
+		for (int x = 0; x < map->size.x; ++x) {
+			printf("map_content at %d,%d\n",
+				map->cases[y][x].pos.x,
+				map->cases[y][x].pos.y);
+		}
+	}
+	delete(map);
 	return 0;
 }
