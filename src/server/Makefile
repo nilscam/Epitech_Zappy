@@ -8,7 +8,9 @@
 NAME	=	zappy_server
 MAIN	=	main.c
 SRC	=	c_modular.c		\
-		map.c
+		map.c			\
+		debug.c			\
+		list.c
 
 INC	=	-I include
 F	=	-W -Wall -Werror -Wextra
