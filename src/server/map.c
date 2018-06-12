@@ -51,7 +51,7 @@ static bool	allocate_cases(map_t *self, int x, int y)
 	}
 	return true;
 }
-#include <stdio.h>
+
 static bool	new_map(map_t *self, va_list *args)
 {
 	int	x = va_arg(*args, int);
