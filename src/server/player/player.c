@@ -39,7 +39,8 @@ static const player_t	PLAYER_CLASS = {
 	NULL,
 	NULL,
 	DIR_DOWN,
-	1
+	1,
+	FOOD_TO_TIME_UNITS
 };
 
 const class_t	*PLAYER = (class_t *) &PLAYER_CLASS;

@@ -15,13 +15,18 @@ void	player_print(player_t *self)
 		self->name, self->team,
 		self->pos->pos.x, self->pos->pos.y,
 		repr);
-	printf(" [%dF %dL %dD %dS %dM %dP %dT]\n",
-		self->inventory.food,
-		self->inventory.stones[LINEMATE],
-		self->inventory.stones[DERAUMERE],
-		self->inventory.stones[SIBUR],
-		self->inventory.stones[MENDIANE],
-		self->inventory.stones[PHIRAS],
-		self->inventory.stones[THYSTAME]);
+	if (player_is_dead_of_hunger(self))
+		printf(" {DEAD}\n");
+	else {
+		printf(" [%dF %dL %dD %dS %dM %dP %dT] (%d time)\n",
+			self->inventory.food,
+			self->inventory.stones[LINEMATE],
+			self->inventory.stones[DERAUMERE],
+			self->inventory.stones[SIBUR],
+			self->inventory.stones[MENDIANE],
+			self->inventory.stones[PHIRAS],
+			self->inventory.stones[THYSTAME],
+			self->remaining_time_units);
+	}
 	SAFE_FREE(&repr);
 }

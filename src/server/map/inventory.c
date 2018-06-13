@@ -18,7 +18,7 @@ void	init_map_inventory(inventory_t *inv)
 
 void	init_player_inventory(inventory_t *inv)
 {
-	inv->food = 126;
+	inv->food = 10;
 	for (int i = 0; i < NUMBER_OF_INV_TYPE; ++i) {
 		inv->stones[i] = 0;
 	}

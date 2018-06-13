@@ -20,12 +20,14 @@ SRC	=	c_modular/c_modular.c					\
 		map/map_utils.c						\
 		map/map.c						\
 		player/player_elevation.c				\
+		player/player_food.c					\
 		player/player_move.c					\
 		player/player_turn.c					\
 		player/player_utils.c					\
 		player/player.c						\
 		tests/test_list.c					\
 		tests/test_map.c					\
+		tests/test_player_move.c				\
 		tests/test_player.c					\
 		utils/debug.c						\
 		utils/direction.c					\

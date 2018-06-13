@@ -11,6 +11,8 @@
 #include "c_modular.h"
 #include "map.h"
 
+#define FOOD_TO_TIME_UNITS	126
+
 typedef struct
 {
 	class_t		__base__;
@@ -21,6 +23,7 @@ typedef struct
 	char		*name;
 	direction_t	dir;
 	int		level;
+	int		remaining_time_units;
 }	player_t;
 
 struct elevation_tab_s
@@ -33,6 +36,11 @@ struct elevation_tab_s
 /* player_elevation.c */
 bool	elevation_can_elevate(int level, int nb_of_players, int *stones);
 void	player_elevate(player_t *self);
+
+/* player_food.c */
+bool	player_is_dead_of_hunger(player_t *self);
+void	player_consume_food(player_t *self);
+void	player_consume_time(player_t *self);
 
 /* player_move.c */
 void	player_move(player_t *self);

@@ -19,7 +19,7 @@ static const struct elevation_tab_s	ELEVATIONS[] = {
 
 bool	elevation_can_elevate(int level, int nb_of_players, int *stones)
 {
-	struct elevation_tab_s	*el = NULL;
+	const struct elevation_tab_s	*el = NULL;
 	int max_el = sizeof(ELEVATIONS) / sizeof(struct elevation_tab_s);
 
 	for (int i = 0; i < max_el; ++i) {
