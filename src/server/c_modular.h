@@ -24,7 +24,7 @@ typedef	void (*object_dst_t)(object_t *self);
 typedef struct
 {
 	const size_t		__size__;
-	const char		*__name__;
+	const char			*__name__;
 	object_cst_t		__init__;
 	object_dst_t		__deinit__;
 }	class_t;

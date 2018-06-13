@@ -40,11 +40,11 @@ typedef struct
 
 typedef struct
 {
-	class_t		__base__;
-	point_t		size;
+	class_t			__base__;
+	point_t			size;
 	map_content_t	*cases_buff;
 	map_content_t	**cases;
-	list_t		*players;
+	list_t			*players;
 }	map_t;
 
 extern const class_t *MAP;
