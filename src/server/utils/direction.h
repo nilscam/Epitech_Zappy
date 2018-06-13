@@ -19,5 +19,7 @@ typedef enum
 
 /* direction.c */
 char	*direction_repr(direction_t dir);
+direction_t	direction_turn_left(direction_t dir);
+direction_t	direction_turn_right(direction_t dir);
 
 #endif // !direction_HPP
