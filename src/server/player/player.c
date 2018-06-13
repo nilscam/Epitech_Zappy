@@ -19,8 +19,8 @@ static bool	new_player(player_t *self, va_list *args)
 
 static void	delete_player(player_t *self)
 {
-	SAFE_FREE(&self->team);
-	SAFE_FREE(&self->name);
+	SAFE_FREE(self->team);
+	SAFE_FREE(self->name);
 }
 
 static const player_t	PLAYER_CLASS = {

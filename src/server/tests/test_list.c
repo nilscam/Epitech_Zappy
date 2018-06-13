@@ -16,7 +16,7 @@ static void	clear_list_handler(void *data)
 
 static void	test_list_iterator(list_t *list)
 {
-	list_iterator_t *it = new(LIST_IT, list);
+	list_iterator_t *it = NEW(LIST_IT, list);
 	char		*str;
 
 	while (it && list_it_can_iterate(it)) {
@@ -30,13 +30,13 @@ static void	test_list_iterator(list_t *list)
 			list_it_iterate(it);
 		}
 	}
-	delete(it);
+	SAFE_DELETE(it);
 }
 
 int	test_list(void)
 {
-	list_t *list = new(LIST);
-	
+	list_t *list = NEW(LIST);
+
 	if (!list)
 		return 84;
 	list_push_back(list, "aaa");
@@ -45,6 +45,6 @@ int	test_list(void)
 	list_push_front(list, "ddd");
 	test_list_iterator(list);
 	list_clear(list, clear_list_handler);
-	delete(list);
+	SAFE_DELETE(list);
 	return 0;
 }

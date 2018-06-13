@@ -16,6 +16,7 @@ int	test_player(void);
 int	main(void)
 {
 	srand((unsigned int)time(NULL));
+	// return test_list();
 	// return test_player();
 	// return test_map();
 	return 0;

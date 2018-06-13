@@ -18,13 +18,13 @@ static object_t	*va_new(const class_t *class , va_list *ap)
 		return (NULL);
 	memmove(obj, class, class->__size__);
 	if (class->__init__ && !class->__init__(obj, ap)) {
-		delete(obj);
+		delete_class(obj);
 		return (NULL);
 	}
 	return (obj);
 }
 
-object_t	*new(const class_t *class, ...)
+object_t	*new_class(const class_t *class, ...)
 {
 	object_t	*obj;
 	va_list		args;
@@ -35,7 +35,7 @@ object_t	*new(const class_t *class, ...)
 	return (obj);
 }
 
-void	delete(object_t *ptr)
+void	delete_class(object_t *ptr)
 {
 	if (ptr) {
 		if (((class_t*)ptr)->__deinit__)
@@ -52,10 +52,10 @@ void	safe_free(void **ptr)
 	}
 }
 
-void	safe_delete(void **ptr)
+void	safe_delete_class(void **ptr)
 {
 	if (ptr && *ptr) {
-		delete(*ptr);
+		delete_class(*ptr);
 		*ptr = NULL;
 	}
 }

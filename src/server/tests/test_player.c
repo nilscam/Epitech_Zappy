@@ -45,18 +45,18 @@ int	test_player(void)
 {
 	char		*team = strdup("Red");
 	char		*name = strdup("Ash");
-	map_t		*map = new(MAP, 3, 3);
+	map_t		*map = NEW(MAP, 3, 3);
 	player_t	*player = NULL;
 
 	if (!map)
 		return 84;
-	player = new(PLAYER, map, &map->cases[1][0], team, name);
+	player = NEW(PLAYER, map, &map->cases[1][0], team, name);
 	if (player) {
 		test_player_move(player);
 		test_player_time(player);
 		test_player_food(player);
 	}
-	delete(player);
-	delete(map);
+	SAFE_DELETE(player);
+	SAFE_DELETE(map);
 	return 0;
 }

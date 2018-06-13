@@ -16,7 +16,7 @@ static bool	new_map(map_t *self, va_list *args)
 	self->size.y = y;
 	self->cases_buff = malloc(sizeof(map_content_t) * (x * y));
 	self->cases = malloc(sizeof(map_content_t *) * (y + 1));
-	self->players = new(LIST);
+	self->players = NEW(LIST);
 	if (!self->cases_buff || !self->cases || !self->players)
 		return false;
 	init_map_contents(self);
@@ -25,9 +25,9 @@ static bool	new_map(map_t *self, va_list *args)
 
 static void	delete_map(map_t *self)
 {
-	SAFE_FREE(&self->cases_buff);
-	SAFE_FREE(&self->cases);
-	SAFE_DELETE(&self->players);
+	SAFE_FREE(self->cases_buff);
+	SAFE_FREE(self->cases);
+	SAFE_DELETE(self->players);
 }
 
 static const map_t	MAP_CLASS = {

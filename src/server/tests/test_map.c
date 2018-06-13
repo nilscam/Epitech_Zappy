@@ -64,17 +64,17 @@ void	print_map_content(map_t *map)
 
 int	test_map(void)
 {
-	map_t *map = new(MAP, 2, 2);
+	map_t *map = NEW(MAP, 2, 2);
 	if (!map)
 		return 84;
 	print_map_content(map);
 	list_push_back(map->players, "yolo");
-	list_iterator_t *it = new(LIST_IT, map->players);
+	list_iterator_t *it = NEW(LIST_IT, map->players);
 	while (it && list_it_can_iterate(it)) {
 		printf("--> player : '%s'\n", (char*)list_it_get(it));
 		list_it_iterate(it);
 	}
-	delete(it);
-	delete(map);
+	delete_class(it);
+	delete_class(map);
 	return 0;
 }

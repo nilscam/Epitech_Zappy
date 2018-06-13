@@ -32,8 +32,7 @@ SRC	=	c_modular/c_modular.c					\
 		tests/test_player.c					\
 		utils/debug.c						\
 		utils/direction.c					\
-		utils/point.c						\
-		main.c
+		utils/point.c
 
 INC	=	-I .			\
 		-I c_modular		\

@@ -28,5 +28,5 @@ void	player_print(player_t *self)
 			self->inventory.stones[THYSTAME],
 			self->remaining_time_units);
 	}
-	SAFE_FREE(&repr);
+	SAFE_FREE(repr);
 }

@@ -16,7 +16,7 @@ static void	test_player_moving(player_t *player, direction_t dir, int inc)
 	player_move_toward(player, DIR_RIGHT, 1);
 	printf("move %d %s: ", inc, repr);
 	player_print(player);
-	SAFE_FREE(&repr);
+	SAFE_FREE(repr);
 }
 
 static void	test_player_turn(player_t *player, bool turn_left)
@@ -30,8 +30,8 @@ static void	test_player_turn(player_t *player, bool turn_left)
 	after = direction_repr(player->dir);
 	printf("turn %s: %s --> %s\n", turn_left ? "Left" : "Right",
 		before, after);
-	SAFE_FREE(&before);
-	SAFE_FREE(&after);
+	SAFE_FREE(before);
+	SAFE_FREE(after);
 }
 
 static void	test_player_moves(player_t *player)

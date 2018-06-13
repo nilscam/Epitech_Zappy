@@ -8,8 +8,10 @@
 #ifndef C_MODULAR_H_
 #define C_MODULAR_H_
 
-#define SAFE_FREE(x)	safe_free((void **)(x))
-#define SAFE_DELETE(x)	safe_delete((void **)(x))
+#define NEW(x, ...)	new_class(x, ##__VA_ARGS__)
+#define DELETE(x)	delete_class((object_t *)x)
+#define SAFE_FREE(x)	safe_free((void **)(&x))
+#define SAFE_DELETE(x)	safe_delete_class((void **)(&x))
 
 #include <stdarg.h>
 #include <stddef.h>
@@ -29,9 +31,9 @@ typedef struct
 	object_dst_t		__deinit__;
 }	class_t;
 
-object_t	*new(const class_t *class, ...);
-void		delete(object_t *ptr);
+object_t	*new_class(const class_t *class, ...);
+void		delete_class(object_t *ptr);
 void		safe_free(void **ptr);
-void		safe_delete(void **ptr);
+void		safe_delete_class(void **ptr);
 
 #endif /* !C_MODULAR_H_ */
