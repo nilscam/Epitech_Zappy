@@ -7,15 +7,14 @@
 
 #include "player.h"
 
-bool	player_can_move_to(player_t *self, point_t pos)
+void	player_move(player_t *self)
 {
-	return map_is_in_map(self->map, pos);
+	player_move_toward(self, self->dir, 1);
 }
 
 void	player_move_to(player_t *self, point_t pos)
 {
-	if (player_can_move_to(self, pos))
-		self->pos = map_content_at(self->map, pos);
+	self->pos = map_content_at(self->map, pos);
 }
 
 void	player_move_toward(player_t *self, direction_t dir, int inc)
