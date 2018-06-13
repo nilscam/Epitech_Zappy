@@ -22,6 +22,7 @@ SRC	=	c_modular/c_modular.c					\
 		player/player_elevation.c				\
 		player/player_food.c					\
 		player/player_move.c					\
+		player/player_time.c					\
 		player/player_turn.c					\
 		player/player_utils.c					\
 		player/player.c						\
