@@ -8,6 +8,7 @@
 #include "player.h"
 #include "map.h"
 #include <string.h>
+#include <stdio.h>
 
 int	test_player(void)
 {
@@ -19,6 +20,9 @@ int	test_player(void)
 	if (map) {
 		player = new(PLAYER, map, &map->cases[1][0], team, name);
 		if (player) {
+			player_print(player);
+			printf("move 1 RIGHT\n");
+			player_move_toward(player, DIR_RIGHT, 1);
 			player_print(player);
 		}
 	}
