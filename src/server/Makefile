@@ -17,8 +17,11 @@ SRC	=	c_modular/c_modular.c					\
 		map/inventory.c						\
 		map/map_init.c						\
 		map/map.c						\
+		player/player_utils.c					\
+		player/player.c						\
 		tests/test_list.c					\
 		tests/test_map.c					\
+		tests/test_player.c					\
 		utils/debug.c						\
 		main.c
 
@@ -27,6 +30,7 @@ INC	=	-I .			\
 		-I list			\
 		-I list_iterator	\
 		-I map			\
+		-I player		\
 		-I tests		\
 		-I utils
 F	=	-W -Wall -Werror -Wextra

@@ -11,10 +11,12 @@
 
 int	test_list(void);
 int	test_map(void);
+int	test_player(void);
 
 int	main(void)
 {
 	srand((unsigned int)time(NULL));
-	return test_map();
+	// return test_player();
+	// return test_map();
 	return 0;
 }
