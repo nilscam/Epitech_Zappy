@@ -33,12 +33,12 @@ static void	test_list_iterator(list_t *list)
 	delete(it);
 }
 
-void	test_list(void)
+int	test_list(void)
 {
 	list_t *list = new(LIST);
 	
 	if (!list)
-		return;
+		return 84;
 	list_push_back(list, "aaa");
 	list_push_back(list, "bbb");
 	list_push_back(list, "ccc");
@@ -46,4 +46,5 @@ void	test_list(void)
 	test_list_iterator(list);
 	list_clear(list, clear_list_handler);
 	delete(list);
+	return 0;
 }

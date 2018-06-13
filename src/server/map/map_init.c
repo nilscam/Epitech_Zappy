@@ -9,9 +9,10 @@
 
 static void	init_inventory(inventory_t *inv)
 {
-	inv->food = 0;
+	inv->food = rand() % 2;
 	for (int i = 0; i < NUMBER_OF_INV_TYPE; ++i) {
-		inv->stones[i] = 0;
+		//		inv->stones[i] = 0;
+		inv->stones[i] = rand() % 2;
 	}
 }
 
