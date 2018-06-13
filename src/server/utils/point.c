@@ -21,3 +21,8 @@ void	point_print(point_t point)
 {
 	printf("(%d,%d)\n", point.x, point.y);
 }
+
+bool	point_are_equals(point_t a, point_t b)
+{
+	return a.x == b.x && a.y == b.y;
+}

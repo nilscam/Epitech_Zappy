@@ -12,7 +12,6 @@
 #include "point.h"
 #include "list.h"
 #include "list_iterator.h"
-
 #include <stdbool.h>
 
 typedef enum

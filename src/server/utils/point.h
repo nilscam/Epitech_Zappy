@@ -9,6 +9,7 @@
 #define point_HPP
 
 #include "direction.h"
+#include <stdbool.h>
 
 typedef struct
 {
@@ -16,7 +17,9 @@ typedef struct
 	int	y;
 }	point_t;
 
+/* point.c */
 point_t	point_move(point_t from, direction_t to, int inc);
 void	point_print(point_t point);
+bool	point_are_equals(point_t a, point_t b);
 
 #endif // !point_HPP

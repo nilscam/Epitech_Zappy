@@ -16,6 +16,7 @@ SRC	=	c_modular/c_modular.c					\
 		list_iterator/list_iterator.c				\
 		map/inventory.c						\
 		map/map_init.c						\
+		map/map_it.c						\
 		map/map_move.c						\
 		map/map_utils.c						\
 		map/map.c						\
@@ -27,6 +28,7 @@ SRC	=	c_modular/c_modular.c					\
 		player/player_utils.c					\
 		player/player.c						\
 		tests/test_list.c					\
+		tests/test_map_it.c					\
 		tests/test_map.c					\
 		tests/test_player_move.c				\
 		tests/test_player.c					\
