@@ -23,7 +23,7 @@ static bool	new_map(map_t *self, va_list *args)
 	return true;
 }
 
-static void	delete_map(__attribute__((unused))map_t *self)
+static void	delete_map(map_t *self)
 {
 	SAFE_FREE(&self->cases_buff);
 	SAFE_FREE(&self->cases);

@@ -50,6 +50,10 @@ typedef struct
 /* map_init.c */
 void	init_map_contents(map_t *self);
 
+/* inventory.c */
+void	init_map_inventory(inventory_t *inv);
+void	init_player_inventory(inventory_t *inv);
+
 /* map.c */
 extern const class_t *MAP;
 

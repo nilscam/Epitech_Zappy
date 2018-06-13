@@ -14,6 +14,7 @@ SRC	=	c_modular/c_modular.c					\
 		list_iterator/list_iterator_move.c			\
 		list_iterator/list_iterator_ops.c			\
 		list_iterator/list_iterator.c				\
+		map/inventory.c						\
 		map/map_init.c						\
 		map/map.c						\
 		tests/test_list.c					\

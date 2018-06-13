@@ -7,19 +7,10 @@
 
 #include "map.h"
 
-static void	init_inventory(inventory_t *inv)
-{
-	inv->food = rand() % 2;
-	for (int i = 0; i < NUMBER_OF_INV_TYPE; ++i) {
-		//		inv->stones[i] = 0;
-		inv->stones[i] = rand() % 2;
-	}
-}
-
 static void	init_map_content(map_content_t *content, point_t pos)
 {
 	content->pos = pos;
-	init_inventory(&content->inventory);
+	init_map_inventory(&content->inventory);
 }
 
 void	init_map_contents(map_t *self)
