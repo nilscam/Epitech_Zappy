@@ -10,9 +10,11 @@ MAIN	=	main.c
 SRC	=	c_modular.c		\
 		map.c			\
 		debug.c			\
-		list.c
+		list.c			\
+		list_iterator.c		\
+		tests/test_list.c
 
-INC	=	-I include
+INC	=	-I . -I tests
 F	=	-W -Wall -Werror -Wextra
 
 NAM_OBJ	=	$(MAIN:.c=.o)

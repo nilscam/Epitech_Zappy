@@ -7,10 +7,10 @@
 
 #include "list.h"
 
-static bool	new_list(list_t *self, va_list *args)
+static bool	new_list(
+	__attribute__((unused)) list_t *self,
+	__attribute__((unused)) va_list *args)
 {
-	(void) self;
-	(void) args;
 	return true;
 }
 
