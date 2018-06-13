@@ -37,7 +37,8 @@ static const player_t	PLAYER_CLASS = {
 		0
 	},
 	NULL,
-	NULL
+	NULL,
+	DIR_DOWN
 };
 
 const class_t	*PLAYER = (class_t *) &PLAYER_CLASS;

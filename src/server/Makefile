@@ -16,13 +16,18 @@ SRC	=	c_modular/c_modular.c					\
 		list_iterator/list_iterator.c				\
 		map/inventory.c						\
 		map/map_init.c						\
+		map/map_move.c						\
+		map/map_utils.c						\
 		map/map.c						\
+		player/player_move.c					\
 		player/player_utils.c					\
 		player/player.c						\
 		tests/test_list.c					\
 		tests/test_map.c					\
 		tests/test_player.c					\
 		utils/debug.c						\
+		utils/direction.c					\
+		utils/point.c						\
 		main.c
 
 INC	=	-I .			\

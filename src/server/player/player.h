@@ -19,10 +19,16 @@ typedef struct
 	inventory_t	inventory;
 	char		*team;
 	char		*name;
+	direction_t	dir;
 }	player_t;
 
 /* player_utils.c */
 void	player_print(player_t *self);
+
+/* player_move.c */
+bool	player_can_move_to(player_t *self, point_t pos);
+void	player_move_to(player_t *self, point_t pos);
+void	player_move_toward(player_t *self, direction_t dir, int inc);
 
 /* player.c */
 extern const class_t *PLAYER;
