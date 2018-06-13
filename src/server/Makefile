@@ -19,6 +19,7 @@ SRC	=	c_modular/c_modular.c					\
 		map/map_move.c						\
 		map/map_utils.c						\
 		map/map.c						\
+		player/player_elevation.c				\
 		player/player_move.c					\
 		player/player_turn.c					\
 		player/player_utils.c					\
