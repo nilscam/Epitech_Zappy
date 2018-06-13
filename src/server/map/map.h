@@ -47,6 +47,10 @@ typedef struct
 	list_t		*players;
 }	map_t;
 
+/* map_init.c */
+void	init_map_contents(map_t *self);
+
+/* map.c */
 extern const class_t *MAP;
 
 #endif // !map_HPP

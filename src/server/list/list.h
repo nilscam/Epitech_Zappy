@@ -25,11 +25,15 @@ typedef struct
 	size_t		size;
 }	list_t;
 
+/* list_push.c */
 bool	list_push_back(list_t *self, void *data);
 bool	list_push_front(list_t *self, void *data);
+
+/* list_utils.c */
 void	list_clear(list_t *self, void (*fct)(void *));
 size_t	list_size(list_t *self);
 
+/* list.c */
 extern const class_t *LIST;
 
 #endif // !list_HPP

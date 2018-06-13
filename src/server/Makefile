@@ -7,14 +7,27 @@
 
 NAME	=	zappy_server
 MAIN	=	main.c
-SRC	=	c_modular.c		\
-		map.c			\
-		debug.c			\
-		list.c			\
-		list_iterator.c		\
-		tests/test_list.c
+SRC	=	c_modular/c_modular.c					\
+		list/list_push.c					\
+		list/list_utils.c					\
+		list/list.c						\
+		list_iterator/list_iterator_move.c			\
+		list_iterator/list_iterator_ops.c			\
+		list_iterator/list_iterator.c				\
+		map/map_init.c						\
+		map/map.c						\
+		tests/test_list.c					\
+		tests/test_map.c					\
+		utils/debug.c						\
+		main.c
 
-INC	=	-I . -I tests
+INC	=	-I .			\
+		-I c_modular		\
+		-I list			\
+		-I list_iterator	\
+		-I map			\
+		-I tests		\
+		-I utils
 F	=	-W -Wall -Werror -Wextra
 
 NAM_OBJ	=	$(MAIN:.c=.o)
