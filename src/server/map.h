@@ -10,6 +10,8 @@
 
 #include "c_modular.h"
 #include "point.h"
+#include "list.h"
+#include "list_iterator.h"
 
 #include <stdbool.h>
 
@@ -42,7 +44,7 @@ typedef struct
 	point_t		size;
 	map_content_t	*cases_buff;
 	map_content_t	**cases;
-	// list_t		players;
+	list_t		*players;
 }	map_t;
 
 extern const class_t *MAP;

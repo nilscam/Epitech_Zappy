@@ -9,6 +9,7 @@
 #define C_MODULAR_H_
 
 #define SAFE_FREE(x)	safe_free((void **)(x))
+#define SAFE_DELETE(x)	safe_delete((void **)(x))
 
 #include <stdarg.h>
 #include <stddef.h>
@@ -31,5 +32,6 @@ typedef struct
 object_t	*new(const class_t *class, ...);
 void		delete(object_t *ptr);
 void		safe_free(void **ptr);
+void		safe_delete(void **ptr);
 
 #endif /* !C_MODULAR_H_ */

@@ -48,4 +48,4 @@ re:			fclean all
 clean_bin:
 			rm -f $(ROOT_BIN)/$(NAME_SERVER) $(ROOT_BIN)/$(NAME_AI) $(ROOT_BIN)/$(NAME_CLIENT)
 
-.PHONY:			all clean fclean re clean_bin
+.PHONY:			all clean fclean re clean_bin $(NAME_SERVER) $(NAME_AI) $(NAME_CLIENT)

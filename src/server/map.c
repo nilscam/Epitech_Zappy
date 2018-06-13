@@ -59,7 +59,8 @@ static bool	new_map(map_t *self, va_list *args)
 
 	self->size.x = x;
 	self->size.y = y;
-	if (!allocate_cases(self, x, y))
+	self->players = new(LIST);
+	if (!self->players || !allocate_cases(self, x, y))
 		return false;
 	init_map_contents(self);
 	return true;
@@ -69,6 +70,7 @@ static void	delete_map(__attribute__((unused))map_t *self)
 {
 	SAFE_FREE(&self->cases_buff);
 	SAFE_FREE(&self->cases);
+	SAFE_DELETE(&self->players);
 }
 
 static const map_t	MAP_CLASS = {
@@ -82,6 +84,7 @@ static const map_t	MAP_CLASS = {
 		0,
 		0
 	},
+	NULL,
 	NULL,
 	NULL
 };

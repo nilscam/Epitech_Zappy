@@ -51,3 +51,11 @@ void	safe_free(void **ptr)
 		*ptr = NULL;
 	}
 }
+
+void	safe_delete(void **ptr)
+{
+	if (ptr && *ptr) {
+		delete(*ptr);
+		*ptr = NULL;
+	}
+}
