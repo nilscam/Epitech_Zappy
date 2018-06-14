@@ -13,6 +13,7 @@ int	test_list(void);
 int	test_map(void);
 int	test_map_it(void);
 int	test_player(void);
+int	test_map_sound(void);
 
 int	main(void)
 {
@@ -21,5 +22,6 @@ int	main(void)
 	// return test_player();
 	// return test_map();
 	// return test_map_it();
+	// return test_map_sound();
 	return 0;
 }

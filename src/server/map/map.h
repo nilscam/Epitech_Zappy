@@ -46,6 +46,13 @@ typedef struct
 	list_t		*players;
 }	map_t;
 
+struct circle_direction_s
+{
+	double		min;
+	double		max;
+	direction_t	dir;
+};
+
 /* map_init.c */
 void	init_map_contents(map_t *self);
 
@@ -55,6 +62,9 @@ point_t	map_move(map_t *self, point_t from, direction_t to, int inc);
 
 /* map_utils.c */
 map_content_t	*map_content_at(map_t *self, point_t pos);
+
+/* map_sound.c */
+direction_t	map_dir_sound_from(map_t *self, point_t from, point_t to);
 
 /* inventory.c */
 void	init_map_inventory(inventory_t *inv);
