@@ -33,5 +33,6 @@ void	add_client(t_server *this)
 
 	fd = accept(this->_fd_server, (struct sockaddr *)
 				&address, (socklen_t*)&addrlen);
+	printf("New connection\n");
 	new_client(this, fd);
 }

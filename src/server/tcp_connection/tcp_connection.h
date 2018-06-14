@@ -56,8 +56,8 @@ struct			s_server
 	int			(*can_err)(t_server *this, int fd);
 	void		(*add_client)(t_server *this);
 	void		(*write)(int fd, char *str);
-	void		(*close_client)(t_server *this, int fd);
-	void		(*stop)(void);
+	t_client	*(*close_client)(t_server *this, int fd);
+	void		(*stop)(t_server *this);
 	int			_fd_server;
 	fd_set		_fds[3];
 	t_client	*_clients;
@@ -83,8 +83,10 @@ void	new_client(t_server *this, int fd);
 void	add_client(t_server *this);
 
 //				clients_remove.c
-void	remove_client(t_server *this, int fd);
-void	close_client(t_server *this, int fd);
+t_client	*remove_exist_client(t_server *this,
+								t_client *tmp_a, t_client *tmp_b);
+t_client	*remove_client(t_server *this, int fd);
+t_client	*close_client(t_server *this, int fd);
 void	stop_server(t_server *this);
 
 //				select.c

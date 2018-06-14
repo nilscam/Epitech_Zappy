@@ -45,6 +45,7 @@ GTAGS
 # Junk
 *Info.plist
 .DS_Store
+*.dSYM
 
 # Custom
 zappy_ai

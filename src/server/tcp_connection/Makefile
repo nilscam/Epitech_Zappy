@@ -16,13 +16,13 @@ SRC	=	circular_buffer.c		\
 		server.c			\
 		write.c
 
-INC	=	-I . -I tests
+INC	=	-I .
 F	=	-W -Wall -Werror -Wextra
 
 NAM_OBJ	=	$(MAIN:.c=.o)
 OBJ	=	$(SRC:.c=.o)
 
-GCC	=	gcc -o
+GCC	=	gcc -g3 -o
 
 all:		$(NAME)
 
