@@ -13,6 +13,8 @@
 #include "list.h"
 #include "list_iterator.h"
 #include <stdbool.h>
+#include <stdio.h>
+#include "player.h"
 
 typedef enum
 {
@@ -62,5 +64,8 @@ void	init_player_inventory(inventory_t *inv);
 
 /* map.c */
 extern const class_t *MAP;
+
+/* vision.c */
+char	*look(map_t *this, player_t *player);
 
 #endif // !map_HPP
