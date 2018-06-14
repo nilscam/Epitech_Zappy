@@ -8,7 +8,7 @@
 #ifndef map_HPP
 #define map_HPP
 
-#include "c_modular.h"
+#include "class.h"
 #include "point.h"
 #include "list.h"
 #include "list_iterator.h"

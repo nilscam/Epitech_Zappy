@@ -33,6 +33,27 @@ static void	test_list_iterator(list_t *list)
 	SAFE_DELETE(it);
 }
 
+static void	test_list_iterator_stack(list_t *list)
+{
+	list_iterator_t it;
+	char		*str;
+
+	if (!INIT(LIST_IT, it, list))
+		return;
+	while (list_it_can_iterate(&it)) {
+		str = list_it_get(&it);
+		printf("--> '%s'\n", str);
+		if (strcmp(str, "ccc") == 0) {
+			list_it_erase(&it, NULL);
+		} else if (strcmp(str, "aaa") == 0) {
+			list_it_set(&it, "hello");
+		} else {
+			list_it_iterate(&it);
+		}
+	}
+	DEINIT(it);
+}
+
 int	test_list(void)
 {
 	list_t *list = NEW(LIST);
@@ -43,7 +64,11 @@ int	test_list(void)
 	list_push_back(list, "bbb");
 	list_push_back(list, "ccc");
 	list_push_front(list, "ddd");
+	printf("it_1\n");
 	test_list_iterator(list);
+	printf("it_2\n");
+	test_list_iterator_stack(list);
+	printf("it_3\n");
 	list_clear(list, clear_list_handler);
 	SAFE_DELETE(list);
 	return 0;

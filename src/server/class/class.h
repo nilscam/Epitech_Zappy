@@ -8,8 +8,10 @@
 #ifndef C_MODULAR_H_
 #define C_MODULAR_H_
 
-#define NEW(x, ...)	new_class(x, ##__VA_ARGS__)
-#define DELETE(x)	delete_class((object_t *)x)
+#define NEW(x, ...)	new_class((x), ##__VA_ARGS__)
+#define DELETE(x)	delete_class((object_t *)(x))
+#define INIT(c, x, ...)	init_class((c), (&x), ##__VA_ARGS__)
+#define DEINIT(x)	deinit_class((object_t *)(&x))
 #define SAFE_FREE(x)	safe_free((void **)(&x))
 #define SAFE_DELETE(x)	safe_delete_class((void **)(&x))
 
@@ -31,8 +33,13 @@ typedef struct
 	object_dst_t		__deinit__;
 }	class_t;
 
+/* class.c */
 object_t	*new_class(const class_t *class, ...);
 void		delete_class(object_t *ptr);
+bool		init_class(const class_t *class, object_t *obj, ...);
+void		deinit_class(object_t *ptr);
+
+/* class_utils.c */
 void		safe_free(void **ptr);
 void		safe_delete_class(void **ptr);
 
