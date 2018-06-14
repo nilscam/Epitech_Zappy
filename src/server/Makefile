@@ -19,6 +19,7 @@ SRC	=	class/class.c						\
 		map/map_init.c						\
 		map/map_it.c						\
 		map/map_move.c						\
+		map/map_sound.c						\
 		map/map_utils.c						\
 		map/map.c						\
 		map/vision.c						\
@@ -31,12 +32,14 @@ SRC	=	class/class.c						\
 		player/player.c						\
 		tests/test_list.c					\
 		tests/test_map_it.c					\
+		tests/test_map_sound.c					\
 		tests/test_map.c					\
 		tests/test_player_move.c				\
 		tests/test_player.c					\
 		tests/test_vision.c					\
 		utils/debug.c						\
 		utils/direction.c					\
+		utils/math_utils.c					\
 		utils/point.c
 
 INC	=	-I .			\

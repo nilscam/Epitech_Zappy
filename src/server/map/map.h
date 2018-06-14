@@ -61,6 +61,9 @@ bool		add_player_to_map(map_t *map, point_t pos,
 
 
 
+/* map_sound.c */
+direction_t	map_dir_sound_from(map_t *self, point_t from, point_t to);
+
 /* inventory.c */
 void	init_map_inventory(inventory_t *inv);
 void	init_player_inventory(inventory_t *inv);

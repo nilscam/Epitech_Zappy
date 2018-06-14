@@ -26,3 +26,8 @@ bool	point_are_equals(point_t a, point_t b)
 {
 	return a.x == b.x && a.y == b.y;
 }
+
+point_t	point_add(point_t a, point_t b)
+{
+	return (point_t){ a.x + b.x, a.y + b.y };
+}
