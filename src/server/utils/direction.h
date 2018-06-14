@@ -17,9 +17,17 @@ typedef enum
 	DIR_DOWN = 0x8
 }	direction_t;
 
+struct circle_direction_s
+{
+	double		min;
+	double		max;
+	direction_t	dir;
+};
+
 /* direction.c */
 char		*direction_repr(direction_t dir);
 direction_t	direction_turn_left(direction_t dir);
 direction_t	direction_turn_right(direction_t dir);
+direction_t	direction_from_angle(double degrees);
 
 #endif // !direction_HPP

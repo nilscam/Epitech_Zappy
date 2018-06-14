@@ -46,13 +46,6 @@ typedef struct
 	list_t		*players;
 }	map_t;
 
-struct circle_direction_s
-{
-	double		min;
-	double		max;
-	direction_t	dir;
-};
-
 /* map_init.c */
 void	init_map_contents(map_t *self);
 

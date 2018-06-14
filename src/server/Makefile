@@ -37,6 +37,7 @@ SRC	=	class/class.c						\
 		tests/test_player.c					\
 		utils/debug.c						\
 		utils/direction.c					\
+		utils/math_utils.c					\
 		utils/point.c
 
 INC	=	-I .			\
