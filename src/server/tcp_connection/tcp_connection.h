@@ -8,6 +8,9 @@
 #ifndef TCP_CONNECTION_H_
 # define TCP_CONNECTION_H_
 
+# include "debug.h"
+# include "list.h"
+# include "map.h"
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netdb.h>
@@ -51,17 +54,16 @@ struct			s_client
 struct			s_server
 {
 	int			(*init)(t_server *this, int port, char *protocol);
-	int			(*select)(t_server *this, int timeout);
+	int			(*select)(t_server *this, map_t *map, int timeout);
 	int			(*can_read)(t_server *this, int fd);
 	int			(*can_write)(t_server *this, int fd);
 	int			(*can_err)(t_server *this, int fd);
-	void		(*add_client)(t_server *this);
+	void		(*add_client)(t_server *this, map_t *map);
 	void		(*write)(int fd, char *str);
-	t_client	*(*close_client)(t_server *this, int fd);
 	void		(*stop)(t_server *this);
 	int			_fd_server;
 	fd_set		_fds[3];
-	t_client	*_clients;
+	list_t		*players;
 };
 
 //				circular_buffer.c
@@ -81,7 +83,7 @@ t_server	*init_struct_server(void);
 
 //				clients_add.c
 void	new_client(t_server *this, int fd);
-void	add_client(t_server *this);
+void	add_client(t_server *this, map_t *map);
 
 //				clients_remove.c
 t_client	*remove_exist_client(t_server *this,
@@ -91,9 +93,9 @@ t_client	*close_client(t_server *this, int fd);
 void	stop_server(t_server *this);
 
 //				select.c
-void	fill_fds(t_server *this);
+void	fill_fds(t_server *this, map_t *map);
 int		get_max_fd(t_server *this);
-int		prepare_select(t_server *this, int timeout);
+int		prepare_select(t_server *this, map_t *map, int timeout);
 
 //				select_is_set.c
 int		can_read(t_server *this, int fd);

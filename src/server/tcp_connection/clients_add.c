@@ -7,32 +7,15 @@
 
 #include "tcp_connection.h"
 
-void	new_client(t_server *this, int fd)
-{
-	t_client	*new_client = malloc(sizeof(t_client));
-	t_client	*tmp = this->_clients;
-
-	new_client->_fd = fd;
-	buff_init(&new_client->_cbuf, SIZE_BUFF);
-	new_client->next = NULL;
-	while (tmp && tmp->next) {
-		tmp = tmp->next;
-	}
-	if (!tmp) {
-		this->_clients = new_client;
-	} else {
-		tmp->next = new_client;
-	}
-}
-
-void	add_client(t_server *this)
+void	add_client(t_server *this, map_t *map)
 {
 	struct sockaddr_in	address;
-	int		addrlen = sizeof(address);
-	int	fd;
+	int			addrlen = sizeof(address);
+	int			fd;
 
-	fd = accept(this->_fd_server, (struct sockaddr *)
-				&address, (socklen_t*)&addrlen);
-	printf("New connection\n");
-	new_client(this, fd);
+	fd = accept(this->_fd_server,
+		(struct sockaddr *)&address, (socklen_t*)&addrlen);
+	add_player_to_map(map, fd);
+	DEBUG("New connection to fd %d\n", fd);
+	
 }

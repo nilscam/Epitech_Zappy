@@ -52,7 +52,7 @@ int	test_player(void)
 
 	if (!map)
 		return 84;
-	player = NEW(PLAYER, map, &map->cases[1][0], team, name);
+	player = NEW(PLAYER, map, &map->cases[1][0], team, name, -1);
 	if (player) {
 		test_player_move(player);
 		test_player_time(player);

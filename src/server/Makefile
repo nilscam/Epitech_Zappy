@@ -30,6 +30,16 @@ SRC	=	class/class.c						\
 		player/player_turn.c					\
 		player/player_utils.c					\
 		player/player.c						\
+		save_signal/save_signal.c				\
+		tcp_connection/circular_buffer.c			\
+		tcp_connection/clients_add.c				\
+		tcp_connection/clients_remove.c				\
+		tcp_connection/init.c					\
+		tcp_connection/main.c					\
+		tcp_connection/select_is_set.c				\
+		tcp_connection/select.c					\
+		tcp_connection/server.c					\
+		tcp_connection/write.c					\
 		tests/test_list.c					\
 		tests/test_map_it.c					\
 		tests/test_map_sound.c					\
@@ -48,6 +58,8 @@ INC	=	-I .			\
 		-I list_iterator	\
 		-I map			\
 		-I player		\
+		-I save_signal		\
+		-I tcp_connection	\
 		-I tests		\
 		-I utils
 F	=	-W -Wall -Werror -Wextra

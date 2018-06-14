@@ -16,7 +16,6 @@ void		init_server_functions(t_server *this)
 	this->can_err = &can_err;
 	this->add_client = &add_client;
 	this->write = &put_server;
-	this->close_client = &close_client;
 	this->stop = &stop_server;
 }
 
@@ -26,7 +25,7 @@ t_server	*init_struct_server(void)
 
 	if (!this)
 		return (NULL);
-	this->_clients = NULL;
+	this->players = NULL;
 	this->_fd_server = -1;
 	init_server_functions(this);
 	return (this);

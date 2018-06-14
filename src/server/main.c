@@ -15,9 +15,11 @@ int	test_map_it(void);
 int	test_player(void);
 int 	test_vision(void);
 int	test_map_sound(void);
+int	test_tcp_connection(int ac, char **av);
 
-int	main(void)
+int	main(int ac, char **av)
 {
+	(void)ac;(void)av;
 	srand((unsigned int)time(NULL));
 	// return test_list();
 	// return test_player();
@@ -25,5 +27,6 @@ int	main(void)
 	// return test_map_it();
 	// test_vision();
 	// return test_map_sound();
+	// return test_tcp_connection(ac, av);
 	return 0;
 }
