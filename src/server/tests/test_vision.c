@@ -18,8 +18,8 @@ int	test_vision()
 
 	printf("TESTING VISION\n");
 	player = NEW(PLAYER, map, &map->cases[0][0], team, name);
-	add_player_to_map(map, (point_t){0,0}, "Red", "Ash");
-	add_player_to_map(map, (point_t){10,1}, "Red", "Blue");
+	add_player_to_map_at(map, (point_t){0, 0}, "Red", "Ash");
+	add_player_to_map_at(map, (point_t){10, 1}, "Red", "Blue");
 
 	player->dir = DIR_LEFT;
 	printf("LVL1\n%s\n", look(map, player));

@@ -52,6 +52,8 @@ INC	=	-I .			\
 		-I utils
 F	=	-W -Wall -Werror -Wextra
 
+LIB	=	-lm
+
 NAM_OBJ	=	$(MAIN:.c=.o)
 OBJ	=	$(SRC:.c=.o)
 
