@@ -7,14 +7,44 @@
 
 NAME	=	zappy_server
 MAIN	=	main.c
-SRC	=	c_modular.c		\
-		map.c			\
-		debug.c			\
-		list.c			\
-		list_iterator.c		\
-		tests/test_list.c
+SRC	=	class/class.c						\
+		class/class_utils.c					\
+		list/list_push.c					\
+		list/list_utils.c					\
+		list/list.c						\
+		list_iterator/list_iterator_move.c			\
+		list_iterator/list_iterator_ops.c			\
+		list_iterator/list_iterator.c				\
+		map/inventory.c						\
+		map/map_init.c						\
+		map/map_it.c						\
+		map/map_move.c						\
+		map/map_utils.c						\
+		map/map.c						\
+		player/player_elevation.c				\
+		player/player_food.c					\
+		player/player_move.c					\
+		player/player_time.c					\
+		player/player_turn.c					\
+		player/player_utils.c					\
+		player/player.c						\
+		tests/test_list.c					\
+		tests/test_map_it.c					\
+		tests/test_map.c					\
+		tests/test_player_move.c				\
+		tests/test_player.c					\
+		utils/debug.c						\
+		utils/direction.c					\
+		utils/point.c
 
-INC	=	-I . -I tests
+INC	=	-I .			\
+		-I class		\
+		-I list			\
+		-I list_iterator	\
+		-I map			\
+		-I player		\
+		-I tests		\
+		-I utils
 F	=	-W -Wall -Werror -Wextra
 
 NAM_OBJ	=	$(MAIN:.c=.o)

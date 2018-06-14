@@ -2,28 +2,10 @@
 ** EPITECH PROJECT, 2018
 ** PSU_zappy_2017
 ** File description:
-** list_iterator.c
+** list_iterator_ops.c
 */
 
 #include "list_iterator.h"
-
-static bool	new_list_iterator(list_iterator_t *self, va_list *args)
-{
-	self->list = va_arg(*args, list_t *);
-	self->node = self->list->tail;
-	return true;
-}
-
-bool	list_it_can_iterate(list_iterator_t *self)
-{
-	return self->node != NULL;
-}
-
-void	list_it_iterate(list_iterator_t *self)
-{
-	if (self->node)
-		self->node = self->node->next;
-}
 
 void	list_it_erase(list_iterator_t *self, void (*fct)(void *))
 {
@@ -57,16 +39,3 @@ void	list_it_set(list_iterator_t *self, void *data)
 	if (self->node)
 		self->node->data = data;
 }
-
-static const list_iterator_t	LIST_IT_CLASS = {
-	{
-		sizeof(list_iterator_t),
-		"List Iterator",
-		(object_cst_t) new_list_iterator,
-		NULL
-	},
-	NULL,
-	NULL
-};
-
-const class_t	*LIST_IT = (class_t *) &LIST_IT_CLASS;

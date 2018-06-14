@@ -8,11 +8,10 @@
 #ifndef map_HPP
 #define map_HPP
 
-#include "c_modular.h"
+#include "class.h"
 #include "point.h"
 #include "list.h"
 #include "list_iterator.h"
-
 #include <stdbool.h>
 
 typedef enum
@@ -47,6 +46,21 @@ typedef struct
 	list_t		*players;
 }	map_t;
 
+/* map_init.c */
+void	init_map_contents(map_t *self);
+
+/* map_move.c */
+bool	map_is_in_map(map_t *self, point_t pos);
+point_t	map_move(map_t *self, point_t from, direction_t to, int inc);
+
+/* map_utils.c */
+map_content_t	*map_content_at(map_t *self, point_t pos);
+
+/* inventory.c */
+void	init_map_inventory(inventory_t *inv);
+void	init_player_inventory(inventory_t *inv);
+
+/* map.c */
 extern const class_t *MAP;
 
 #endif // !map_HPP
