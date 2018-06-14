@@ -30,6 +30,8 @@ SRC	=	class/class.c						\
 		player/player_turn.c					\
 		player/player_utils.c					\
 		player/player.c						\
+		player_cmd/player_callback.c				\
+		player_cmd/player_cmd.c					\
 		save_signal/save_signal.c				\
 		tcp_connection/circular_buffer.c			\
 		tcp_connection/clients_add.c				\
@@ -58,6 +60,7 @@ INC	=	-I .			\
 		-I list_iterator	\
 		-I map			\
 		-I player		\
+		-I player_cmd		\
 		-I save_signal		\
 		-I tcp_connection	\
 		-I tests		\
