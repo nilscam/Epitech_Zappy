@@ -7,7 +7,8 @@
 
 NAME	=	zappy_server
 MAIN	=	main.c
-SRC	=	c_modular/c_modular.c					\
+SRC	=	class/class.c						\
+		class/class_utils.c					\
 		list/list_push.c					\
 		list/list_utils.c					\
 		list/list.c						\
@@ -39,7 +40,7 @@ SRC	=	c_modular/c_modular.c					\
 		utils/point.c
 
 INC	=	-I .			\
-		-I c_modular		\
+		-I class		\
 		-I list			\
 		-I list_iterator	\
 		-I map			\

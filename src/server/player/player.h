@@ -8,7 +8,7 @@
 #ifndef player_HPP
 #define player_HPP
 
-#include "c_modular.h"
+#include "class.h"
 #include "map.h"
 
 #define FOOD_TO_TIME_UNITS	126

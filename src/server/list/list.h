@@ -8,7 +8,7 @@
 #ifndef list_HPP
 #define list_HPP
 
-#include "c_modular.h"
+#include "class.h"
 
 typedef struct list_node_s
 {

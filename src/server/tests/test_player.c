@@ -32,6 +32,7 @@ static void	test_player_time(player_t *player)
 {
 	int	callback_arg = 42;
 
+	printf("test_player_time before\n");
 	player_wait_for(player, 7);
 	player_set_is_busy_callback(player,
 		(pl_callback_t)player_time_callback,
@@ -39,6 +40,7 @@ static void	test_player_time(player_t *player)
 	while (player_is_busy(player))
 		player_wait(player);
 	player_wait(player);
+	printf("test_player_time after\n");
 }
 
 int	test_player(void)
