@@ -14,7 +14,6 @@
 #include "list_iterator.h"
 #include <stdbool.h>
 #include <stdio.h>
-#include "player.h"
 
 typedef enum
 {
@@ -57,6 +56,10 @@ point_t	map_move(map_t *self, point_t from, direction_t to, int inc);
 
 /* map_utils.c */
 map_content_t	*map_content_at(map_t *self, point_t pos);
+bool		add_player_to_map(map_t *map, point_t pos,
+	const char *team, const char *name);
+
+
 
 /* inventory.c */
 void	init_map_inventory(inventory_t *inv);
@@ -64,8 +67,5 @@ void	init_player_inventory(inventory_t *inv);
 
 /* map.c */
 extern const class_t *MAP;
-
-/* vision.c */
-char	*look(map_t *this, player_t *player);
 
 #endif // !map_HPP

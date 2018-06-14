@@ -6,7 +6,7 @@
 */
 
 #include <player/player.h>
-#include "map.h"
+#include "map_it.h"
 #include "player.h"
 
 int	test_vision()
@@ -16,8 +16,20 @@ int	test_vision()
 	char		*team = strdup("Red");
 	char		*name = strdup("Ash");
 
-	player = NEW(PLAYER, map, &map->cases[1][0], team, name);
+	printf("TESTING VISION\n");
+	player = NEW(PLAYER, map, &map->cases[0][0], team, name);
+	add_player_to_map(map, (point_t){0,0}, "Red", "Ash");
+	add_player_to_map(map, (point_t){10,1}, "Red", "Blue");
+
 	player->dir = DIR_LEFT;
-	look(map, player);
+	printf("LVL1\n%s\n", look(map, player));
+	player->level = 2;
+	printf("LVL2\n%s\n", look(map, player));
+	player->level = 3;
+	printf("LVL3\n%s\n", look(map, player));
+	player->level = 4;
+	printf("LVL3\n%s\n", look(map, player));
+	SAFE_DELETE(player);
+	SAFE_DELETE(map);
 	return (0);
 }

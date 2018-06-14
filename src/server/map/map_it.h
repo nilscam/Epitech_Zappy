@@ -19,4 +19,7 @@ bool	map_it_players_at(map_t *self, point_t pos, map_it_pl_t fct, ...);
 bool	map_it_players_team(map_t *self, const char *team,
 		map_it_pl_t fct, ...);
 
+/* vision.c */
+char	*look(map_t *this, player_t *player);
+
 #endif // !map_it_HPP

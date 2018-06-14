@@ -13,22 +13,6 @@ static void	show_player(player_t *player)
 	player_print(player);
 }
 
-static bool	add_player_to_map(map_t *map,
-	point_t pos, const char *team, const char *name)
-{
-	map_content_t	*c = map_content_at(map, pos);
-	player_t 	*player;
-
-	team = strdup(team);
-	name = strdup(name);
-	if (!team || !name)
-		return false;
-	player = NEW(PLAYER, map, c, team, name);
-	if (!player)
-		return false;
-	return list_push_back(map->players, player);
-}
-
 int	test_map_it(void)
 {
 	map_it_pl_t	show_player_fct = (map_it_pl_t)show_player;

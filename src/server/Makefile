@@ -52,7 +52,7 @@ F	=	-W -Wall -Werror -Wextra
 NAM_OBJ	=	$(MAIN:.c=.o)
 OBJ	=	$(SRC:.c=.o)
 
-GCC	=	gcc -o
+GCC	=	gcc -g3 -o
 
 all:		$(NAME)
 
