@@ -43,7 +43,7 @@ int		main(int ac, char **av)
 		return (84);
 	signal(SIGINT, handler);
 	while (1) {
-		server->select(server, 1);
+		server->select(server, TIMEOUT);
 		for (t_client *tmp = server->_clients; tmp;) {
 			if (server->can_read(server, tmp->_fd)) {
 				if (!read_data(server, tmp)) {

@@ -18,15 +18,16 @@
 # include <stdio.h>
 # include <unistd.h>
 
-# define MAX_CLIENT		4096
+# define	MAX_CLIENT	4096
 
 //			select define
-# define READ_FDS	0
-# define WRITE_FDS	1
-# define ERR_FDS	2
+# define	READ_FDS	0
+# define	WRITE_FDS	1
+# define	ERR_FDS		2
+# define	TIMEOUT		1
 
 //			circular buffer size
-# define SIZE_BUFF		512
+# define	SIZE_BUFF	512
 
 typedef struct	s_buffer		t_buffer;
 typedef struct	s_client		t_client;
