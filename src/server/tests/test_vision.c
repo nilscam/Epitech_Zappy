@@ -11,24 +11,30 @@
 
 int	test_vision()
 {
-	map_t*		map = NEW(MAP, 10, 10);
+	map_t*		map = NEW(MAP, 5, 5);
 	player_t	*player = NULL;
 	char		*team = strdup("Red");
 	char		*name = strdup("Ash");
 
 	printf("TESTING VISION\n");
-	player = NEW(PLAYER, map, &map->cases[0][0], team, name, NULL);
-	add_player_to_map_at(map, (point_t){0, 0}, "Red", NULL);
-	add_player_to_map_at(map, (point_t){10, 1}, "Red", NULL);
+	player = NEW(PLAYER, map, &map->cases[2][2], team, name, NULL);
+	add_player_to_map_at(map, (point_t){2, 2}, "Red", NULL);
+//	add_player_to_map_at(map, (point_t){10, 1}, "Red", NULL);
 
-	player->dir = DIR_LEFT;
-	printf("LVL1\n%s\n", look(map, player));
+/*	player->dir = DIR_LEFT;
+	printf("LVL1 - Looking left\n%s\n", look(map, player));
+	player->dir = DIR_RIGHT;
+	printf("LVL1 - Looking right\n%s\n", look(map, player));
+	player->dir = DIR_DOWN;
+	printf("LVL1 - Looking down\n%s\n", look(map, player));*/
+/*	player->dir = DIR_UP;
+	printf("LVL1 - Looking up\n%s\n", look(map, player));
 	player->level = 2;
-	printf("LVL2\n%s\n", look(map, player));
+	printf("LVL2 - looking up\n%s\n", look(map, player));
 	player->level = 3;
 	printf("LVL3\n%s\n", look(map, player));
 	player->level = 4;
-	printf("LVL3\n%s\n", look(map, player));
+	printf("LVL3\n%s\n", look(map, player));*/
 	SAFE_DELETE(player);
 	SAFE_DELETE(map);
 	return (0);

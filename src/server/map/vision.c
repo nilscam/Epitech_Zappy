@@ -26,11 +26,11 @@ char	*print_food(map_content_t *content, char *tmp, bool *space)
 	return (tmp);
 }
 
-char	*print_stones(map_content_t *content, char *tmp, int vis_len, bool *space)
+char	*print_stones(map_content_t *content, char *tmp, __attribute__((unused))int vis_len, bool *space)
 {
 	for (int i = 0 ; i < NUMBER_OF_INV_TYPE ; ++i) {
 		for (size_t t = 0 ; t < content->inventory.stones[i] ; ++t) {
-			if (*space || vis_len == 0)
+			if (*space)
 				tmp += sprintf(tmp, " ");
 			else
 				*space = true;
@@ -67,10 +67,11 @@ char	*look_left(map_t *this, player_t *player)
 	bool space = false;
 
 	bzero(vision, 10000);
+	tmp += sprintf(tmp, "[");
 	for (int vis_len = 0 ; vis_len <= player->level ; ++vis_len) {
-		for (int vis_widt = 0 - vis_len ; vis_widt <= vis_len; ++vis_widt) {
+		for (int vis_widt = 0 + vis_len ; vis_widt >= -vis_len; --vis_widt) {
 			tmp += sprintf(tmp, vis_len == 0 ? "" : ",");
-			point_t pos = {player->pos->pos.x + vis_widt, player->pos->pos.y + vis_len};
+			point_t pos = {player->pos->pos.x - vis_len, player->pos->pos.y + vis_widt};
 			content = map_content_at(this, pos);
 			map_it_players_at(this, pos, tmp_add_player, &tmp, &space);
 			tmp = print_food(content, tmp, &space);
@@ -78,6 +79,7 @@ char	*look_left(map_t *this, player_t *player)
 			space = false;
 		}
 	}
+	tmp += sprintf(tmp, "]");
 	return (strdup((const char *)vision));
 }
 
@@ -89,8 +91,33 @@ char	*look_right(__attribute__((unused))map_t *this, __attribute__((unused))play
 	bool space = false;
 
 	bzero(vision, 10000);
+	tmp += sprintf(tmp, "[");
 	for (int vis_len = 0 ; vis_len <= player->level ; ++vis_len) {
 		for (int vis_widt = 0 - vis_len ; vis_widt <= vis_len; ++vis_widt) {
+			tmp += sprintf(tmp, vis_len == 0 ? "" : ",");
+			point_t pos = {player->pos->pos.x + vis_len, player->pos->pos.y + vis_widt};
+			content = map_content_at(this, pos);
+			map_it_players_at(this, pos, tmp_add_player, &tmp, &space);
+			tmp = print_food(content, tmp, &space);
+			tmp = print_stones(content, tmp, vis_len, &space);
+			space = false;
+		}
+	}
+	tmp += sprintf(tmp, "]");
+	return (strdup((const char *)vision));
+}
+
+char	*look_down(__attribute__((unused))map_t *this, __attribute__((unused))player_t *player)
+{
+	char vision[10000];
+	char *tmp = vision;
+	map_content_t *content;
+	bool space = false;
+
+	bzero(vision, 10000);
+	tmp += sprintf(tmp, "[");
+	for (int vis_len = 0 ; vis_len <= player->level ; ++vis_len) {
+		for (int vis_widt = 0 + vis_len ; vis_widt >= -vis_len; --vis_widt) {
 			tmp += sprintf(tmp, vis_len == 0 ? "" : ",");
 			point_t pos = {player->pos->pos.x + vis_widt, player->pos->pos.y + vis_len};
 			content = map_content_at(this, pos);
@@ -100,21 +127,56 @@ char	*look_right(__attribute__((unused))map_t *this, __attribute__((unused))play
 			space = false;
 		}
 	}
+	tmp += sprintf(tmp, "]");
 	return (strdup((const char *)vision));
 }
 
 char	*look_up(__attribute__((unused))map_t *this, __attribute__((unused))player_t *player)
 {
-	return (NULL);
-}
+	char vision[10000];
+	char *tmp = vision;
+	map_content_t *content;
+	bool space = false;
 
-char	*look_down(__attribute__((unused))map_t *this, __attribute__((unused))player_t *player)
-{
-	return (NULL);
+	bzero(vision, 10000);
+	tmp += sprintf(tmp, "[");
+	for (int vis_len = 0 ; vis_len <= player->level ; ++vis_len) {
+		for (int vis_widt = 0 - vis_len ; vis_widt <= vis_len; ++vis_widt) {
+			tmp += sprintf(tmp, vis_len == 0 ? "" : ",");
+			point_t pos = {player->pos->pos.x + vis_widt, player->pos->pos.y - vis_len};
+			content = map_content_at(this, pos);
+			map_it_players_at(this, pos, tmp_add_player, &tmp, &space);
+			tmp = print_food(content, tmp, &space);
+			tmp = print_stones(content, tmp, vis_len, &space);
+			space = false;
+		}
+	}
+	tmp += sprintf(tmp, "]");
+	return (strdup((const char *)vision));
 }
 
 char	*look(map_t *this, player_t *player)
 {
+	char vision[10000];
+	char *tmp = vision;
+	map_content_t *content;
+	bool space = false;
+
+	bzero(vision, 10000);
+	for (int y = 0 ; y < this->size.y ; ++y) {
+		for (int x = 0  ; x < this->size.x ; ++x) {
+			tmp += sprintf(tmp, x == 0 ? "" : "\t|\t");
+			point_t pos = {x, y};
+			content = map_content_at(this, pos);
+			map_it_players_at(this, pos, tmp_add_player, &tmp, &space);
+			tmp = print_food(content, tmp, &space);
+			tmp = print_stones(content, tmp, y, &space);
+			space = false;
+		}
+		printf("line %d\n%s\n", y, vision);
+		bzero(vision, 10000);
+		tmp = vision;
+	}
 	switch (player->dir) {
 	case DIR_LEFT:
 		return (look_left(this, player));
