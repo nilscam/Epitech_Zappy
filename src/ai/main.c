@@ -7,8 +7,11 @@
 
 #include <unistd.h>
 
-int	main(void)
+int	test_parsing(int ac, char **av);
+
+int	main(int ac, char **av)
 {
-	write(1, "OK\n", 3);
+	(void)ac; (void)av;
+	return test_parsing(ac, av);
 	return 0;
 }
