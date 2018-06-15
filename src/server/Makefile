@@ -53,7 +53,8 @@ SRC	=	buffer/circular_buffer.c				\
 		utils/debug.c						\
 		utils/direction.c					\
 		utils/math_utils.c					\
-		utils/point.c
+		utils/point.c						\
+		utils/str_to_tab.c
 
 INC	=	-I .			\
 		-I buffer		\
