@@ -64,14 +64,24 @@ int	test_list(void)
 	list_push_back(list, "bbb");
 	list_push_back(list, "ccc");
 	list_push_front(list, "ddd");
-	printf("it_0\n");
+	list_push_back(list, "delete me");
+	list_push_front(list, "delete me too");
+	printf("----- it_0 (show front & back)\n");
+	printf("front: '%s'\n", list_get_front(list));
+	printf("back: '%s'\n", list_get_back(list));
+	printf("----- it_1 (pop front & back)\n");
+	printf("front: '%s'\n", list_pop_front(list));
+	printf("back: '%s'\n", list_pop_back(list));
+	printf("----- it_2 (show all)\n");
 	list_it_all(list, (list_it_fct_t)list_handler);
-	printf("it_1\n");
+	printf("----- it_3 (remove ccc and add hello if aaa)\n");
 	test_list_iterator(list);
-	printf("it_2\n");
+	printf("----- it_4 (remove ccc and add hello if aaa)\n");
 	test_list_iterator_stack(list);
-	printf("it_3\n");
+	printf("----- it_5 (clear list)\n");
 	list_clear(list, list_handler);
+	printf("----- it_6 (show all)\n");
+	list_it_all(list, (list_it_fct_t)list_handler);
 	SAFE_DELETE(list);
 	return 0;
 }

@@ -33,6 +33,14 @@ bool	list_push_front(list_t *self, void *data);
 void	list_clear(list_t *self, void (*fct)(void *));
 size_t	list_size(list_t *self);
 
+/* list_pop.c */
+void	*list_pop_front(list_t *self);
+void	*list_pop_back(list_t *self);
+
+/* list_get.c */
+void	*list_get_front(list_t *self);
+void	*list_get_back(list_t *self);
+
 /* list.c */
 extern const class_t *LIST;
 

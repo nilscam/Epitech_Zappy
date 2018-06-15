@@ -11,6 +11,8 @@ SRC	=	buffer/circular_buffer.c				\
 		class/class.c						\
 		class/class_utils.c					\
 		client/client.c						\
+		list/list_get.c						\
+		list/list_pop.c						\
 		list/list_push.c					\
 		list/list_utils.c					\
 		list/list.c						\
