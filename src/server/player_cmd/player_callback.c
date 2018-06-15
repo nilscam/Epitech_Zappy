@@ -6,6 +6,8 @@
 */
 
 #include "player_callback.h"
+#include "list.h"
+#include "list_iterator.h"
 
 static const client_callback_t	ANONYMOUS_CALLBACKS[] = {
 	{ CB_WELCOME, player_callback_send_format,
@@ -100,7 +102,7 @@ static const size_t	MAX_ANONYMOUS_CB = SIZE_ARRAY(ANONYMOUS_CALLBACKS);
 static const size_t	MAX_CLIENT_CB = SIZE_ARRAY(CLIENT_CALLBACKS);
 static const size_t	MAX_SPECTATOR_CB = SIZE_ARRAY(SPECTATOR_CALLBACKS);
 
-static const client_callback_t	*get_client_callback(callback_type_t type,
+static const client_callback_t	*get_callback(callback_type_t type,
 	const client_callback_t *cbs, int max_el)
 {
 	for (int i = 0; i < max_el; ++i) {
@@ -110,23 +112,53 @@ static const client_callback_t	*get_client_callback(callback_type_t type,
 	return NULL;
 }
 
-void	client_callback(callback_type_t type, client_t *client, ...)
+static const client_callback_t	*get_client_callback(
+	callback_type_t type, client_t *client)
 {
-	va_list	vargs;
-	const client_callback_t	*c = NULL;
-
 	if (client->type == CLIENT_ANONYMOUS)
-		c = get_client_callback(type,
+		return get_callback(type,
 			ANONYMOUS_CALLBACKS, MAX_ANONYMOUS_CB);
 	if (client->type == CLIENT_PLAYER)
-		c = get_client_callback(type,
+		return get_callback(type,
 			CLIENT_CALLBACKS, MAX_CLIENT_CB);
 	if (client->type == CLIENT_SPECTATOR)
-		c = get_client_callback(type,
+		return get_callback(type,
 			SPECTATOR_CALLBACKS, MAX_SPECTATOR_CB);
-	va_start(vargs, client);
+	return NULL;
+}
+
+void	client_callback(callback_type_t type, client_t *client, ...)
+{
+	va_list	args;
+	const client_callback_t	*c = get_client_callback(type, client);
+
+	va_start(args, client);
 	if (c) {
-		c->fct(c, client, &vargs);
+		c->fct(c, client, &args);
 	}
-	va_end(vargs);
+	va_end(args);
+}
+
+void	clients_callback(callback_type_t type, list_t *clients, ...)
+{
+	const client_callback_t	*c;
+	list_iterator_t it;
+	client_t *client;
+	va_list	args;
+	va_list	cp_args;
+
+	if (!INIT(LIST_IT, it, clients))
+		return;
+	va_start(args, clients);
+	while (list_it_can_iterate(&it)) {
+		client = list_it_get(&it);
+		c = get_client_callback(type, client);
+		if (c) {
+			va_copy(cp_args, args);
+			c->fct(c, client, &cp_args);
+			va_end(cp_args);
+		}
+		list_it_iterate(&it);
+	}
+	va_end(args);
 }

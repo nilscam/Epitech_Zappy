@@ -53,6 +53,7 @@ struct client_callback_s
 
 /* player_callback.c */
 void	client_callback(callback_type_t type, client_t *client, ...);
+void	clients_callback(callback_type_t type, list_t *clients, ...);
 
 /* player_callback/send_format.c */
 void	player_callback_send_format(
