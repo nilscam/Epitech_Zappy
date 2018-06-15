@@ -25,6 +25,9 @@ typedef struct
 	size_t		size;
 }	list_t;
 
+/* list_extract.c */
+char	*list_extract(list_t *list, const char *delims);
+
 /* list_push.c */
 bool	list_push_back(list_t *self, void *data);
 bool	list_push_front(list_t *self, void *data);

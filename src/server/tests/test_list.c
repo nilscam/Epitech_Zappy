@@ -85,12 +85,12 @@ int	test_list(void)
 	list_push_front(list, "delete me too");
 	test_valid_list_ptr(list);
 	printf("----- it_0 (show front & back)\n");
-	printf("front: '%s'\n", list_get_front(list));
-	printf("back: '%s'\n", list_get_back(list));
+	printf("front: '%s'\n", (char*)list_get_front(list));
+	printf("back: '%s'\n", (char*)list_get_back(list));
 	test_valid_list_ptr(list);
 	printf("----- it_1 (pop front & back)\n");
-	printf("front: '%s'\n", list_pop_front(list));
-	printf("back: '%s'\n", list_pop_back(list));
+	printf("front: '%s'\n", (char*)list_pop_front(list));
+	printf("back: '%s'\n", (char*)list_pop_back(list));
 	test_valid_list_ptr(list);
 	printf("----- it_2 (show all)\n");
 	list_it_all(list, (list_it_fct_t)list_handler);

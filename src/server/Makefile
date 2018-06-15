@@ -11,6 +11,7 @@ SRC	=	buffer/circular_buffer.c				\
 		class/class.c						\
 		class/class_utils.c					\
 		client/client.c						\
+		list/list_extract.c					\
 		list/list_get.c						\
 		list/list_pop.c						\
 		list/list_push.c					\
@@ -51,6 +52,7 @@ SRC	=	buffer/circular_buffer.c				\
 		tcp_connection/select.c					\
 		tcp_connection/server.c					\
 		tcp_connection/write.c					\
+		tests/test_list_extract.c				\
 		tests/test_list.c					\
 		tests/test_map_it.c					\
 		tests/test_map_sound.c					\
@@ -63,6 +65,7 @@ SRC	=	buffer/circular_buffer.c				\
 		utils/direction.c					\
 		utils/math_utils.c					\
 		utils/point.c						\
+		utils/str_concat.c					\
 		utils/str_to_tab.c
 
 INC	=	-I .			\
