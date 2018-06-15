@@ -9,9 +9,9 @@
 #include "list_iterator.h"
 #include <stdio.h>
 
-static void	clear_list_handler(void *data)
+static void	list_handler(void *data)
 {
-	printf("clear: %s\n", (char *)data);
+	printf("list_handler: %s\n", (char *)data);
 }
 
 static void	test_list_iterator(list_t *list)
@@ -64,12 +64,14 @@ int	test_list(void)
 	list_push_back(list, "bbb");
 	list_push_back(list, "ccc");
 	list_push_front(list, "ddd");
+	printf("it_0\n");
+	list_it_all(list, (list_it_fct_t)list_handler);
 	printf("it_1\n");
 	test_list_iterator(list);
 	printf("it_2\n");
 	test_list_iterator_stack(list);
 	printf("it_3\n");
-	list_clear(list, clear_list_handler);
+	list_clear(list, list_handler);
 	SAFE_DELETE(list);
 	return 0;
 }
