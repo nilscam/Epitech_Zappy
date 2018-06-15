@@ -34,8 +34,8 @@ SRC	=	buffer/circular_buffer.c				\
 		map/vision.c						\
 		parsing/help.c						\
 		parsing/main.c						\
-		parsing/parsing.c						\
-		parsing/get_infos.c						\
+		parsing/parsing.c					\
+		parsing/get_infos.c					\
 		player/player_elevation.c				\
 		player/player_food.c					\
 		player/player_move.c					\
@@ -43,6 +43,8 @@ SRC	=	buffer/circular_buffer.c				\
 		player/player_turn.c					\
 		player/player_utils.c					\
 		player/player.c						\
+		player_cmd/player_callback/send_format.c		\
+		player_cmd/player_callback/start_incantation.c		\
 		player_cmd/player_callback.c				\
 		player_cmd/player_cmd.c					\
 		save_signal/save_signal.c				\

@@ -7,16 +7,20 @@
 
 #include "player_callback.h"
 
-
-void	spectate_callback_start_incantation(const client_callback_t *cb, va_list *args)
-{
-	(void)cb;(void)args;
-}
-
-void	player_callback_send_format(const client_callback_t *cb, va_list *args)
-{
-	(void)cb;(void)args;
-}
+static const client_callback_t	ANONYMOUS_CALLBACKS[] = {
+	{ CB_WELCOME, player_callback_send_format,
+		"WELCOME\n",
+		"",
+		"welcome a new anonymous user" },
+	{ CB_WELCOME_PLAYER, player_callback_send_format,
+		"%d\n%d %d\n",
+		"<nb_available_team_clients> <X> <Y>",
+		"welcome a new player" },
+	{ CB_WELCOME_SPECTATOR, player_callback_send_format,
+		"ok\n",
+		"",
+		"welcome a new spectator" }
+};
 
 static const client_callback_t	CLIENT_CALLBACKS[] = {
 	{ CB_DEATH_PLAYER, player_callback_send_format,
@@ -92,52 +96,37 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 		"command parameter" }
 };
 
-void	player_callback(callback_type_t type, ...)
+static const size_t	MAX_ANONYMOUS_CB = SIZE_ARRAY(ANONYMOUS_CALLBACKS);
+static const size_t	MAX_CLIENT_CB = SIZE_ARRAY(CLIENT_CALLBACKS);
+static const size_t	MAX_SPECTATOR_CB = SIZE_ARRAY(SPECTATOR_CALLBACKS);
+
+static const client_callback_t	*get_client_callback(callback_type_t type,
+	const client_callback_t *cbs, int max_el)
 {
-	va_list	vargs;
-	const client_callback_t	*c = NULL;
-	int max_el = sizeof(CLIENT_CALLBACKS) / sizeof(client_callback_t);
-
 	for (int i = 0; i < max_el; ++i) {
-		if (type == CLIENT_CALLBACKS[i].type) {
-			c = &CLIENT_CALLBACKS[i];
-			break;
-		}
+		if (type == cbs[i].type)
+			return cbs + i;
 	}
-	va_start(vargs, type);
-	if (c) {
-		c->fct(c, &vargs);
-	}
-	va_end(vargs);
-}
-
-void	spectate_callback(callback_type_t type, ...)
-{
-	va_list	vargs;
-	const client_callback_t	*c = NULL;
-	int max_el = sizeof(SPECTATOR_CALLBACKS) / sizeof(client_callback_t);
-
-	for (int i = 0; i < max_el; ++i) {
-		if (type == SPECTATOR_CALLBACKS[i].type) {
-			c = &SPECTATOR_CALLBACKS[i];
-			break;
-		}
-	}
-	va_start(vargs, type);
-	if (c) {
-		c->fct(c, &vargs);
-	}
-	va_end(vargs);
+	return NULL;
 }
 
 void	client_callback(callback_type_t type, client_t *client, ...)
 {
-	(void)type;
-	(void)client;
-}
+	va_list	vargs;
+	const client_callback_t	*c = NULL;
 
-void	clients_callback(callback_type_t type, list_t *clients, ...)
-{
-	(void)type;
-	(void)clients;
+	if (client->type == CLIENT_ANONYMOUS)
+		c = get_client_callback(type,
+			ANONYMOUS_CALLBACKS, MAX_ANONYMOUS_CB);
+	if (client->type == CLIENT_PLAYER)
+		c = get_client_callback(type,
+			CLIENT_CALLBACKS, MAX_CLIENT_CB);
+	if (client->type == CLIENT_SPECTATOR)
+		c = get_client_callback(type,
+			SPECTATOR_CALLBACKS, MAX_SPECTATOR_CB);
+	va_start(vargs, client);
+	if (c) {
+		c->fct(c, client, &vargs);
+	}
+	va_end(vargs);
 }

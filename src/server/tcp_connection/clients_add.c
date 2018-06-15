@@ -21,6 +21,7 @@ void	add_client(t_server *this)
 	DEBUG("New connection to fd %d\n", fd);
 	client = client_new(fd, CLIENT_ANONYMOUS);
 	if (client) {
+		client_callback(CB_WELCOME, client);
 		list_push_back(this->anonymous, client);
 	} else {
 		close(fd);
