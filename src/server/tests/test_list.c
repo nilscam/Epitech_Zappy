@@ -54,6 +54,23 @@ static void	test_list_iterator_stack(list_t *list)
 	DEINIT(it);
 }
 
+static void	test_valid_list_ptr(list_t *list)
+{
+	list_node_t	*tmp;
+	list_node_t	*prev = NULL;
+
+	tmp = list->tail;
+	while (tmp) {
+		if (prev && prev->next->data != tmp->data) {
+			dprintf(2, "error ptr\n");
+			exit(1);
+		}
+		prev = tmp;
+		tmp = tmp->next;
+	}
+	printf("%s OK\n", __func__);
+}
+
 int	test_list(void)
 {
 	list_t *list = NEW(LIST);
@@ -66,22 +83,30 @@ int	test_list(void)
 	list_push_front(list, "ddd");
 	list_push_back(list, "delete me");
 	list_push_front(list, "delete me too");
+	test_valid_list_ptr(list);
 	printf("----- it_0 (show front & back)\n");
 	printf("front: '%s'\n", list_get_front(list));
 	printf("back: '%s'\n", list_get_back(list));
+	test_valid_list_ptr(list);
 	printf("----- it_1 (pop front & back)\n");
 	printf("front: '%s'\n", list_pop_front(list));
 	printf("back: '%s'\n", list_pop_back(list));
+	test_valid_list_ptr(list);
 	printf("----- it_2 (show all)\n");
 	list_it_all(list, (list_it_fct_t)list_handler);
+	test_valid_list_ptr(list);
 	printf("----- it_3 (remove ccc and add hello if aaa)\n");
 	test_list_iterator(list);
+	test_valid_list_ptr(list);
 	printf("----- it_4 (remove ccc and add hello if aaa)\n");
 	test_list_iterator_stack(list);
+	test_valid_list_ptr(list);
 	printf("----- it_5 (clear list)\n");
 	list_clear(list, list_handler);
+	test_valid_list_ptr(list);
 	printf("----- it_6 (show all)\n");
 	list_it_all(list, (list_it_fct_t)list_handler);
+	test_valid_list_ptr(list);
 	SAFE_DELETE(list);
 	return 0;
 }
