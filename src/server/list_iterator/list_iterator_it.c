@@ -18,6 +18,19 @@ static void	call_fct(list_it_fct_t fct, void *data, va_list *args)
 	}
 }
 
+static bool	call_fct_remove(list_it_fct_remove_t fct, void *data, va_list *args)
+{
+	bool	res = false;
+	va_list	cp_args;
+
+	if (fct) {
+		va_copy(cp_args, *args);
+		res = fct(data, &cp_args);
+		va_end(cp_args);
+	}
+	return res;
+}
+
 bool	list_it_all(list_t *list, list_it_fct_t fct, ...)
 {
 	list_iterator_t	it;
@@ -31,6 +44,27 @@ bool	list_it_all(list_t *list, list_it_fct_t fct, ...)
 		has_it = true;
 		call_fct(fct, list_it_get(&it), &args);
 		list_it_iterate(&it);
+	}
+	va_end(args);
+	DEINIT(it);
+	return has_it;
+}
+
+bool	list_it_remove(list_t *list, list_it_fct_remove_t fct_remove, ...)
+{
+	list_iterator_t	it;
+	va_list		args;
+	bool		has_it = false;
+
+	if (!INIT(LIST_IT, it, list))
+		return false;
+	va_start(args, fct_remove);
+	while (list_it_can_iterate(&it)) {
+		has_it = true;
+		if (call_fct_remove(fct_remove, list_it_get(&it), &args))
+			list_it_erase(&it, NULL);
+		else
+			list_it_iterate(&it);
 	}
 	va_end(args);
 	DEINIT(it);
