@@ -25,6 +25,10 @@ SRC	=	buffer/circular_buffer.c				\
 		map/map_utils.c						\
 		map/map.c						\
 		map/vision.c						\
+		parsing/help.c						\
+		parsing/main.c						\
+		parsing/parsing.c						\
+		parsing/get_infos.c						\
 		player/player_elevation.c				\
 		player/player_food.c					\
 		player/player_move.c					\
@@ -64,6 +68,7 @@ INC	=	-I .			\
 		-I list			\
 		-I list_iterator	\
 		-I map			\
+		-I parsing		\
 		-I player		\
 		-I player_cmd		\
 		-I save_signal		\
