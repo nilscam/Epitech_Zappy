@@ -23,12 +23,15 @@ t_server	*init_struct_server(list_t *players, map_t *map)
 {
 	t_server	*this = malloc(sizeof(t_server));
 
-	if (!this)
+	if (!this || !map)
 		return (NULL);
-	this->players = players;
+	this->anonymous = NEW(LIST);
 	this->spectators = NEW(LIST);
+	if (!this->anonymous || !this->spectators)
+		return (NULL);
 	this->_fd_server = -1;
 	this->map = map;
+	this->players = players;
 	init_server_functions(this);
 	return (this);
 }

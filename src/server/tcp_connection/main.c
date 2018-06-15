@@ -8,47 +8,57 @@
 #include "tcp_connection.h"
 #include "player.h"
 #include "save_signal.h"
+#include "player_cmd.h"
 
-int		read_data(t_server *server, player_t *player)
+int		read_client_data(t_server *server, client_t *client)
 {
 	char	buff[SIZE_BUFF];
 
 	(void)server;
-	int ret = read(player->client->_fd, buff, SIZE_BUFF - 1);
+	int ret = read(client->_fd, buff, SIZE_BUFF - 1);
 	if  (ret <= 0) {
 		return (0);
 	}
 	buff[ret] = 0;
-	buff_put(&player->client->_cbuf, buff);
+	buff_put(&client->_cbuf, buff);
 	if (buff[ret - 1] == '\n') {
-		char *str = buff_get(&player->client->_cbuf);
+		char *str = buff_get(&client->_cbuf);
 		printf("[%s]\n", str);
+		if (!player_cmd(str)) {
+			DEBUG("ko");
+		}
 	}
 	return (1);
 }
 
+static bool	check_tcp_client(client_t *client, va_list *args)
+{
+	t_server	*server = va_arg(*args, t_server *);
+
+	if (server->can_read(server, client->_fd)) {
+		DEBUG("can_read from %d", client->_fd);
+		if (!read_client_data(server, client)) {
+			DEBUG("remove client from %d", client->_fd);
+			if (client->type == CLIENT_PLAYER) {
+				DEBUG("removing player..");
+				// todo remove player from map
+			}
+			return true;
+		}
+	}
+	if (server->can_write(server, client->_fd)) {
+		// todo write to buff
+	}
+	return false;
+}
+
 static void	check_tcp_clients(t_server *server)
 {
-	list_iterator_t it;
-	player_t	*player;
+	list_it_fct_remove_t fct = (list_it_fct_remove_t)check_tcp_client;
 
-	if (!INIT(LIST_IT, it, server->players))
-		return;
-	while (list_it_can_iterate(&it)) {
-		player = list_it_get(&it);
-		if (server->can_read(server, player->client->_fd)) {
-			DEBUG("can_read from %d", player->client->_fd);
-			if (!read_data(server, player)) {
-				DEBUG("remove client from %d", player->client->_fd);
-				list_it_erase(&it, (void (*)(void *))delete_class);
-				continue;
-			}
-		}
-		if (player && server->can_write(server, player->client->_fd)) {}
-		if (player && server->can_err(server, player->client->_fd)) {}
-		list_it_iterate(&it);
-	}
-	DEINIT(it);
+	list_it_remove(server->anonymous, fct, server);
+	list_it_remove(server->spectators, fct, server);
+	list_it_remove(server->players, fct, server);
 }
 
 int	test_tcp_connection(int ac, char **av)
@@ -63,10 +73,10 @@ int	test_tcp_connection(int ac, char **av)
 	if (server->init(server, port, "TCP") == -1)
 		return (84);
 	while (1) {
-		server->select(server, map, TIMEOUT);
+		server->select(server, TIMEOUT);
 		check_tcp_clients(server);
 		if (server->can_read(server, server->_fd_server)) {
-			server->add_client(server, map);
+			server->add_client(server);
 		}
 	}
 	deinit_server(server);
