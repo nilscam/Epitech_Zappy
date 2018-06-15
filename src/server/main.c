@@ -16,6 +16,7 @@ int	test_player(void);
 int 	test_vision(void);
 int	test_map_sound(void);
 int	test_tcp_connection(int ac, char **av);
+int	test_player_cmd(void);
 
 int	main(int ac, char **av)
 {
@@ -28,5 +29,6 @@ int	main(int ac, char **av)
 	// test_vision();
 	// return test_map_sound();
 	// return test_tcp_connection(ac, av);
+	// return test_player_cmd();
 	return 0;
 }

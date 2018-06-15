@@ -8,6 +8,7 @@
 #ifndef player_callback_HPP
 #define player_callback_HPP
 
+#include "client.h"
 #include <stdarg.h>
 #include <stddef.h>
 

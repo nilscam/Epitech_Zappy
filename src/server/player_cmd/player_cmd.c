@@ -6,29 +6,31 @@
 */
 
 #include "player_cmd.h"
+#include "str_to_tab.h"
 #include <string.h>
 
-void	player_cmd_forward(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_right(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_left(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_look(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_inventory(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_broadcast(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_connect_nbr(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_fork(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_eject(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_take(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_set_obj_down(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	player_cmd_incantation(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	spectate_cmd_map_size(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	spectate_cmd_map_content_time(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	spectate_cmd_content_map(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	spectate_cmd_name_teams(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	spectate_cmd_player_pos(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	spectate_cmd_player_level(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	spectate_cmd_player_inventory(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	spectate_cmd_time_unit(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
-void	spectate_cmd_time_unit_mod(player_cmd_arg_t *args, va_list *vargs){(void)args;(void)vargs;}
+#include "debug.h"
+void	player_cmd_forward(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_right(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_left(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_look(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_inventory(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_broadcast(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_connect_nbr(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_fork(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_eject(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_take(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_set_obj_down(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	player_cmd_incantation(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	spectate_cmd_map_size(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	spectate_cmd_map_content_time(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	spectate_cmd_content_map(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	spectate_cmd_name_teams(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	spectate_cmd_player_pos(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	spectate_cmd_player_level(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	spectate_cmd_player_inventory(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	spectate_cmd_time_unit(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
+void	spectate_cmd_time_unit_mod(player_cmd_arg_t *args, va_list *vargs) {(void)args;(void)vargs;DEBUG("%s", __func__);}
 
 static const player_cmd_t	PLAYER_CMDS[] = {
 	{ "Forward", player_cmd_forward, 7, 0,
@@ -78,44 +80,59 @@ static const player_cmd_t	SPECTATOR_CMDS[] = {
 		"sst", "time unit modification" }
 };
 
-void	player_cmd(char *cmd, ...)
-{
-	va_list			vargs;
-	player_cmd_arg_t	args;
-	const player_cmd_t	*c = NULL;
-	int max_el = sizeof(PLAYER_CMDS) / sizeof(player_cmd_t);
+static const size_t	MAX_PLAYER_CMDS = SIZE_ARRAY(PLAYER_CMDS);
+static const size_t	MAX_SPECTATOR_CMDS = SIZE_ARRAY(SPECTATOR_CMDS);
 
+static const player_cmd_t	*get_player_cmd(char **args,
+	const player_cmd_t *cmds, int max_el)
+{
+	const player_cmd_t	*cmd = NULL;
+	size_t	n = 0;
+
+	if (!args || !(*args))
+		return NULL;
+	while (args && args[n] && args[++n]);
 	for (int i = 0; i < max_el; ++i) {
-		if (strcmp(cmd, PLAYER_CMDS[i].cmd) == 0) {
-			c = &PLAYER_CMDS[i];
+		cmd = cmds + i;
+		if (strcmp(*args, cmd->cmd) == 0 && cmd->nb_args == n - 1)
 			break;
-		}
+		cmd = NULL;
 	}
-	va_start(vargs, cmd);
-	if (c) {
-		args = (player_cmd_arg_t){ c, cmd, NULL };
-		c->fct(&args, &vargs);
-	}
-	va_end(vargs);
+	return cmd;
 }
 
-void	spectate_cmd(char *cmd, ...)
+bool	player_cmd(char *cmd, ...)
 {
+	char			**cargs = str_to_tab(cmd, " \t");
+	const player_cmd_t	*c;
 	va_list			vargs;
 	player_cmd_arg_t	args;
-	const player_cmd_t	*c = NULL;
-	int max_el = sizeof(SPECTATOR_CMDS) / sizeof(player_cmd_t);
 
-	for (int i = 0; i < max_el; ++i) {
-		if (strcmp(cmd, SPECTATOR_CMDS[i].cmd) == 0) {
-			c = &SPECTATOR_CMDS[i];
-			break;
-		}
-	}
+	c = get_player_cmd(cargs, PLAYER_CMDS, MAX_PLAYER_CMDS);
 	va_start(vargs, cmd);
 	if (c) {
-		args = (player_cmd_arg_t){ c, cmd, NULL };
+		args = (player_cmd_arg_t){ c, cmd, cargs + 1 };
 		c->fct(&args, &vargs);
 	}
 	va_end(vargs);
+	free_tab(cargs);
+	return c != NULL;
+}
+
+bool	spectate_cmd(char *cmd, ...)
+{
+	char			**cargs = str_to_tab(cmd, " \t");
+	const player_cmd_t	*c;
+	va_list			vargs;
+	player_cmd_arg_t	args;
+
+	c = get_player_cmd(cargs, SPECTATOR_CMDS, MAX_SPECTATOR_CMDS);
+	va_start(vargs, cmd);
+	if (c) {
+		args = (player_cmd_arg_t){ c, cmd, cargs + 1 };
+		c->fct(&args, &vargs);
+	}
+	va_end(vargs);
+	free_tab(cargs);
+	return c != NULL;
 }

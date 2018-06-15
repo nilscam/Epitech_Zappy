@@ -47,6 +47,7 @@ SRC	=	buffer/circular_buffer.c				\
 		tests/test_map_it.c					\
 		tests/test_map_sound.c					\
 		tests/test_map.c					\
+		tests/test_player_cmd.c					\
 		tests/test_player_move.c				\
 		tests/test_player.c					\
 		tests/test_vision.c					\

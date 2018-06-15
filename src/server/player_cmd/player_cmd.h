@@ -10,6 +10,9 @@
 
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdbool.h>
+
+#define SIZE_ARRAY(x)	(sizeof(x) / sizeof(*x))
 
 typedef struct
 {
@@ -31,7 +34,7 @@ typedef struct s_player_cmd
 }	player_cmd_t;
 
 /* player_cmd.c */
-void	player_cmd(char *cmd, ...);
-void	spectate_cmd(char *cmd, ...);
+bool	player_cmd(char *cmd, ...);
+bool	spectate_cmd(char *cmd, ...);
 
 #endif // !player_cmd_HPP
