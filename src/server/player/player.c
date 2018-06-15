@@ -13,8 +13,7 @@ static bool	new_player(player_t *self, va_list *args)
 	self->pos = va_arg(*args, map_content_t *);
 	self->team = va_arg(*args, char *);
 	self->name = va_arg(*args, char *);
-	self->_fd = va_arg(*args, int);
-	buff_init(&self->_cbuf, SIZE_BUFF);
+	self->client = va_arg(*args, client_t *);
 	init_player_inventory(&self->inventory);
 	return true;
 }
@@ -23,11 +22,7 @@ static void	delete_player(player_t *self)
 {
 	SAFE_FREE(self->team);
 	SAFE_FREE(self->name);
-	SAFE_FREE(self->_cbuf.buffer);
-	if (self->_fd >= 0) {
-		close(self->_fd);
-		self->_fd = -1;
-	}
+	client_delete(self->client);
 }
 
 static const player_t	PLAYER_CLASS = {
@@ -51,8 +46,7 @@ static const player_t	PLAYER_CLASS = {
 	0,
 	NULL,
 	NULL,
-	-1,
-	{}
+	NULL
 };
 
 const class_t	*PLAYER = (class_t *) &PLAYER_CLASS;

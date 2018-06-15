@@ -13,9 +13,9 @@ static void	set_player_fd_set(player_t *player, va_list *args)
 {
 	fd_set	*fds = va_arg(*args, fd_set *);
 
-	FD_SET(player->_fd, &fds[READ_FDS]);
-	FD_SET(player->_fd, &fds[WRITE_FDS]);
-	FD_SET(player->_fd, &fds[ERR_FDS]);
+	FD_SET(player->client->_fd, &fds[READ_FDS]);
+	FD_SET(player->client->_fd, &fds[WRITE_FDS]);
+	FD_SET(player->client->_fd, &fds[ERR_FDS]);
 }
 
 void	fill_fds(t_server *this, map_t *map)
@@ -39,8 +39,8 @@ int		get_max_fd(t_server *this)
 		return max_fd;
 	while (list_it_can_iterate(&it)) {
 		player = list_it_get(&it);
-		if (max_fd < player->_fd)
-			max_fd = player->_fd;
+		if (max_fd < player->client->_fd)
+			max_fd = player->client->_fd;
 		list_it_iterate(&it);
 	}
 	DEINIT(it);

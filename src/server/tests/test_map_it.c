@@ -20,10 +20,10 @@ int	test_map_it(void)
 
 	if (!map)
 		return (84);
-	add_player_to_map_at(map, (point_t){1, 1}, "red", -1);
-	add_player_to_map_at(map, (point_t){0, 0}, "red", -1);
-	add_player_to_map_at(map, (point_t){1, 1}, "red", -1);
-	add_player_to_map_at(map, (point_t){1, 1}, "blue", -1);
+	add_player_to_map_at(map, (point_t){1, 1}, "red", NULL);
+	add_player_to_map_at(map, (point_t){0, 0}, "red", NULL);
+	add_player_to_map_at(map, (point_t){1, 1}, "red", NULL);
+	add_player_to_map_at(map, (point_t){1, 1}, "blue", NULL);
 	printf("all players:\n");
 	map_it_players(map, show_player_fct);
 	printf("\nall players at (1,1):\n");

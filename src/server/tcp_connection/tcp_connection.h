@@ -11,6 +11,8 @@
 # include "debug.h"
 # include "list.h"
 # include "map.h"
+# include "client.h"
+# include "buffer.h"
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netdb.h>
@@ -29,27 +31,7 @@
 # define	ERR_FDS		2
 # define	TIMEOUT		1
 
-//			circular buffer size
-# define	SIZE_BUFF	512
-
-typedef struct	s_buffer		t_buffer;
-typedef struct	s_client		t_client;
 typedef struct	s_server		t_server;
-
-struct			s_buffer
-{
-	char	*buffer;
-	int		wr;
-	int		rd;
-	int		size;
-};
-
-struct			s_client
-{
-	int			_fd;
-	t_buffer	_cbuf;
-	t_client	*next;
-};
 
 struct			s_server
 {
@@ -66,11 +48,6 @@ struct			s_server
 	list_t		*players;
 };
 
-//				circular_buffer.c
-int	buff_put(t_buffer *cbuf, char *str);
-char	*buff_get(t_buffer *cbuf);
-int	buff_init(t_buffer *cbuf, int size);
-
 //				server.c
 int	create_socket(char *protocol);
 int	bind_socket(int fd, int port);
@@ -82,14 +59,9 @@ void		init_server_functions(t_server *this);
 t_server	*init_struct_server(void);
 
 //				clients_add.c
-void	new_client(t_server *this, int fd);
 void	add_client(t_server *this, map_t *map);
 
 //				clients_remove.c
-t_client	*remove_exist_client(t_server *this,
-								t_client *tmp_a, t_client *tmp_b);
-t_client	*remove_client(t_server *this, int fd);
-t_client	*close_client(t_server *this, int fd);
 void	stop_server(t_server *this);
 
 //				select.c

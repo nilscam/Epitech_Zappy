@@ -14,14 +14,14 @@ int		read_data(t_server *server, player_t *player)
 	char	buff[SIZE_BUFF];
 
 	(void)server;
-	int ret = read(player->_fd, buff, SIZE_BUFF - 1);
+	int ret = read(player->client->_fd, buff, SIZE_BUFF - 1);
 	if  (ret <= 0) {
 		return (0);
 	}
 	buff[ret] = 0;
-	buff_put(&player->_cbuf, buff);
+	buff_put(&player->client->_cbuf, buff);
 	if (buff[ret - 1] == '\n') {
-		char *str = buff_get(&player->_cbuf);
+		char *str = buff_get(&player->client->_cbuf);
 		printf("[%s]\n", str);
 	}
 	return (1);
@@ -36,16 +36,16 @@ static void	check_tcp_clients(t_server *server)
 		return;
 	while (list_it_can_iterate(&it)) {
 		player = list_it_get(&it);
-		if (server->can_read(server, player->_fd)) {
-			DEBUG("can_read from %d", player->_fd);
+		if (server->can_read(server, player->client->_fd)) {
+			DEBUG("can_read from %d", player->client->_fd);
 			if (!read_data(server, player)) {
-				DEBUG("remove client from %d", player->_fd);
+				DEBUG("remove client from %d", player->client->_fd);
 				list_it_erase(&it, (void (*)(void *))delete_class);
 				continue;
 			}
 		}
-		if (player && server->can_write(server, player->_fd)) {}
-		if (player && server->can_err(server, player->_fd)) {}
+		if (player && server->can_write(server, player->client->_fd)) {}
+		if (player && server->can_err(server, player->client->_fd)) {}
 		list_it_iterate(&it);
 	}
 	DEINIT(it);

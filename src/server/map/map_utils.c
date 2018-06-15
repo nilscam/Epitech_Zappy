@@ -9,16 +9,17 @@
 #include "player.h"
 #include "map.h"
 
-bool	add_player_to_map(map_t *map, int fd)
+bool	add_player_to_map(map_t *map, client_t *client)
 {
 	point_t	pos;
 
 	pos.y = rand() % map->size.y;
 	pos.x = rand() % map->size.x;
-	return (add_player_to_map_at(map, pos, NULL, fd));
+	return (add_player_to_map_at(map, pos, NULL, client));
 }
 
-bool	add_player_to_map_at(map_t *map, point_t pos, const char *team, int fd)
+bool	add_player_to_map_at(map_t *map, point_t pos,
+	const char *team, client_t *client)
 {
 	map_content_t	*c = map_content_at(map, pos);
 	player_t 	*player;
@@ -27,7 +28,7 @@ bool	add_player_to_map_at(map_t *map, point_t pos, const char *team, int fd)
 	if (!name)
 		return false;
 	team = team ? strdup(team) : NULL;
-	player = NEW(PLAYER, map, c, team, name, fd);
+	player = NEW(PLAYER, map, c, team, name, client);
 	if (!player)
 		return false;
 	return list_push_back(map->players, player);

@@ -11,6 +11,7 @@
 #include "class.h"
 #include "map.h"
 #include "tcp_connection.h"
+#include "client.h"
 
 #define FOOD_TO_TIME_UNITS	126
 
@@ -30,8 +31,7 @@ typedef struct
 	int		is_busy_time_units;
 	pl_callback_t	is_busy_callback;
 	void		*is_busy_callback_args;
-	int		_fd;
-	t_buffer	_cbuf;
+	client_t	*client;
 }	player_t;
 
 struct elevation_tab_s

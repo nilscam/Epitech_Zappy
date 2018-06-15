@@ -7,8 +7,10 @@
 
 NAME	=	zappy_server
 MAIN	=	main.c
-SRC	=	class/class.c						\
+SRC	=	buffer/circular_buffer.c				\
+		class/class.c						\
 		class/class_utils.c					\
+		client/client.c						\
 		list/list_push.c					\
 		list/list_utils.c					\
 		list/list.c						\
@@ -33,7 +35,6 @@ SRC	=	class/class.c						\
 		player_cmd/player_callback.c				\
 		player_cmd/player_cmd.c					\
 		save_signal/save_signal.c				\
-		tcp_connection/circular_buffer.c			\
 		tcp_connection/clients_add.c				\
 		tcp_connection/clients_remove.c				\
 		tcp_connection/init.c					\
@@ -55,7 +56,9 @@ SRC	=	class/class.c						\
 		utils/point.c
 
 INC	=	-I .			\
+		-I buffer		\
 		-I class		\
+		-I client		\
 		-I list			\
 		-I list_iterator	\
 		-I map			\
