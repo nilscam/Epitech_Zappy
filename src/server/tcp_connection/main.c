@@ -10,44 +10,24 @@
 #include "save_signal.h"
 #include "player_cmd.h"
 
-int		read_client_data(t_server *server, client_t *client)
-{
-	char	buff[SIZE_BUFF];
-
-	(void)server;
-	int ret = read(client->_fd, buff, SIZE_BUFF - 1);
-	if  (ret <= 0) {
-		return (0);
-	}
-	buff[ret] = 0;
-	buff_put(&client->_cbuf, buff);
-	if (buff[ret - 1] == '\n') {
-		char *str = buff_get(&client->_cbuf);
-		printf("[%s]\n", str);
-		if (!player_cmd(str)) {
-			DEBUG("ko");
-		}
-	}
-	return (1);
-}
-
 static bool	check_tcp_client(client_t *client, va_list *args)
 {
 	t_server	*server = va_arg(*args, t_server *);
 
 	if (server->can_read(server, client->_fd)) {
-		DEBUG("can_read from %d", client->_fd);
-		if (!read_client_data(server, client)) {
-			DEBUG("remove client from %d", client->_fd);
+		if (!client_read(client)) {
 			if (client->type == CLIENT_PLAYER) {
 				DEBUG("removing player..");
 				// todo remove player from map
 			}
+			DEBUG("removing client %d", client->_fd);
+			client_delete(client);
 			return true;
 		}
+		client_handle(client);
 	}
 	if (server->can_write(server, client->_fd)) {
-		// todo write to buff
+		client_write(client);
 	}
 	return false;
 }

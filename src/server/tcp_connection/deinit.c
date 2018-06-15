@@ -12,8 +12,9 @@ void	deinit_server(t_server *server)
 	if (!server)
 		return;
 	server->stop(server);
-	list_clear(server->players, (void (*)(void *))delete_class);
-	list_clear(server->spectators, (void (*)(void *))free);
+	list_clear(server->anonymous, (void (*)(void *))client_delete);
+	list_clear(server->spectators, (void (*)(void *))client_delete);
+	SAFE_DELETE(server->anonymous);
 	SAFE_DELETE(server->spectators);
 	SAFE_DELETE(server->map);
 	SAFE_FREE(server);

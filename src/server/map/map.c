@@ -27,6 +27,7 @@ static void	delete_map(map_t *self)
 {
 	SAFE_FREE(self->cases_buff);
 	SAFE_FREE(self->cases);
+	list_clear(self->players, delete_class);
 	SAFE_DELETE(self->players);
 }
 

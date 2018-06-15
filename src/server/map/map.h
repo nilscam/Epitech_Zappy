@@ -61,8 +61,6 @@ bool	add_player_to_map_at(map_t *map, point_t pos,
 		const char *team, client_t *client);
 bool	add_player_to_map(map_t *map, client_t *client);
 
-//todo CLIENT-NUM ---> list_t *teams
-
 /* map_sound.c */
 direction_t	map_dir_sound_from(map_t *self, point_t from, point_t to);
 

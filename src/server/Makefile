@@ -10,6 +10,9 @@ MAIN	=	main.c
 SRC	=	buffer/circular_buffer.c				\
 		class/class.c						\
 		class/class_utils.c					\
+		client/client_handle.c					\
+		client/client_read.c					\
+		client/client_write.c					\
 		client/client.c						\
 		list/list_extract.c					\
 		list/list_get.c						\

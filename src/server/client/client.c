@@ -13,7 +13,10 @@ client_t	*client_new(int fd, client_type_t type)
 
 	if (client) {
 		client->_fd = fd;
-		buff_init(&client->_cbuf, SIZE_BUFF);
+		client->read_buff = NEW(LIST);
+		client->write_buff = NEW(LIST);
+		if (!client->read_buff || !client->write_buff)
+			return NULL;
 		client->type = type;
 	}
 	return client;
@@ -22,7 +25,10 @@ client_t	*client_new(int fd, client_type_t type)
 void	client_delete(client_t *self)
 {
 	if (self) {
-		SAFE_FREE(self->_cbuf.buffer);
+		list_clear(self->read_buff, free);
+		list_clear(self->write_buff, free);
+		SAFE_DELETE(self->read_buff);
+		SAFE_DELETE(self->write_buff);
 		if (self->_fd >= 0) {
 			close(self->_fd);
 			self->_fd = -1;

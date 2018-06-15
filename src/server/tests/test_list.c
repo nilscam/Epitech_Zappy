@@ -8,6 +8,7 @@
 #include "list.h"
 #include "list_iterator.h"
 #include <stdio.h>
+#include <string.h>
 
 static void	list_handler(void *data)
 {
@@ -71,6 +72,12 @@ static void	test_valid_list_ptr(list_t *list)
 	printf("%s OK\n", __func__);
 }
 
+static bool	list_hello_handler(void *data)
+{
+	printf("list_hello_handler: %s\n", (char *)data);
+	return (strcmp((char*)data, "hello") == 0);
+}
+
 int	test_list(void)
 {
 	list_t *list = NEW(LIST);
@@ -101,10 +108,12 @@ int	test_list(void)
 	printf("----- it_4 (remove ccc and add hello if aaa)\n");
 	test_list_iterator_stack(list);
 	test_valid_list_ptr(list);
-	printf("----- it_5 (clear list)\n");
+	printf("----- it_5 (remove hello)\n");
+	list_it_remove(list, (list_it_fct_remove_t)list_hello_handler);
+	printf("----- it_6 (clear list)\n");
 	list_clear(list, list_handler);
 	test_valid_list_ptr(list);
-	printf("----- it_6 (show all)\n");
+	printf("----- it_7 (show all)\n");
 	list_it_all(list, (list_it_fct_t)list_handler);
 	test_valid_list_ptr(list);
 	SAFE_DELETE(list);
