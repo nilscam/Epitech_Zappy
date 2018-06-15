@@ -7,60 +7,88 @@
 
 #include "player_callback.h"
 
-void	player_callback_new_player(va_list *args){(void)args;}
-void	player_callback_explusion(va_list *args){(void)args;}
-void	player_callback_broadcast(va_list *args){(void)args;}
-void	player_callback_start_incantation(va_list *args){(void)args;}
-void	player_callback_end_incantation(va_list *args){(void)args;}
-void	player_callback_egg_laying(va_list *args){(void)args;}
-void	player_callback_resource_dropping(va_list *args){(void)args;}
-void	player_callback_resource_collecting(va_list *args){(void)args;}
-void	player_callback_death_player(va_list *args){(void)args;}
-void	player_callback_egg_laid_by_player(va_list *args){(void)args;}
-void	player_callback_egg_hatching(va_list *args){(void)args;}
-void	player_callback_player_connection_egg(va_list *args){(void)args;}
-void	player_callback_end_of_game(va_list *args){(void)args;}
-void	player_callback_message_from_server(va_list *args){(void)args;}
-void	player_callback_unknown_command(va_list *args){(void)args;}
-void	player_callback_command_paramete(va_list *args){(void)args;}
+
+void	spectate_callback_start_incantation(const client_callback_t *cb, va_list *args)
+{
+	(void)cb;(void)args;
+}
+
+void	player_callback_send_format(const client_callback_t *cb, va_list *args)
+{
+	(void)cb;(void)args;
+}
 
 static const client_callback_t	CLIENT_CALLBACKS[] = {
-	{ CB_DEATH_PLAYER, player_callback_death_player,
+	{ CB_DEATH_PLAYER, player_callback_send_format,
+		"dead",
+		"",
 		"death of a player" },
 };
 
 static const client_callback_t	SPECTATOR_CALLBACKS[] = {
-	{ CB_NEW_PLAYER, player_callback_new_player,
+	{ CB_NEW_PLAYER, player_callback_send_format,
+		"pnw %d %d %d %d %d %s\n",
+		"<player_nb> <X> <Y> <1(N),2(E),3(S),4(W)> <lvl> <team>",
 		"connection of a new player" },
-	{ CB_EXPLUSION, player_callback_explusion,
+	{ CB_EXPLUSION, player_callback_send_format,
+		"pex %d\n",
+		"<player_nb>",
 		"explusion" },
-	{ CB_BROADCAST, player_callback_broadcast,
+	{ CB_BROADCAST, player_callback_send_format,
+		"pbc %d %s\n",
+		"<player_nb> <message>",
 		"broadcast" },
-	{ CB_START_INCANTATION, player_callback_start_incantation,
+	{ CB_START_INCANTATION, spectate_callback_start_incantation,
+		"pic X Y L n n ...\n",
+		"//todo special",
 		"start of an incantation (by the first player)" },
-	{ CB_END_INCANTATION, player_callback_end_incantation,
+	{ CB_END_INCANTATION, player_callback_send_format,
+		"pie %d %d %s\n",
+		"<X> <Y> <invantation_result>",
 		"end of an incantation" },
-	{ CB_EGG_LAYING, player_callback_egg_laying,
+	{ CB_EGG_LAYING, player_callback_send_format,
+		"pfk %d\n",
+		"<player>",
 		"egg laying by the player" },
-	{ CB_RESOURCE_DROPPING, player_callback_resource_dropping,
+	{ CB_RESOURCE_DROPPING, player_callback_send_format,
+		"pdr %d %d\n",
+		"<player_nb> <ressource_nb>",
 		"resource dropping" },
-	{ CB_RESOURCE_COLLECTING, player_callback_resource_collecting,
+	{ CB_RESOURCE_COLLECTING, player_callback_send_format,
+		"pgt %d %d\n",
+		"<player_nb> <ressource_nb>",
 		"resource collecting" },
-	{ CB_DEATH_PLAYER, player_callback_death_player,
+	{ CB_DEATH_PLAYER, player_callback_send_format,
+		"pdi %d\n",
+		"<player_nb>",
 		"death of a player" },
-	{ CB_EGG_LAID_BY_PLAYER, player_callback_egg_laid_by_player,
+	{ CB_EGG_LAID_BY_PLAYER, player_callback_send_format,
+		"enw %d %d %d %d\n",
+		"<egg_nb> <player_nb> <X> <Y>",
 		"an egg was laid by a player" },
-	{ CB_EGG_HATCHING, player_callback_egg_hatching,
+	{ CB_EGG_HATCHING, player_callback_send_format,
+		"eht e\n",
+		"<egg_nb>",
 		"egg hatching" },
-	{ CB_PLAYER_CONNECTION_EGG, player_callback_player_connection_egg,
+	{ CB_PLAYER_CONNECTION_EGG, player_callback_send_format,
+		"ebo e\n",
+		"<egg_nb>",
 		"player connection for an egg" },
-	{ CB_END_OF_GAME, player_callback_end_of_game,
+	{ CB_END_OF_GAME, player_callback_send_format,
+		"seg %s\n",
+		"<team>",
 		"end of game" },
-	{ CB_MESSAGE_FROM_SERVER, player_callback_message_from_server,
+	{ CB_MESSAGE_FROM_SERVER, player_callback_send_format,
+		"smg %s\n",
+		"<msg>",
 		"message from the server" },
-	{ CB_UNKNOWN_COMMAND, player_callback_unknown_command,
+	{ CB_UNKNOWN_COMMAND, player_callback_send_format,
+		"suc\n",
+		"",
 		"unknown command" },
-	{ CB_COMMAND_PARAMETER, player_callback_command_paramete,
+	{ CB_COMMAND_PARAMETER, player_callback_send_format,
+		"sbp\n",
+		"",
 		"command parameter" }
 };
 
@@ -78,7 +106,7 @@ void	player_callback(callback_type_t type, ...)
 	}
 	va_start(vargs, type);
 	if (c) {
-		c->fct(&vargs);
+		c->fct(c, &vargs);
 	}
 	va_end(vargs);
 }
@@ -97,7 +125,19 @@ void	spectate_callback(callback_type_t type, ...)
 	}
 	va_start(vargs, type);
 	if (c) {
-		c->fct(&vargs);
+		c->fct(c, &vargs);
 	}
 	va_end(vargs);
+}
+
+void	client_callback(callback_type_t type, client_t *client, ...)
+{
+	(void)type;
+	(void)client;
+}
+
+void	clients_callback(callback_type_t type, list_t *clients, ...)
+{
+	(void)type;
+	(void)clients;
 }

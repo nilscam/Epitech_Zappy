@@ -9,10 +9,12 @@
 #define player_callback_HPP
 
 #include "client.h"
+#include "list.h"
 #include <stdarg.h>
 #include <stddef.h>
 
-typedef void	(*pl_callback_fct_t)(va_list *);
+typedef struct client_callback_s client_callback_t;
+typedef void (*pl_callback_fct_t)(const client_callback_t *, va_list *);
 
 typedef enum
 {
@@ -34,15 +36,19 @@ typedef enum
 	CB_COMMAND_PARAMETER
 }	callback_type_t;
 
-typedef struct
+struct client_callback_s
 {
 	callback_type_t		type;
 	pl_callback_fct_t	fct;
+	char			*format;
+	char			*prototype;
 	char			*description;
-}	client_callback_t;
+};
 
 /* player_callback.c */
 void	player_callback(callback_type_t type, ...);
 void	spectate_callback(callback_type_t type, ...);
+void	client_callback(callback_type_t type, client_t *client, ...);
+void	clients_callback(callback_type_t type, list_t *clients, ...);
 
 #endif // !player_callback_HPP
