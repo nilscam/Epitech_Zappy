@@ -7,15 +7,14 @@
 
 #include "client.h"
 
-client_t	*client_new(int fd, bool is_spectator)
+client_t	*client_new(int fd, client_type_t type)
 {
 	client_t	*client = malloc(sizeof(client_t));
 
 	if (client) {
 		client->_fd = fd;
 		buff_init(&client->_cbuf, SIZE_BUFF);
-		client->accept_client_callback = !is_spectator;
-		client->accept_spectate_callback = is_spectator;
+		client->type = type;
 	}
 	return client;
 }

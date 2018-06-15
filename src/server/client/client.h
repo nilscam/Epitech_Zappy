@@ -14,16 +14,22 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+typedef enum
+{
+	CLIENT_ANONYMOUS,
+	CLIENT_PLAYER,
+	CLIENT_SPECTATOR
+}	client_type_t;
+
 typedef struct
 {
 	int		_fd;
 	t_buffer	_cbuf;
-	bool		accept_client_callback;
-	bool		accept_spectate_callback;
+	client_type_t	type;
 }	client_t;
 
 /* client.c */
-client_t	*client_new(int fd, bool is_spectator);
+client_t	*client_new(int fd, client_type_t type);
 void		client_delete(client_t *self);
 
 #endif // !client_HPP
