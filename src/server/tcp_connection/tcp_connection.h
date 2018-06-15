@@ -13,8 +13,6 @@
 # include "map.h"
 # include "client.h"
 # include "buffer.h"
-# include "player_callback.h"
-# include "player_cmd.h"
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netdb.h>

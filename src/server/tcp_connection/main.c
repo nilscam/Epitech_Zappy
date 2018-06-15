@@ -10,6 +10,22 @@
 #include "save_signal.h"
 #include "player_cmd.h"
 
+static void	client_handle(t_server *server, client_t *client)
+{
+	char	*cmd;
+
+	do {
+		cmd = list_extract(client->read_buff, "\n");
+		if (!cmd)
+			break;
+		if (*cmd) {
+			DEBUG("cmd from %d: '%s'", client->_fd, cmd);
+			client_cmd(server, client, cmd);
+		}
+		free(cmd);
+	} while (cmd);
+}
+
 static bool	check_tcp_client(client_t *client, va_list *args)
 {
 	t_server	*server = va_arg(*args, t_server *);
@@ -24,7 +40,7 @@ static bool	check_tcp_client(client_t *client, va_list *args)
 			client_delete(client);
 			return true;
 		}
-		client_handle(client);
+		client_handle(server, client);
 	}
 	if (server->can_write(server, client->_fd)) {
 		client_write(client);

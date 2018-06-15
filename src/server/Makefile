@@ -10,7 +10,6 @@ MAIN	=	main.c
 SRC	=	buffer/circular_buffer.c				\
 		class/class.c						\
 		class/class_utils.c					\
-		client/client_handle.c					\
 		client/client_read.c					\
 		client/client_write.c					\
 		client/client.c						\
@@ -45,6 +44,7 @@ SRC	=	buffer/circular_buffer.c				\
 		player/player.c						\
 		player_cmd/player_callback/send_format.c		\
 		player_cmd/player_callback/start_incantation.c		\
+		player_cmd/player_cmd/cmds.c				\
 		player_cmd/player_callback.c				\
 		player_cmd/player_cmd.c					\
 		save_signal/save_signal.c				\
@@ -62,7 +62,6 @@ SRC	=	buffer/circular_buffer.c				\
 		tests/test_map_it.c					\
 		tests/test_map_sound.c					\
 		tests/test_map.c					\
-		tests/test_player_cmd.c					\
 		tests/test_player_move.c				\
 		tests/test_player.c					\
 		tests/test_vision.c					\

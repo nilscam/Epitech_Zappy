@@ -6,6 +6,7 @@
 */
 
 #include "tcp_connection.h"
+#include "player_callback.h"
 
 void	add_client(t_server *this)
 {

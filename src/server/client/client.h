@@ -33,9 +33,6 @@ typedef struct
 client_t	*client_new(int fd, client_type_t type);
 void		client_delete(client_t *self);
 
-/* client_handle.c */
-void	client_handle(client_t *client);
-
 /* client_read.c */
 bool	client_read(client_t *client);
 
