@@ -45,7 +45,9 @@ struct			s_server
 	void		(*stop)(t_server *this);
 	int			_fd_server;
 	fd_set		_fds[3];
+	map_t		*map;
 	list_t		*players;
+	list_t		*spectators;
 };
 
 //				server.c
@@ -54,9 +56,12 @@ int	bind_socket(int fd, int port);
 int	listen_socket(int fd, int max_client);
 int	init_server(t_server *this, int port, char *protocol);
 
+//				deinit.c
+void	deinit_server(t_server *server);
+
 //				init.c
 void		init_server_functions(t_server *this);
-t_server	*init_struct_server(void);
+t_server	*init_struct_server(list_t *players, map_t *map);
 
 //				clients_add.c
 void	add_client(t_server *this, map_t *map);

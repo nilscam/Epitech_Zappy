@@ -19,14 +19,16 @@ void		init_server_functions(t_server *this)
 	this->stop = &stop_server;
 }
 
-t_server	*init_struct_server(void)
+t_server	*init_struct_server(list_t *players, map_t *map)
 {
 	t_server	*this = malloc(sizeof(t_server));
 
 	if (!this)
 		return (NULL);
-	this->players = NULL;
+	this->players = players;
+	this->spectators = NEW(LIST);
 	this->_fd_server = -1;
+	this->map = map;
 	init_server_functions(this);
 	return (this);
 }

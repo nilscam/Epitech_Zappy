@@ -17,10 +17,9 @@ typedef struct
 {
 	bool		saved;
 	t_server	*server;
-	map_t		*map;
 }	signal_save_t;
 
 /* save_signal.c */
-void	setup_signals(t_server *server, map_t *map);
+void	setup_signals(t_server *server);
 
 #endif // !save_signal_HPP

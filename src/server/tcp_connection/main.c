@@ -54,12 +54,11 @@ static void	check_tcp_clients(t_server *server)
 int	test_tcp_connection(int ac, char **av)
 {
 	map_t		*map = NEW(MAP, 10, 10);
-	t_server	*server = init_struct_server();
+	t_server	*server = init_struct_server(map->players, map);
 
 	if (!server || ac != 2 || !map)
 		return (84);
-	setup_signals(server, map);
-	server->players = map->players;
+	setup_signals(server);
 	int	port = atoi(av[1]);
 	if (server->init(server, port, "TCP") == -1)
 		return (84);
@@ -70,7 +69,6 @@ int	test_tcp_connection(int ac, char **av)
 			server->add_client(server, map);
 		}
 	}
-	server->stop(server);
-	DELETE(map);
+	deinit_server(server);
 	return (0);
 }
