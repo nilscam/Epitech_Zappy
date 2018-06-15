@@ -9,9 +9,9 @@
 
 void	stop_server(t_server *this)
 {
-	if (this->_fd_server == -1)
-		return;
 	DEBUG("stop_server");
-	list_clear(this->players, (void (*)(void *))delete_class);
-	close(this->_fd_server);
+	if (this->_fd_server >= 0) {
+		close(this->_fd_server);
+		this->_fd_server = -1;
+	}
 }

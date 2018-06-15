@@ -7,7 +7,7 @@
 
 #include "tcp_connection.h"
 
-void	add_client(t_server *this, map_t *map)
+void	add_client(t_server *this)
 {
 	struct sockaddr_in	address;
 	int			addrlen = sizeof(address);
@@ -16,10 +16,13 @@ void	add_client(t_server *this, map_t *map)
 
 	fd = accept(this->_fd_server,
 		(struct sockaddr *)&address, (socklen_t*)&addrlen);
-	client = client_new(fd, false);
-	if (client) {
-		add_player_to_map(map, client);
-	}
+	if (fd < 0)
+		return;
 	DEBUG("New connection to fd %d\n", fd);
-	
+	client = client_new(fd, CLIENT_ANONYMOUS);
+	if (client) {
+		list_push_back(this->anonymous, client);
+	} else {
+		close(fd);
+	}
 }

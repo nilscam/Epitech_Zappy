@@ -9,7 +9,7 @@
 
 static signal_save_t	*global_signal(void *start, ...)
 {
-	static signal_save_t	save = { false, NULL, NULL };
+	static signal_save_t	save = { false, NULL };
 	va_list		args;
 
 	if (!save.saved) {
@@ -27,14 +27,13 @@ static void	signal_handler(int signum)
 	if (signum == SIGINT) {
 		DEBUG("Stopping server..");
 		save->saved = false;
-		save->server->stop(save->server);
-		DELETE(save->map);
+		deinit_server(save->server);
 		exit(0);
 	}
 }
 
-void	setup_signals(t_server *server, map_t *map)
+void	setup_signals(t_server *server)
 {
-	global_signal(NULL, (signal_save_t){ true, server, map });
+	global_signal(NULL, (signal_save_t){ true, server });
 	signal(SIGINT, signal_handler);
 }

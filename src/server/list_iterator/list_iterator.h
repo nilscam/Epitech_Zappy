@@ -10,6 +10,9 @@
 
 #include "list.h"
 
+typedef void	(*list_it_fct_t)(void *, va_list *);
+typedef bool	(*list_it_fct_remove_t)(void *, va_list *);
+
 typedef struct
 {
 	class_t		__base__;
@@ -25,6 +28,10 @@ void	list_it_iterate(list_iterator_t *self);
 void	list_it_erase(list_iterator_t *self, void (*fct)(void *));
 void	*list_it_get(list_iterator_t *self);
 void	list_it_set(list_iterator_t *self, void *data);
+
+/* list_iterator_it.c */
+bool	list_it_all(list_t *list, list_it_fct_t fct, ...);
+bool	list_it_remove(list_t *list, list_it_fct_remove_t fct_remove, ...);
 
 /* list_iterator.c */
 extern const class_t *LIST_IT;

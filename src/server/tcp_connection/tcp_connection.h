@@ -36,16 +36,19 @@ typedef struct	s_server		t_server;
 struct			s_server
 {
 	int			(*init)(t_server *this, int port, char *protocol);
-	int			(*select)(t_server *this, map_t *map, int timeout);
+	int			(*select)(t_server *this, int timeout);
 	int			(*can_read)(t_server *this, int fd);
 	int			(*can_write)(t_server *this, int fd);
 	int			(*can_err)(t_server *this, int fd);
-	void		(*add_client)(t_server *this, map_t *map);
+	void		(*add_client)(t_server *this);
 	void		(*write)(int fd, char *str);
 	void		(*stop)(t_server *this);
 	int			_fd_server;
 	fd_set		_fds[3];
+	map_t		*map;
+	list_t		*anonymous;
 	list_t		*players;
+	list_t		*spectators;
 };
 
 //				server.c
@@ -54,20 +57,21 @@ int	bind_socket(int fd, int port);
 int	listen_socket(int fd, int max_client);
 int	init_server(t_server *this, int port, char *protocol);
 
+//				deinit.c
+void	deinit_server(t_server *server);
+
 //				init.c
 void		init_server_functions(t_server *this);
-t_server	*init_struct_server(void);
+t_server	*init_struct_server(list_t *players, map_t *map);
 
 //				clients_add.c
-void	add_client(t_server *this, map_t *map);
+void	add_client(t_server *this);
 
 //				clients_remove.c
 void	stop_server(t_server *this);
 
 //				select.c
-void	fill_fds(t_server *this, map_t *map);
-int		get_max_fd(t_server *this);
-int		prepare_select(t_server *this, map_t *map, int timeout);
+int		prepare_select(t_server *this, int timeout);
 
 //				select_is_set.c
 int		can_read(t_server *this, int fd);

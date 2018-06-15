@@ -14,6 +14,7 @@ SRC	=	buffer/circular_buffer.c				\
 		list/list_push.c					\
 		list/list_utils.c					\
 		list/list.c						\
+		list_iterator/list_iterator_it.c			\
 		list_iterator/list_iterator_move.c			\
 		list_iterator/list_iterator_ops.c			\
 		list_iterator/list_iterator.c				\
@@ -41,6 +42,7 @@ SRC	=	buffer/circular_buffer.c				\
 		save_signal/save_signal.c				\
 		tcp_connection/clients_add.c				\
 		tcp_connection/clients_remove.c				\
+		tcp_connection/deinit.c					\
 		tcp_connection/init.c					\
 		tcp_connection/main.c					\
 		tcp_connection/select_is_set.c				\
