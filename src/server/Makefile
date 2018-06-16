@@ -27,6 +27,7 @@ SRC	=	buffer/circular_buffer.c				\
 		map/map_init.c						\
 		map/map_it.c						\
 		map/map_move.c						\
+		map/map_remove.c					\
 		map/map_sound.c						\
 		map/map_utils.c						\
 		map/map.c						\

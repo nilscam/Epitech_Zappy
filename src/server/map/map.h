@@ -51,6 +51,9 @@ typedef struct
 /* map_init.c */
 void	init_map_contents(map_t *self);
 
+/* map_remove.c */
+void	map_remove_player_with_fd(map_t *self, int fd);
+
 /* map_move.c */
 bool	map_is_in_map(map_t *self, point_t pos);
 point_t	map_move(map_t *self, point_t from, direction_t to, int inc);

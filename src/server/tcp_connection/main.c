@@ -29,23 +29,24 @@ static void	client_handle(t_server *server, client_t *client)
 static bool	check_tcp_client(client_t *client, va_list *args)
 {
 	t_server	*server = va_arg(*args, t_server *);
+	bool		remove_it = false;
 
 	if (server->can_read(server, client->_fd)) {
-		if (!client_read(client)) {
-			if (client->type == CLIENT_PLAYER) {
-				DEBUG("removing player..");
-				// todo remove player from map
-			}
-			DEBUG("removing client %d", client->_fd);
-			client_delete(client);
-			return true;
-		}
+		remove_it = !client_read(client);
 		client_handle(server, client);
 	}
 	if (server->can_write(server, client->_fd)) {
 		client_write(client);
 	}
-	return false;
+	if (remove_it) {
+		DEBUG("removing client %d", client->_fd);
+		if (client->type == CLIENT_PLAYER) {
+			map_remove_player_with_fd(server->map, client->_fd);
+		} else {
+			client_delete(client);
+		}
+	}
+	return remove_it;
 }
 
 static void	check_tcp_clients(t_server *server)
