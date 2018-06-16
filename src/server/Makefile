@@ -92,7 +92,9 @@ SRC	=	buffer/circular_buffer.c				\
 		tests/test_map.c					\
 		tests/test_player_move.c				\
 		tests/test_player.c					\
+		tests/test_timer.c					\
 		tests/test_vision.c					\
+		timer/timer.c						\
 		utils/debug.c						\
 		utils/direction.c					\
 		utils/math_utils.c					\
@@ -111,9 +113,10 @@ INC	=	-I .			\
 		-I player		\
 		-I player_cmd		\
 		-I save_signal		\
-		-I server	\
+		-I server		\
 		-I team			\
 		-I tests		\
+		-I timer		\
 		-I utils
 F	=	-W -Wall -Werror -Wextra
 
