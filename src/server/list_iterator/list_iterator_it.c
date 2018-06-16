@@ -18,7 +18,7 @@ static void	call_fct(list_it_fct_t fct, void *data, va_list *args)
 	}
 }
 
-static bool	call_fct_remove(list_it_fct_remove_t fct, void *data, va_list *args)
+static bool	call_fct_bool(list_it_fct_bool_t fct, void *data, va_list *args)
 {
 	bool	res = false;
 	va_list	cp_args;
@@ -61,7 +61,7 @@ bool	list_it_remove(list_t *list, list_it_fct_remove_t fct_remove, ...)
 	va_start(args, fct_remove);
 	while (list_it_can_iterate(&it)) {
 		has_it = true;
-		if (call_fct_remove(fct_remove, list_it_get(&it), &args))
+		if (call_fct_bool(fct_remove, list_it_get(&it), &args))
 			list_it_erase(&it, NULL);
 		else
 			list_it_iterate(&it);
@@ -69,4 +69,25 @@ bool	list_it_remove(list_t *list, list_it_fct_remove_t fct_remove, ...)
 	va_end(args);
 	DEINIT(it);
 	return has_it;
+}
+
+void	*list_it_find(list_t *list, list_it_fct_find_t fct_find, ...)
+{
+	list_iterator_t	it;
+	va_list		args;
+	void		*data = NULL;
+
+	if (!INIT(LIST_IT, it, list))
+		return false;
+	va_start(args, fct_find);
+	while (list_it_can_iterate(&it)) {
+		data = list_it_get(&it);
+		if (call_fct_bool(fct_find, data, &args))
+			break;
+		list_it_iterate(&it);
+		data = NULL;
+	}
+	va_end(args);
+	DEINIT(it);
+	return data;
 }

@@ -11,7 +11,9 @@
 #include "list.h"
 
 typedef void	(*list_it_fct_t)(void *, va_list *);
-typedef bool	(*list_it_fct_remove_t)(void *, va_list *);
+typedef bool	(*list_it_fct_bool_t)(void *, va_list *);
+typedef list_it_fct_bool_t	list_it_fct_remove_t;
+typedef list_it_fct_bool_t	list_it_fct_find_t;
 
 typedef struct
 {
@@ -32,6 +34,7 @@ void	list_it_set(list_iterator_t *self, void *data);
 /* list_iterator_it.c */
 bool	list_it_all(list_t *list, list_it_fct_t fct, ...);
 bool	list_it_remove(list_t *list, list_it_fct_remove_t fct_remove, ...);
+void	*list_it_find(list_t *list, list_it_fct_find_t fct_find, ...);
 
 /* list_iterator.c */
 extern const class_t *LIST_IT;
