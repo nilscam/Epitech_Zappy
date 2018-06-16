@@ -94,6 +94,8 @@ SRC	=	buffer/circular_buffer.c				\
 		tests/test_player.c					\
 		tests/test_timer.c					\
 		tests/test_vision.c					\
+		timer/timer_mark.c					\
+		timer/timer_wait.c					\
 		timer/timer.c						\
 		utils/debug.c						\
 		utils/direction.c					\

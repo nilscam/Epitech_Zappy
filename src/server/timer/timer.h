@@ -10,6 +10,10 @@
 
 #include "class.h"
 #include <time.h>
+#include <stdio.h>
+#include <unistd.h>
+
+#define SIZE_ARRAY(x)	(sizeof(x) / sizeof(*x))
 
 typedef enum
 {
@@ -25,10 +29,14 @@ typedef struct
 	struct timespec	ts;
 }	timer_t;
 
-/* timer.c */
+/* timer_mark.c */
 void		timer_mark(timer_t *self);
 long long	timer_time_since_mark(timer_t *self, timer_type_t type);
 
+/* timer_wait.c */
+void		timer_wait(long long nb, timer_type_t type);
+
+/* timer.c */
 extern const class_t *timer;
 
 #endif // !timer_HPP

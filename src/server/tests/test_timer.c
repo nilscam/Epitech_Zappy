@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
-static void	tick(timer_t *c)
+static void	show_time_since_mark(timer_t *c)
 {
 	printf("timer = %llds %lldms %lldus %lldns\n",
 		timer_time_since_mark(c, SECONDS),
@@ -24,14 +24,14 @@ int	test_timer(void)
 
 	INIT(timer, c);
 	timer_mark(&c);
-	sleep(1);
-	tick(&c);
-	sleep(1);
-	tick(&c);
-	sleep(1);
-	tick(&c);
-	sleep(1);
-	tick(&c);
+	timer_wait(1, SECONDS);
+	show_time_since_mark(&c);
+	timer_wait(1E3, MILLISECONDS);
+	show_time_since_mark(&c);
+	timer_wait(1E6, MICROSECONDS);
+	show_time_since_mark(&c);
+	timer_wait(1E9, NANOSECONDS);
+	show_time_since_mark(&c);
 	DEINIT(c);
 	return 0;
 }
