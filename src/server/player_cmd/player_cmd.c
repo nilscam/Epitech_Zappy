@@ -49,7 +49,7 @@ static const player_cmd_t	DEFAULT_PLAYER_CMD = {
 static const player_cmd_t	SPECTATOR_CMDS[] = {
 	{ "msz", spectate_cmd_map_size, 0, 0,
 		"msz", "map size" },
-	{ "bct", spectate_cmd_map_content_time, 0, 2,
+	{ "bct", spectate_cmd_map_content_tile, 0, 2,
 		"bct X Y", "content of a tile" },
 	{ "mct", spectate_cmd_content_map, 0, 0,
 		"mct", "content of the map (all the tiles)" },

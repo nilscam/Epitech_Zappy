@@ -43,6 +43,8 @@ SRC	=	buffer/circular_buffer.c				\
 		player/player_turn.c					\
 		player/player_utils.c					\
 		player/player.c						\
+		player_cmd/player_callback/content_map.c		\
+		player_cmd/player_callback/name_teams.c			\
 		player_cmd/player_callback/send_format.c		\
 		player_cmd/player_callback/start_incantation.c		\
 		player_cmd/player_cmd/anonymous_cmd.c			\

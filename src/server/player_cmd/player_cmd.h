@@ -58,7 +58,7 @@ void	player_cmd_take(player_cmd_arg_t *args);
 void	player_cmd_set_obj_down(player_cmd_arg_t *args);
 void	player_cmd_incantation(player_cmd_arg_t *args);
 void	spectate_cmd_map_size(player_cmd_arg_t *args);
-void	spectate_cmd_map_content_time(player_cmd_arg_t *args);
+void	spectate_cmd_map_content_tile(player_cmd_arg_t *args);
 void	spectate_cmd_content_map(player_cmd_arg_t *args);
 void	spectate_cmd_name_teams(player_cmd_arg_t *args);
 void	spectate_cmd_player_pos(player_cmd_arg_t *args);
