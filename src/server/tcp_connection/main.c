@@ -10,9 +10,11 @@
 #include "save_signal.h"
 #include "player_cmd.h"
 
-static void	client_handle(t_server *server, client_t *client)
+static bool	client_handle(t_server *server, client_t *client)
 {
-	char	*cmd;
+	char		*cmd;
+	client_type_t	type;
+	bool		remove_it = false;
 
 	do {
 		cmd = list_extract(client->read_buff, "\n");
@@ -20,25 +22,35 @@ static void	client_handle(t_server *server, client_t *client)
 			break;
 		if (*cmd) {
 			DEBUG("cmd from %d: '%s'", client->_fd, cmd);
+			type = client->type;
 			client_cmd(server, client, cmd);
+			if (type != client->type) {
+				remove_it = true;
+			}
 		}
 		free(cmd);
-	} while (cmd);
+	} while (cmd && !remove_it);
+	return remove_it;
 }
 
 static bool	check_tcp_client(client_t *client, va_list *args)
 {
 	t_server	*server = va_arg(*args, t_server *);
 	bool		remove_it = false;
+	bool		deinit_it = false;
 
 	if (server->can_read(server, client->_fd)) {
 		remove_it = !client_read(client);
-		client_handle(server, client);
+		deinit_it = remove_it;
+		if (!remove_it && client_handle(server, client)) {
+			remove_it = true;
+			deinit_it = false;
+		}
 	}
-	if (server->can_write(server, client->_fd)) {
+	if (!deinit_it && server->can_write(server, client->_fd)) {
 		client_write(client);
 	}
-	if (remove_it) {
+	if (deinit_it) {
 		DEBUG("removing client %d", client->_fd);
 		if (client->type == CLIENT_PLAYER) {
 			map_remove_player_with_fd(server->map, client->_fd);

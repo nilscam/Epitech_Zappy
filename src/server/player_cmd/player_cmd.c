@@ -63,8 +63,8 @@ static const player_cmd_t	SPECTATOR_CMDS[] = {
 		"pin #n", "player’s inventory" },
 	{ "sgt", spectate_cmd_time_unit, 0, 0,
 		"sgt", "time unit request" },
-	{ "sst T", spectate_cmd_time_unit_mod, 0, 1,
-		"sst", "time unit modification" }
+	{ "sst", spectate_cmd_time_unit_mod, 0, 1,
+		"sst T", "time unit modification" }
 };
 static const player_cmd_t	DEFAULT_SPECTATOR_CMD = {
 	"", player_cmd_error, 0, 0, "ko", "ko"
@@ -120,7 +120,8 @@ bool	client_cmd(t_server *server, client_t *client, char *cmd)
 
 	if (c) {
 		args = (player_cmd_arg_t){ c, cmd, cargs + 1 };
-		c->fct(&args, server);
+		DEBUG("calling %s - %s", c->prototype, c->description);
+		c->fct(&args, client, server);
 	}
 	free_tab(cargs);
 	return c != NULL;
