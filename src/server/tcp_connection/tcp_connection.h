@@ -13,6 +13,7 @@
 # include "map.h"
 # include "client.h"
 # include "buffer.h"
+# include "team.h"
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netdb.h>
@@ -49,6 +50,7 @@ struct			s_server
 	list_t		*anonymous;
 	list_t		*players;
 	list_t		*spectators;
+	list_t		*teams;
 };
 
 //				server.c
@@ -80,5 +82,8 @@ int		can_err(t_server *this, int fd);
 
 //				write.c
 void	put_server(int fd, char *str);
+
+//				add_team.c
+void	add_team(t_server *this, const char *name, size_t max_players);
 
 #endif /* TCP_CONNECTION_H_ */

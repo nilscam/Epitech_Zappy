@@ -79,6 +79,9 @@ int	test_tcp_connection(int ac, char **av)
 		return (84);
 	setup_signals(server);
 	int	port = atoi(av[1]);
+	//* tmp
+	add_team(server, "red", 12);
+	add_team(server, "blue", 12);
 	if (server->init(server, port, "TCP") == -1)
 		return (84);
 	while (1) {

@@ -27,7 +27,8 @@ t_server	*init_struct_server(list_t *players, map_t *map)
 		return (NULL);
 	this->anonymous = NEW(LIST);
 	this->spectators = NEW(LIST);
-	if (!this->anonymous || !this->spectators)
+	this->teams = NEW(LIST);
+	if (!this->anonymous || !this->spectators || !this->teams)
 		return (NULL);
 	this->_fd_server = -1;
 	this->map = map;

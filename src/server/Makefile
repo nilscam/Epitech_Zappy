@@ -49,6 +49,7 @@ SRC	=	buffer/circular_buffer.c				\
 		player_cmd/player_callback.c				\
 		player_cmd/player_cmd.c					\
 		save_signal/save_signal.c				\
+		tcp_connection/add_team.c				\
 		tcp_connection/clients_add.c				\
 		tcp_connection/clients_remove.c				\
 		tcp_connection/deinit.c					\
@@ -58,6 +59,7 @@ SRC	=	buffer/circular_buffer.c				\
 		tcp_connection/select.c					\
 		tcp_connection/server.c					\
 		tcp_connection/write.c					\
+		team/team.c						\
 		tests/test_list_extract.c				\
 		tests/test_list.c					\
 		tests/test_map_it.c					\
@@ -85,6 +87,7 @@ INC	=	-I .			\
 		-I player_cmd		\
 		-I save_signal		\
 		-I tcp_connection	\
+		-I team			\
 		-I tests		\
 		-I utils
 F	=	-W -Wall -Werror -Wextra
