@@ -73,7 +73,7 @@ bool	map_it_players_team(map_t *self, const char *team,
 	va_start(args, fct);
 	while (list_it_can_iterate(&it)) {
 		player = list_it_get(&it);
-		if (strcmp(player->team, team) == 0) {
+		if (strcmp(player->team->name, team) == 0) {
 			has_it = true;
 			call_fct(fct, list_it_get(&it), &args);
 		}

@@ -12,7 +12,7 @@ void	player_print(player_t *self)
 {
 	char	*repr = direction_repr(self->dir);
 	printf("Player '%s' is in team '%s' at (%d,%d) looking at %s",
-		self->name, self->team,
+		self->name, self->team->name,
 		self->pos->pos.x, self->pos->pos.y,
 		repr);
 	if (player_is_dead_of_hunger(self))

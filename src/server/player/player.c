@@ -11,7 +11,7 @@ static bool	new_player(player_t *self, va_list *args)
 {
 	self->map = va_arg(*args, map_t *);
 	self->pos = va_arg(*args, map_content_t *);
-	self->team = va_arg(*args, char *);
+	self->team = va_arg(*args, const team_t *);
 	self->name = va_arg(*args, char *);
 	self->client = va_arg(*args, client_t *);
 	init_player_inventory(&self->inventory);
@@ -20,7 +20,6 @@ static bool	new_player(player_t *self, va_list *args)
 
 static void	delete_player(player_t *self)
 {
-	SAFE_FREE(self->team);
 	SAFE_FREE(self->name);
 	client_delete(self->client);
 }

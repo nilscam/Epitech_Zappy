@@ -45,7 +45,7 @@ static void	test_player_time(player_t *player)
 
 int	test_player(void)
 {
-	char		*team = strdup("Red");
+	team_t		*team = team_new("Red", 12);
 	char		*name = strdup("Ash");
 	map_t		*map = NEW(MAP, 3, 3);
 	player_t	*player = NULL;
@@ -60,5 +60,6 @@ int	test_player(void)
 	}
 	SAFE_DELETE(player);
 	SAFE_DELETE(map);
+	team_delete(team);
 	return 0;
 }

@@ -13,7 +13,7 @@ int	test_vision()
 {
 	map_t*		map = NEW(MAP, 5, 5);
 	player_t	*player = NULL;
-	char		*team = strdup("Red");
+	team_t		*team = team_new("Red", 12);
 	char		*name = strdup("Ash");
 
 	printf("TESTING VISION\n");
