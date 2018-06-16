@@ -5,7 +5,7 @@
 ** deinit.c
 */
 
-#include "tcp_connection.h"
+#include "server.h"
 
 void	deinit_server(t_server *server)
 {

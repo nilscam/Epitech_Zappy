@@ -8,7 +8,7 @@
 #ifndef save_signal_HPP
 #define save_signal_HPP
 
-#include "tcp_connection.h"
+#include "server.h"
 #include "map.h"
 #include "player.h"
 #include <signal.h>

@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "tcp_connection.h"
+#include "server.h"
 
 int	create_socket(char *protocol)
 {

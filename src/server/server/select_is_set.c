@@ -5,7 +5,7 @@
 ** select_is_set
 */
 
-#include "tcp_connection.h"
+#include "server.h"
 
 int		can_read(t_server *this, int fd)
 {

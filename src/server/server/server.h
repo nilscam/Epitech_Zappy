@@ -5,8 +5,8 @@
 ** tcp_connection
 */
 
-#ifndef TCP_CONNECTION_H_
-# define TCP_CONNECTION_H_
+#ifndef SERVER_H_
+# define SERVER_H_
 
 # include "debug.h"
 # include "list.h"
@@ -86,4 +86,4 @@ void	put_server(int fd, char *str);
 //				add_team.c
 void	add_team(t_server *this, const char *name, size_t max_players);
 
-#endif /* TCP_CONNECTION_H_ */
+#endif /* SERVER_H_ */

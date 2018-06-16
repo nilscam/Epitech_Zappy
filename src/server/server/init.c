@@ -5,7 +5,7 @@
 ** init
 */
 
-#include "tcp_connection.h"
+#include "server.h"
 
 void		init_server_functions(t_server *this)
 {

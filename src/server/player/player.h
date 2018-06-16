@@ -10,7 +10,7 @@
 
 #include "class.h"
 #include "map.h"
-#include "tcp_connection.h"
+#include "server.h"
 #include "client.h"
 #include "team.h"
 

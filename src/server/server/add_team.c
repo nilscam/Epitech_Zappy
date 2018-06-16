@@ -5,7 +5,7 @@
 ** add_team.c
 */
 
-#include "tcp_connection.h"
+#include "server.h"
 
 void	add_team(t_server *this, const char *name, size_t max_players)
 {

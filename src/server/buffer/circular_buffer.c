@@ -5,7 +5,7 @@
 ** circular_buffer
 */
 
-#include "tcp_connection.h"
+#include "server.h"
 
 int	buff_put(t_buffer *cbuf, char *str)
 {

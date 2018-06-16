@@ -5,7 +5,7 @@
 ** write
 */
 
-#include "tcp_connection.h"
+#include "server.h"
 
 void	put_server(int fd, char *str)
 {

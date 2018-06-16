@@ -5,7 +5,7 @@
 ** select
 */
 
-#include "tcp_connection.h"
+#include "server.h"
 #include "player.h"
 #include "map_it.h"
 

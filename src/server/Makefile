@@ -50,16 +50,16 @@ SRC	=	buffer/circular_buffer.c				\
 		player_cmd/player_callback.c				\
 		player_cmd/player_cmd.c					\
 		save_signal/save_signal.c				\
-		tcp_connection/add_team.c				\
-		tcp_connection/clients_add.c				\
-		tcp_connection/clients_remove.c				\
-		tcp_connection/deinit.c					\
-		tcp_connection/init.c					\
-		tcp_connection/main.c					\
-		tcp_connection/select_is_set.c				\
-		tcp_connection/select.c					\
-		tcp_connection/server.c					\
-		tcp_connection/write.c					\
+		server/add_team.c					\
+		server/clients_add.c					\
+		server/clients_remove.c					\
+		server/deinit.c						\
+		server/init.c						\
+		server/main.c						\
+		server/select_is_set.c					\
+		server/select.c						\
+		server/server.c						\
+		server/write.c						\
 		team/team_utils.c					\
 		team/team.c						\
 		tests/test_list_extract.c				\
@@ -88,7 +88,7 @@ INC	=	-I .			\
 		-I player		\
 		-I player_cmd		\
 		-I save_signal		\
-		-I tcp_connection	\
+		-I server	\
 		-I team			\
 		-I tests		\
 		-I utils

@@ -5,7 +5,7 @@
 ** clients_remove
 */
 
-#include "tcp_connection.h"
+#include "server.h"
 
 void	stop_server(t_server *this)
 {

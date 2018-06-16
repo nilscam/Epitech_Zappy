@@ -8,7 +8,7 @@
 #ifndef player_cmd_HPP
 #define player_cmd_HPP
 
-#include "tcp_connection.h"
+#include "server.h"
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdbool.h>
