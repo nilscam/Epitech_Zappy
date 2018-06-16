@@ -33,9 +33,9 @@ static void	fill_fds(t_server *this, int *max_fd)
 	FD_SET(this->_fd_server, &this->_fds[READ_FDS]);
 	FD_SET(this->_fd_server, &this->_fds[WRITE_FDS]);
 	FD_SET(this->_fd_server, &this->_fds[ERR_FDS]);
-	list_it_all(this->anonymous, fct, this->_fds, max_fd);
-	list_it_all(this->players, fct, this->_fds, max_fd);
-	list_it_all(this->spectators, fct, this->_fds, max_fd);
+	list_it_all(this->anonymous_clients, fct, this->_fds, max_fd);
+	list_it_all(this->players_clients, fct, this->_fds, max_fd);
+	list_it_all(this->spectators_clients, fct, this->_fds, max_fd);
 	*max_fd += 1;
 }
 

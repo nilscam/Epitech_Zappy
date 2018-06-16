@@ -23,7 +23,7 @@ void	add_client(t_server *this)
 	client = client_new(fd, CLIENT_ANONYMOUS);
 	if (client) {
 		client_callback(CB_WELCOME, client);
-		list_push_back(this->anonymous, client);
+		list_push_back(this->anonymous_clients, client);
 	} else {
 		close(fd);
 	}

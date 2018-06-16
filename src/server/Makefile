@@ -45,6 +45,7 @@ SRC	=	buffer/circular_buffer.c				\
 		player/player.c						\
 		player_cmd/player_callback/send_format.c		\
 		player_cmd/player_callback/start_incantation.c		\
+		player_cmd/player_cmd/anonymous_cmd.c			\
 		player_cmd/player_cmd/cmds.c				\
 		player_cmd/player_callback.c				\
 		player_cmd/player_cmd.c					\
@@ -59,6 +60,7 @@ SRC	=	buffer/circular_buffer.c				\
 		tcp_connection/select.c					\
 		tcp_connection/server.c					\
 		tcp_connection/write.c					\
+		team/team_utils.c					\
 		team/team.c						\
 		tests/test_list_extract.c				\
 		tests/test_list.c					\

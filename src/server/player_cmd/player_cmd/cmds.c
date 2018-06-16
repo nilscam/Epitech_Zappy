@@ -9,21 +9,6 @@
 #include "player_callback.h"
 #include "debug.h"
 
-void	anonymous_cmd_anonymous(player_cmd_arg_t *args,
-	client_t *client, t_server *server)
-{
-	(void)args;(void)server;(void)client;DEBUG("%s", __func__);
-}
-
-void	anonymous_cmd_spectator(
-	__attribute__((unused))player_cmd_arg_t *args,
-	client_t *client, t_server *server)
-{
-	client_callback(CB_WELCOME_SPECTATOR, client);
-	client->type = CLIENT_SPECTATOR;
-	list_push_back(server->spectators, client);
-}
-
 void	player_cmd_error(player_cmd_arg_t *args,
 	client_t *client, t_server *server)
 {(void)args;(void)server;(void)client;DEBUG("%s", __func__);}

@@ -52,11 +52,9 @@ static bool	check_tcp_client(client_t *client, va_list *args)
 	}
 	if (deinit_it) {
 		DEBUG("removing client %d", client->_fd);
-		if (client->type == CLIENT_PLAYER) {
+		if (client->type == CLIENT_PLAYER)
 			map_remove_player_with_fd(server->map, client->_fd);
-		} else {
-			client_delete(client);
-		}
+		client_delete(client);
 	}
 	return remove_it;
 }
@@ -65,15 +63,15 @@ static void	check_tcp_clients(t_server *server)
 {
 	list_it_fct_remove_t fct = (list_it_fct_remove_t)check_tcp_client;
 
-	list_it_remove(server->anonymous, fct, server);
-	list_it_remove(server->spectators, fct, server);
-	list_it_remove(server->players, fct, server);
+	list_it_remove(server->spectators_clients, fct, server);
+	list_it_remove(server->players_clients, fct, server);
+	list_it_remove(server->anonymous_clients, fct, server);
 }
 
 int	test_tcp_connection(int ac, char **av)
 {
 	map_t		*map = NEW(MAP, 10, 10);
-	t_server	*server = init_struct_server(map->players, map);
+	t_server	*server = init_struct_server(map);
 
 	if (!server || ac != 2 || !map)
 		return (84);

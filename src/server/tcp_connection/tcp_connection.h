@@ -36,20 +36,20 @@ typedef struct	s_server		t_server;
 
 struct			s_server
 {
-	int			(*init)(t_server *this, int port, char *protocol);
-	int			(*select)(t_server *this, int timeout);
-	int			(*can_read)(t_server *this, int fd);
-	int			(*can_write)(t_server *this, int fd);
-	int			(*can_err)(t_server *this, int fd);
+	int		(*init)(t_server *this, int port, char *protocol);
+	int		(*select)(t_server *this, int timeout);
+	int		(*can_read)(t_server *this, int fd);
+	int		(*can_write)(t_server *this, int fd);
+	int		(*can_err)(t_server *this, int fd);
 	void		(*add_client)(t_server *this);
 	void		(*write)(int fd, char *str);
 	void		(*stop)(t_server *this);
-	int			_fd_server;
+	int		_fd_server;
 	fd_set		_fds[3];
 	map_t		*map;
-	list_t		*anonymous;
-	list_t		*players;
-	list_t		*spectators;
+	list_t		*anonymous_clients;
+	list_t		*players_clients;
+	list_t		*spectators_clients;
 	list_t		*teams;
 };
 
@@ -64,7 +64,7 @@ void	deinit_server(t_server *server);
 
 //				init.c
 void		init_server_functions(t_server *this);
-t_server	*init_struct_server(list_t *players, map_t *map);
+t_server	*init_struct_server(map_t *map);
 
 //				clients_add.c
 void	add_client(t_server *this);

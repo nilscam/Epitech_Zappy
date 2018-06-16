@@ -21,7 +21,11 @@ static const client_callback_t	ANONYMOUS_CALLBACKS[] = {
 	{ CB_WELCOME_SPECTATOR, player_callback_send_format,
 		"ok\n",
 		"",
-		"welcome a new spectator" }
+		"welcome a new spectator" },
+	{ CB_INVALID_TEAM_NAME, player_callback_send_format,
+		"ko\n",
+		"",
+		"invalid team name" },
 };
 
 static const client_callback_t	CLIENT_CALLBACKS[] = {

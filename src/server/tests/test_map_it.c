@@ -17,13 +17,15 @@ int	test_map_it(void)
 {
 	map_it_pl_t	show_player_fct = (map_it_pl_t)show_player;
 	map_t		*map = NEW(MAP, 2, 2);
+	team_t		*red_team = team_new("red", 12);
+	team_t		*blue_team = team_new("blue", 12);
 
 	if (!map)
 		return (84);
-	add_player_to_map_at(map, (point_t){1, 1}, "red", NULL);
-	add_player_to_map_at(map, (point_t){0, 0}, "red", NULL);
-	add_player_to_map_at(map, (point_t){1, 1}, "red", NULL);
-	add_player_to_map_at(map, (point_t){1, 1}, "blue", NULL);
+	add_player_to_map_at(map, (point_t){1, 1}, red_team, NULL);
+	add_player_to_map_at(map, (point_t){0, 0}, red_team, NULL);
+	add_player_to_map_at(map, (point_t){1, 1}, red_team, NULL);
+	add_player_to_map_at(map, (point_t){1, 1}, blue_team, NULL);
 	printf("all players:\n");
 	map_it_players(map, show_player_fct);
 	printf("\nall players at (1,1):\n");

@@ -26,5 +26,6 @@ void	team_delete(team_t *team);
 bool	team_can_add_player(team_t *team);
 bool	team_add_player(team_t *team);
 void	team_remove_player(team_t *team);
+size_t	team_available_players(team_t *team);
 
 #endif // !team_HPP

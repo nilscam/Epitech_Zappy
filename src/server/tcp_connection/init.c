@@ -19,20 +19,23 @@ void		init_server_functions(t_server *this)
 	this->stop = &stop_server;
 }
 
-t_server	*init_struct_server(list_t *players, map_t *map)
+t_server	*init_struct_server(map_t *map)
 {
 	t_server	*this = malloc(sizeof(t_server));
 
 	if (!this || !map)
 		return (NULL);
-	this->anonymous = NEW(LIST);
-	this->spectators = NEW(LIST);
-	this->teams = NEW(LIST);
-	if (!this->anonymous || !this->spectators || !this->teams)
-		return (NULL);
 	this->_fd_server = -1;
 	this->map = map;
-	this->players = players;
+	this->anonymous_clients = NEW(LIST);
+	this->players_clients = NEW(LIST);
+	this->spectators_clients = NEW(LIST);
+	this->teams = NEW(LIST);
+	if (!this->anonymous_clients
+		|| !this->players_clients
+		|| !this->spectators_clients
+		|| !this->teams)
+		return (NULL);
 	init_server_functions(this);
 	return (this);
 }
