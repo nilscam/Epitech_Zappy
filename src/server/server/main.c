@@ -10,7 +10,7 @@
 #include "save_signal.h"
 #include "player_cmd.h"
 
-static bool	client_handle(t_server *server, client_t *client)
+static bool	client_handle(t_server *server, client_t *client, player_t *player)
 {
 	char		*cmd;
 	client_type_t	type;
@@ -23,7 +23,7 @@ static bool	client_handle(t_server *server, client_t *client)
 		if (*cmd) {
 			DEBUG("cmd from %d: '%s'", client->_fd, cmd);
 			type = client->type;
-			client_cmd(server, client, cmd);
+			client_cmd(server, client, cmd, player);
 			if (type != client->type) {
 				remove_it = true;
 			}
@@ -36,36 +36,60 @@ static bool	client_handle(t_server *server, client_t *client)
 static bool	check_tcp_client(client_t *client, va_list *args)
 {
 	t_server	*server = va_arg(*args, t_server *);
-	bool		remove_it = false;
-	bool		deinit_it = false;
 
 	if (server->can_read(server, client->_fd)) {
-		remove_it = !client_read(client);
-		deinit_it = remove_it;
-		if (!remove_it && client_handle(server, client)) {
-			remove_it = true;
-			deinit_it = false;
+		if (!client_read(client)) {
+			client_delete(client);
+			return true;
 		}
 	}
-	if (!deinit_it && server->can_write(server, client->_fd)) {
+	if (server->can_write(server, client->_fd)) {
 		client_write(client);
 	}
-	if (deinit_it) {
-		DEBUG("removing client %d", client->_fd);
-		if (client->type == CLIENT_PLAYER)
-			map_remove_player_with_fd(server->map, client->_fd);
-		client_delete(client);
+	return client_handle(server, client, NULL);
+}
+
+static bool	check_tcp_player(player_t *player, va_list *args)
+{
+	t_server	*server = va_arg(*args, t_server *);
+
+	if (server->can_read(server, player->client->_fd)) {
+		if (!client_read(player->client)) {
+			remove_client_from_list(server, player->client, true);
+			DELETE(player);
+			return true;
+		}
 	}
-	return remove_it;
+	if (server->can_write(server, player->client->_fd)) {
+		client_write(player->client);
+	}
+	if (!player_is_busy(player)) {
+		return client_handle(server, player->client, player);
+	}
+	return false;
 }
 
 static void	check_tcp_clients(t_server *server)
 {
-	list_it_fct_remove_t fct = (list_it_fct_remove_t)check_tcp_client;
+	list_it_fct_remove_t cfct = (list_it_fct_remove_t)check_tcp_client;
+	list_it_fct_remove_t pfct = (list_it_fct_remove_t)check_tcp_player;
 
-	list_it_remove(server->spectators_clients, fct, server);
-	list_it_remove(server->players_clients, fct, server);
-	list_it_remove(server->anonymous_clients, fct, server);
+	list_it_remove(server->spectators_clients, cfct, server);
+	list_it_remove(server->map->players, pfct, server);
+	list_it_remove(server->anonymous_clients, cfct, server);
+}
+
+static void	handle_time(t_server *server)
+{
+	list_iterator_t	it;
+
+	if (!INIT(LIST_IT, it, server->map->players))
+		return;
+	while (list_it_can_iterate(&it)) {
+		player_wait(list_it_get(&it));
+		list_it_iterate(&it);
+	}
+	DEINIT(it);
 }
 
 int	test_tcp_connection(int ac, char **av)
@@ -88,6 +112,10 @@ int	test_tcp_connection(int ac, char **av)
 		if (server->can_read(server, server->_fd_server)) {
 			server->add_client(server);
 		}
+		handle_time(server);
+		//todo clock f
+		DEBUG("..");
+		sleep(1);
 	}
 	deinit_server(server);
 	return (0);

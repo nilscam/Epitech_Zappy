@@ -15,10 +15,11 @@ static bool	is_team(team_t *team, va_list *args)
 	return strcmp(name, team->name) == 0;
 }
 
-void	anonymous_cmd_anonymous(player_cmd_arg_t *args,
-	client_t *client, t_server *server)
+void	anonymous_cmd_anonymous(player_cmd_arg_t *args)
 {
-	team_t	*team = list_it_find(server->teams,
+	t_server	*server = args->server;
+	client_t	*client = args->client;
+	team_t		*team = list_it_find(server->teams,
 		(list_it_fct_find_t)is_team, args->cmd);
 
 	if (team && add_player_to_map(server->map, team, client)) {
@@ -33,10 +34,11 @@ void	anonymous_cmd_anonymous(player_cmd_arg_t *args,
 	}
 }
 
-void	anonymous_cmd_spectator(
-	__attribute__((unused))player_cmd_arg_t *args,
-	client_t *client, t_server *server)
+void	anonymous_cmd_spectator(player_cmd_arg_t *args)
 {
+	t_server	*server = args->server;
+	client_t	*client = args->client;
+
 	client_callback(CB_WELCOME_SPECTATOR, client);
 	client->type = CLIENT_SPECTATOR;
 	list_push_back(server->spectators_clients, client);

@@ -70,6 +70,7 @@ t_server	*init_struct_server(map_t *map);
 void	add_client(t_server *this);
 
 //				clients_remove.c
+void	remove_client_from_list(t_server *, client_t *, bool delete_it);
 void	stop_server(t_server *this);
 
 //				select.c

@@ -32,7 +32,7 @@ typedef struct
 	int		is_busy_time_units;
 	pl_callback_t	is_busy_callback;
 	void		*is_busy_callback_args;
-	const client_t	*client;
+	client_t	*client;
 }	player_t;
 
 struct elevation_tab_s

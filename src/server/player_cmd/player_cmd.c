@@ -112,17 +112,45 @@ static const player_cmd_t	*get_client_cmd(
 	return c;
 }
 
-bool	client_cmd(t_server *server, client_t *client, char *cmd)
+static void	client_callback_cmd(player_cmd_arg_t *args)
 {
-	char			**cargs = str_to_tab(cmd, " \t");
-	const player_cmd_t	*c = get_client_cmd(cargs, client);
-	player_cmd_arg_t	args;
+	const player_cmd_t	*c = args->c;
 
-	if (c) {
-		args = (player_cmd_arg_t){ c, cmd, cargs + 1 };
+	DEBUG("calling pl %s - %s", c->prototype, c->description);
+	c->fct(args);
+	free_tab(args->args);
+	free(args);
+}
+
+static void	call_client_cmd(player_cmd_arg_t *args)
+{
+	const player_cmd_t	*c = args->c;
+	player_t		*player = args->player;
+	int			time_limit = c->time_limit;
+	player_cmd_arg_t	*args_cp = NULL;
+
+	if (time_limit > 0 && args->client->type == CLIENT_PLAYER)
+		args_cp = malloc(sizeof(player_cmd_arg_t));
+	if (args_cp) {
+		memcpy(args_cp, args, sizeof(player_cmd_arg_t));
+		player_wait_for(player, time_limit);
+		player_set_is_busy_callback(player,
+			(pl_callback_t)client_callback_cmd, args_cp);
+	} else {
 		DEBUG("calling %s - %s", c->prototype, c->description);
-		c->fct(&args, client, server);
+		c->fct(args);
+		free_tab(args->args);
 	}
-	free_tab(cargs);
+}
+
+bool	client_cmd(t_server *serv, client_t *client, char *cmd, player_t *pl)
+{
+	char			**tab = str_to_tab(cmd, " \t");
+	const player_cmd_t	*c = get_client_cmd(tab, client);
+	player_cmd_arg_t	args = { c, cmd, tab, client, serv, pl };
+
+	if (c && tab) {
+		call_client_cmd(&args);
+	}
 	return c != NULL;
 }
