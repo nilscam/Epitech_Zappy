@@ -48,7 +48,28 @@ SRC	=	buffer/circular_buffer.c				\
 		player_cmd/player_callback/send_format.c		\
 		player_cmd/player_callback/start_incantation.c		\
 		player_cmd/player_cmd/anonymous_cmd.c			\
-		player_cmd/player_cmd/cmds.c				\
+		player_cmd/player_cmd/broadcast.c			\
+		player_cmd/player_cmd/connect_nbr.c			\
+		player_cmd/player_cmd/content_map.c			\
+		player_cmd/player_cmd/eject.c				\
+		player_cmd/player_cmd/error.c				\
+		player_cmd/player_cmd/fork.c				\
+		player_cmd/player_cmd/forward.c				\
+		player_cmd/player_cmd/incantation.c			\
+		player_cmd/player_cmd/inventory.c			\
+		player_cmd/player_cmd/left.c				\
+		player_cmd/player_cmd/look.c				\
+		player_cmd/player_cmd/map_content_tile.c		\
+		player_cmd/player_cmd/map_size.c			\
+		player_cmd/player_cmd/name_teams.c			\
+		player_cmd/player_cmd/player_inventory.c		\
+		player_cmd/player_cmd/player_level.c			\
+		player_cmd/player_cmd/player_pos.c			\
+		player_cmd/player_cmd/right.c				\
+		player_cmd/player_cmd/set_obj_down.c			\
+		player_cmd/player_cmd/take.c				\
+		player_cmd/player_cmd/time_unit_mod.c			\
+		player_cmd/player_cmd/time_unit.c			\
 		player_cmd/player_callback.c				\
 		player_cmd/player_cmd.c					\
 		save_signal/save_signal.c				\
