@@ -18,6 +18,7 @@ bool	map_it_players(map_t *self, map_it_pl_t fct, ...);
 bool	map_it_players_at(map_t *self, point_t pos, map_it_pl_t fct, ...);
 bool	map_it_players_team(map_t *self, const char *team,
 		map_it_pl_t fct, ...);
+player_t	*get_player_from_id(map_t *self, int id);
 
 /* vision.c */
 char	*look(map_t *this, player_t *player);

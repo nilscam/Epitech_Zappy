@@ -83,3 +83,22 @@ bool	map_it_players_team(map_t *self, const char *team,
 	DEINIT(it);
 	return has_it;
 }
+
+player_t	*get_player_from_id(map_t *self, int id)
+{
+	list_iterator_t it;
+	player_t	*player = NULL;
+
+	if (!INIT(LIST_IT, it, self->players))
+		return NULL;
+	while (list_it_can_iterate(&it)) {
+		player = list_it_get(&it);
+		if (id == player->id) {
+			break;
+		}
+		list_it_iterate(&it);
+		player = NULL;
+	}
+	DEINIT(it);
+	return player;
+}
