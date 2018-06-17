@@ -32,6 +32,7 @@ t_server	*init_struct_server(map_t *map, double f)
 	this->players_clients = NEW(LIST);
 	this->spectators_clients = NEW(LIST);
 	this->teams = NEW(LIST);
+	this->winner = NULL;
 	if (!this->anonymous_clients
 		|| !this->players_clients
 		|| !this->spectators_clients

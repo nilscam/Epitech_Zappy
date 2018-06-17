@@ -44,6 +44,7 @@ static int	start_server_loop(t_server *server)
 			handle_eggs_action(server);
 		}
 	}
+	printf("winner: %s\n", server->winner->name);
 	return 0;
 }
 

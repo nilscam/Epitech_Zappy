@@ -53,6 +53,7 @@ struct			s_server
 	list_t		*spectators_clients;
 	list_t		*teams;
 	double		f;
+	team_t		*winner;
 	zclock_t	zclock;
 };
 
