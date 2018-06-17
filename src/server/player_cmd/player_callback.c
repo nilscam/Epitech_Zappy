@@ -101,9 +101,9 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 		"content of the map (all the tiles)"
 	},
 	{
-		CB_NAME_TEAMS, player_callback_name_teams,
-		"tna N\n * nbr_teams",
-		"//todo special",
+		CB_NAME_TEAMS, player_callback_send_format,
+		"tna %s\n",
+		"<team>",
 		"name of all the teams"
 	},
 	{
