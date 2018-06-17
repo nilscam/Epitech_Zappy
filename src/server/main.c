@@ -41,6 +41,7 @@ static int	start_server_loop(t_server *server)
 		handle_tcp_server(server);
 		if (can_simulate_game(server)) {
 			handle_players_action(server);
+			handle_eggs_action(server);
 		}
 	}
 	return 0;

@@ -68,6 +68,9 @@ void	handle_tcp_clients(t_server *server);
 //				handle_tcp_server.c
 void	handle_tcp_server(t_server *server);
 
+//				handle_eggs.c
+void	handle_eggs_action(t_server *server);
+
 //				handle_players.c
 void	handle_players_action(t_server *server);
 bool	can_simulate_game(t_server *server);

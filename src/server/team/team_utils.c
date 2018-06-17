@@ -7,6 +7,11 @@
 
 #include "team.h"
 
+void	team_add_max_player(team_t *team)
+{
+	++team->max_players;
+}
+
 bool	team_can_add_player(team_t *team)
 {
 	return team->nb_players < team->max_players;
