@@ -95,8 +95,11 @@ SRC	=	buffer/circular_buffer.c				\
 		tests/test_player_move.c				\
 		tests/test_player.c					\
 		tests/test_tcp_connection.c				\
+		tests/test_unique_id.c					\
 		tests/test_vision.c					\
 		tests/test_zclock.c					\
+		tests/tests.c						\
+		unique_id/unique_id.c					\
 		utils/debug.c						\
 		utils/direction.c					\
 		utils/math_utils.c					\
@@ -121,6 +124,7 @@ INC	=	-I .			\
 		-I server		\
 		-I team			\
 		-I tests		\
+		-I unique_id		\
 		-I utils		\
 		-I zclock
 F	=	-W -Wall -Werror -Wextra

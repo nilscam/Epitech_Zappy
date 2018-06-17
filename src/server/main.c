@@ -10,7 +10,7 @@
 #include "save_signal.h"
 #include <errno.h>
 
-int	test(int ac, char **av);
+int	tests(int ac, char **av);
 
 static map_t	*infos_init_map(t_infos *infos)
 {
@@ -48,6 +48,7 @@ static int	start_server_loop(t_server *server)
 
 int	main(int ac, char **av)
 {
+	// return tests(ac, av);
 	t_infos		infos = parse_args(ac, av);
 	t_server	*server;
 
