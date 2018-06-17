@@ -2,10 +2,10 @@
 ** EPITECH PROJECT, 2018
 ** PSU_zappy_2017
 ** File description:
-** timer_mark.c
+** zclock_mark.c
 */
 
-#include "timer.h"
+#include "zclock.h"
 
 static const double UNITS[] = {
 	1, 1E9,
@@ -14,13 +14,13 @@ static const double UNITS[] = {
 	1E9, 1
 };
 
-void	timer_mark(timer_t *self)
+void	zclock_mark(zclock_t *self)
 {
 	if (clock_gettime(CLOCK_REALTIME, &self->ts) < 0)
 		perror("clock_gettime");
 }
 
-long long	timer_time_since_mark(timer_t *self, timer_type_t type)
+long long	zclock_time_since_mark(zclock_t *self, zclock_type_t type)
 {
 	struct timespec	n;
 	long long	t = 0;

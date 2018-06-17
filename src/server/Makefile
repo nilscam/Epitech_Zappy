@@ -92,17 +92,17 @@ SRC	=	buffer/circular_buffer.c				\
 		tests/test_map.c					\
 		tests/test_player_move.c				\
 		tests/test_player.c					\
-		tests/test_timer.c					\
+		tests/test_zclock.c					\
 		tests/test_vision.c					\
-		timer/timer_mark.c					\
-		timer/timer_wait.c					\
-		timer/timer.c						\
 		utils/debug.c						\
 		utils/direction.c					\
 		utils/math_utils.c					\
 		utils/point.c						\
 		utils/str_concat.c					\
-		utils/str_to_tab.c
+		utils/str_to_tab.c					\
+		zclock/zclock_mark.c					\
+		zclock/zclock_wait.c					\
+		zclock/zclock.c
 
 INC	=	-I .			\
 		-I buffer		\
@@ -118,8 +118,8 @@ INC	=	-I .			\
 		-I server		\
 		-I team			\
 		-I tests		\
-		-I timer		\
-		-I utils
+		-I utils		\
+		-I zclock
 F	=	-W -Wall -Werror -Wextra
 
 LIB	=	-lm
