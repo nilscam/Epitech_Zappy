@@ -51,6 +51,7 @@ struct			s_server
 	list_t		*players_clients;
 	list_t		*spectators_clients;
 	list_t		*teams;
+	double		f;
 };
 
 //				server.c
@@ -64,7 +65,7 @@ void	deinit_server(t_server *server);
 
 //				init.c
 void		init_server_functions(t_server *this);
-t_server	*init_struct_server(map_t *map);
+t_server	*init_struct_server(map_t *map, double f);
 
 //				clients_add.c
 void	add_client(t_server *this);

@@ -9,6 +9,7 @@
 #include "player.h"
 #include "save_signal.h"
 #include "player_cmd.h"
+#include "zclock.h"
 
 static bool	client_handle(t_server *server, client_t *client, player_t *player)
 {
@@ -79,10 +80,16 @@ static void	check_tcp_clients(t_server *server)
 	list_it_remove(server->anonymous_clients, cfct, server);
 }
 
-static void	handle_time(t_server *server)
+static void	handle_time(t_server *server, zclock_t *zclock)
 {
 	list_iterator_t	it;
+	double	us_to_wait = 1.0 / server->f * 1E6;
 
+	if (zclock_time_since_mark(zclock, MICROSECONDS) < us_to_wait) {
+		return;
+	}
+	DEBUG("..");
+	zclock_mark(zclock);
 	if (!INIT(LIST_IT, it, server->map->players))
 		return;
 	while (list_it_can_iterate(&it)) {
@@ -95,13 +102,13 @@ static void	handle_time(t_server *server)
 int	test_tcp_connection(int ac, char **av)
 {
 	map_t		*map = NEW(MAP, 10, 10);
-	t_server	*server = init_struct_server(map);
+	t_server	*server = init_struct_server(map, 1.0);
+	zclock_t	zclock;
 
-	if (!server || ac != 2 || !map)
+	if (!server || ac != 2 || !map || !INIT(ZCLOCK, zclock))
 		return (84);
 	setup_signals(server);
 	int	port = atoi(av[1]);
-	//* tmp
 	add_team(server, "red", 12);
 	add_team(server, "blue", 12);
 	if (server->init(server, port, "TCP") == -1)
@@ -112,10 +119,7 @@ int	test_tcp_connection(int ac, char **av)
 		if (server->can_read(server, server->_fd_server)) {
 			server->add_client(server);
 		}
-		handle_time(server);
-		//todo clock f
-		DEBUG("..");
-		sleep(1);
+		handle_time(server, &zclock);
 	}
 	deinit_server(server);
 	return (0);
