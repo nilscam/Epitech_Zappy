@@ -79,6 +79,12 @@ static const client_callback_t	CLIENT_CALLBACKS[] = {
 		"<direction> <message>",
 		"broadcast"
 	},
+	{
+		CB_PLAYER_INVENTORY, player_callback_send_format,
+		CB_PLAYER_INV_1 CB_PLAYER_INV_2,
+		"<food> <6 stones>",
+		"Inventory"
+	}
 };
 
 static const client_callback_t	SPECTATOR_CALLBACKS[] = {

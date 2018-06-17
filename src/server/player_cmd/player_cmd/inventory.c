@@ -12,6 +12,12 @@
 
 void	player_cmd_inventory(player_cmd_arg_t *args)
 {
-	(void)args;DEBUG("%s", __func__);
-	//todo inv
+	client_callback(CB_PLAYER_INVENTORY, args->client,
+		args->player->inventory.food,
+		args->player->inventory.stones[LINEMATE],
+		args->player->inventory.stones[DERAUMERE],
+		args->player->inventory.stones[SIBUR],
+		args->player->inventory.stones[MENDIANE],
+		args->player->inventory.stones[PHIRAS],
+		args->player->inventory.stones[THYSTAME]);
 }

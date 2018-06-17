@@ -14,6 +14,8 @@
 #include <stddef.h>
 
 #define SIZE_ARRAY(x)	(sizeof(x) / sizeof(*x))
+#define CB_PLAYER_INV_1 "[food %d, linemate %d, deraumere %d, "
+#define CB_PLAYER_INV_2 "sibur %d, mendiane %d, phiras %d, thystame %d]\n"
 
 typedef struct client_callback_s client_callback_t;
 typedef void (*pl_callback_fct_t)(
