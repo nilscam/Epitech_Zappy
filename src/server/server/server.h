@@ -14,6 +14,7 @@
 # include "client.h"
 # include "buffer.h"
 # include "team.h"
+# include "zclock.h"
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netdb.h>
@@ -52,6 +53,7 @@ struct			s_server
 	list_t		*spectators_clients;
 	list_t		*teams;
 	double		f;
+	zclock_t	zclock;
 };
 
 //				server.c
@@ -59,6 +61,16 @@ int	create_socket(char *protocol);
 int	bind_socket(int fd, int port);
 int	listen_socket(int fd, int max_client);
 int	init_server(t_server *this, int port, char *protocol);
+
+//				handle_tcp_clients.c
+void	handle_tcp_clients(t_server *server);
+
+//				handle_tcp_server.c
+void	handle_tcp_server(t_server *server);
+
+//				handle_players.c
+void	handle_players_action(t_server *server);
+bool	can_simulate_game(t_server *server);
 
 //				deinit.c
 void	deinit_server(t_server *server);

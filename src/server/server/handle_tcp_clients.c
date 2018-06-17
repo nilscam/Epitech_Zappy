@@ -1,15 +1,13 @@
 /*
 ** EPITECH PROJECT, 2018
-** main_test
+** PSU_zappy_2017
 ** File description:
-** main
+** handle_tcp_clients.c
 */
 
 #include "server.h"
 #include "player.h"
-#include "save_signal.h"
 #include "player_cmd.h"
-#include "zclock.h"
 
 static bool	client_handle(t_server *server, client_t *client, player_t *player)
 {
@@ -70,7 +68,7 @@ static bool	check_tcp_player(player_t *player, va_list *args)
 	return false;
 }
 
-static void	check_tcp_clients(t_server *server)
+void	handle_tcp_clients(t_server *server)
 {
 	list_it_fct_remove_t cfct = (list_it_fct_remove_t)check_tcp_client;
 	list_it_fct_remove_t pfct = (list_it_fct_remove_t)check_tcp_player;
@@ -78,49 +76,4 @@ static void	check_tcp_clients(t_server *server)
 	list_it_remove(server->spectators_clients, cfct, server);
 	list_it_remove(server->map->players, pfct, server);
 	list_it_remove(server->anonymous_clients, cfct, server);
-}
-
-static void	handle_time(t_server *server, zclock_t *zclock)
-{
-	list_iterator_t	it;
-	double	us_to_wait = 1.0 / server->f * 1E6;
-
-	if (zclock_time_since_mark(zclock, MICROSECONDS) < us_to_wait) {
-		return;
-	}
-	DEBUG("..");
-	zclock_mark(zclock);
-	if (!INIT(LIST_IT, it, server->map->players))
-		return;
-	while (list_it_can_iterate(&it)) {
-		player_wait(list_it_get(&it));
-		list_it_iterate(&it);
-	}
-	DEINIT(it);
-}
-
-int	test_tcp_connection(int ac, char **av)
-{
-	map_t		*map = NEW(MAP, 10, 10);
-	t_server	*server = init_struct_server(map, 1.0);
-	zclock_t	zclock;
-
-	if (!server || ac != 2 || !map || !INIT(ZCLOCK, zclock))
-		return (84);
-	setup_signals(server);
-	int	port = atoi(av[1]);
-	add_team(server, "red", 12);
-	add_team(server, "blue", 12);
-	if (server->init(server, port, "TCP") == -1)
-		return (84);
-	while (1) {
-		server->select(server, TIMEOUT);
-		check_tcp_clients(server);
-		if (server->can_read(server, server->_fd_server)) {
-			server->add_client(server);
-		}
-		handle_time(server, &zclock);
-	}
-	deinit_server(server);
-	return (0);
 }

@@ -12,6 +12,7 @@ void	deinit_server(t_server *server)
 	if (!server)
 		return;
 	server->stop(server);
+	DEINIT(server->zclock);
 	list_clear(server->anonymous_clients,
 		(void (*)(void *))client_delete);
 	list_clear(server->players_clients,

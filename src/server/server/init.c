@@ -23,7 +23,7 @@ t_server	*init_struct_server(map_t *map, double f)
 {
 	t_server	*this = malloc(sizeof(t_server));
 
-	if (!this || !map)
+	if (!this || !map || !INIT(ZCLOCK, this->zclock))
 		return (NULL);
 	this->_fd_server = -1;
 	this->map = map;

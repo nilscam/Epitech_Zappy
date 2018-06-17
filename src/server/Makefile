@@ -33,7 +33,6 @@ SRC	=	buffer/circular_buffer.c				\
 		map/map.c						\
 		map/vision.c						\
 		parsing/help.c						\
-		parsing/main.c						\
 		parsing/parsing.c					\
 		parsing/get_infos.c					\
 		player/player_elevation.c				\
@@ -77,8 +76,10 @@ SRC	=	buffer/circular_buffer.c				\
 		server/clients_add.c					\
 		server/clients_remove.c					\
 		server/deinit.c						\
+		server/handle_players.c					\
+		server/handle_tcp_clients.c				\
+		server/handle_tcp_server.c				\
 		server/init.c						\
-		server/main.c						\
 		server/select_is_set.c					\
 		server/select.c						\
 		server/server.c						\
@@ -90,10 +91,12 @@ SRC	=	buffer/circular_buffer.c				\
 		tests/test_map_it.c					\
 		tests/test_map_sound.c					\
 		tests/test_map.c					\
+		tests/test_parsing.c					\
 		tests/test_player_move.c				\
 		tests/test_player.c					\
-		tests/test_zclock.c					\
+		tests/test_tcp_connection.c				\
 		tests/test_vision.c					\
+		tests/test_zclock.c					\
 		utils/debug.c						\
 		utils/direction.c					\
 		utils/math_utils.c					\
