@@ -6,6 +6,7 @@
 */
 
 #include "server.h"
+#include "player.h"
 
 static bool	remove_client_it(client_t *client, va_list *args)
 {
@@ -39,10 +40,12 @@ void	remove_client_from_list(t_server *server,
 	}
 }
 
-void	remove_player(t_server *this, player_t *player)
+void	remove_player(t_server *this, void *pl)
 {
+	player_t	*player = (player_t *)pl;
+
 	team_remove_player(player->team);
-	remove_client_from_list(server, player->client, true);
+	remove_client_from_list(this, player->client, true);
 	DELETE(player);
 }
 

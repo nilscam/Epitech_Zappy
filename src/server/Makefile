@@ -79,6 +79,7 @@ SRC	=	buffer/circular_buffer.c				\
 		server/clients_add.c					\
 		server/clients_remove.c					\
 		server/deinit.c						\
+		server/handle_eggs.c					\
 		server/handle_players.c					\
 		server/handle_tcp_clients.c				\
 		server/handle_tcp_server.c				\
