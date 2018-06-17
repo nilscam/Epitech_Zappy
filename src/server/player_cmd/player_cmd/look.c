@@ -14,4 +14,6 @@ void	player_cmd_look(player_cmd_arg_t *args)
 {
 	(void)args;DEBUG("%s", __func__);
 	//todo_alex
+	// char *str = "[...,...,..]";
+	// list_push_back(args->player->client->write_buff, strdup(str));
 }
