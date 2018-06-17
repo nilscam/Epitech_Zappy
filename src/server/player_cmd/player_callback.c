@@ -186,25 +186,25 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 	},
 	{
 		CB_EGG_HATCHING, player_callback_send_format,
-		"eht e\n",
+		"eht %d\n",
 		"<egg_nb>",
 		"egg hatching"
 	},
 	{
 		CB_PLAYER_CONNECTION_EGG, player_callback_send_format,
-		"ebo e\n",
+		"ebo %d\n",
 		"<egg_nb>",
 		"player connection for an egg"
 	},
 	{
 		CB_TIME_UNIT_REQUEST, player_callback_send_format,
-		"sgt T\n",
+		"sgt %d\n",
 		"<time_unit>",
 		"time unit request"
 	},
 	{
 		CB_TIME_UNIT_MODIF, player_callback_send_format,
-		"sst T\n",
+		"sst %d\n",
 		"<time_unit>",
 		"time unit modification"
 	},
