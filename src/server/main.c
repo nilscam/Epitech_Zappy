@@ -35,7 +35,7 @@ static t_server	*infos_init_server(map_t *map, t_infos *infos)
 
 static int	start_server_loop(t_server *server)
 {
-	while (true) {
+	while (!server->winner) {
 		server->select(server, TIMEOUT);
 		handle_tcp_clients(server);
 		handle_tcp_server(server);
