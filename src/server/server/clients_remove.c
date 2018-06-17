@@ -39,6 +39,13 @@ void	remove_client_from_list(t_server *server,
 	}
 }
 
+void	remove_player(t_server *this, player_t *player)
+{
+	team_remove_player(player->team);
+	remove_client_from_list(server, player->client, true);
+	DELETE(player);
+}
+
 void	stop_server(t_server *this)
 {
 	DEBUG("stop_server");

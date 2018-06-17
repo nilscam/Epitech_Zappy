@@ -87,6 +87,7 @@ void	add_client(t_server *this);
 
 //				clients_remove.c
 void	remove_client_from_list(t_server *, client_t *, bool delete_it);
+void	remove_player(t_server *this, player_t *player);
 void	stop_server(t_server *this);
 
 //				select.c

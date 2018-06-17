@@ -54,9 +54,7 @@ static bool	check_tcp_player(player_t *player, va_list *args)
 
 	if (server->can_read(server, player->client->_fd)) {
 		if (!client_read(player->client)) {
-			team_remove_player(player->team);
-			remove_client_from_list(server, player->client, true);
-			DELETE(player);
+			remove_player(server, player);
 			return true;
 		}
 	}

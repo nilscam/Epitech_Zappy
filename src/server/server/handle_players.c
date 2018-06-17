@@ -11,12 +11,20 @@
 void	handle_players_action(t_server *server)
 {
 	list_iterator_t	it;
+	player_t	*player;
 
 	if (!INIT(LIST_IT, it, server->map->players))
 		return;
 	while (list_it_can_iterate(&it)) {
-		player_wait(list_it_get(&it));
-		list_it_iterate(&it);
+		player = list_it_get(&it);
+		player_consume_time(player);
+		if (player_is_dead_of_hunger(player)) {
+			remove_player(server, player);
+			list_it_erase(&it, NULL);
+		} else {
+			player_wait(player);
+			list_it_iterate(&it);
+		}
 	}
 	DEINIT(it);
 }
