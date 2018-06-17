@@ -16,9 +16,12 @@ team_t	*team_new(char *name, size_t max_players)
 	if (team && name) {
 		team->name = name;
 		team->max_players = max_players;
-		team->nb_players = max_players;
+		team->nb_players = 0;
+		return team;
 	}
-	return team;
+	SAFE_FREE(team);
+	SAFE_FREE(name);
+	return NULL;
 }
 
 void	team_delete(team_t *team)

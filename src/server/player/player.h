@@ -24,7 +24,7 @@ typedef struct
 	map_t		*map;
 	map_content_t	*pos;
 	inventory_t	inventory;
-	const team_t	*team;
+	team_t		*team;
 	char		*name;
 	direction_t	dir;
 	int		level;

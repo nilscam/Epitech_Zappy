@@ -22,7 +22,8 @@ void	anonymous_cmd_anonymous(player_cmd_arg_t *args)
 	team_t		*team = list_it_find(server->teams,
 		(list_it_fct_find_t)is_team, args->cmd);
 
-	if (team && add_player_to_map(server->map, team, client)) {
+	if (team && team_add_player(team)
+	&& add_player_to_map(server->map, team, client)) {
 		client_callback(CB_WELCOME_PLAYER, client,
 			team_available_players(team),
 			server->map->size.x,
