@@ -18,7 +18,6 @@ int	test_player_cmd(void);
 int	test_parsing(int ac, char **av);
 int	test_list_extract(void);
 int	test_zclock(void);
-
 int	test_unique_id(void);
 
 int	tests(

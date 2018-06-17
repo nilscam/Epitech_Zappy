@@ -15,20 +15,16 @@ static bool	client_handle(t_server *server, client_t *client, player_t *player)
 	client_type_t	type;
 	bool		remove_it = false;
 
-	do {
-		cmd = list_extract(client->read_buff, "\n");
-		if (!cmd)
-			break;
-		if (*cmd) {
-			DEBUG("cmd from %d: '%s'", client->_fd, cmd);
-			type = client->type;
-			client_cmd(server, client, cmd, player);
-			if (type != client->type) {
-				remove_it = true;
-			}
+	cmd = client_extract_cmd(client);
+	if (cmd && *cmd) {
+		DEBUG("cmd from %d: '%s'", client->_fd, cmd);
+		type = client->type;
+		client_cmd(server, client, cmd, player);
+		if (type != client->type) {
+			remove_it = true;
 		}
-		free(cmd);
-	} while (cmd && !remove_it);
+	}
+	SAFE_FREE(cmd);
 	return remove_it;
 }
 
