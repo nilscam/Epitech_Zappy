@@ -44,11 +44,14 @@ void	player_cmd_broadcast(player_cmd_arg_t *args)
 {
 	map_t	*map = args->server->map;
 	point_t	from = args->player->pos->pos;
-	char	*msg = args->cmd + strlen(args->c->cmd) + 1;
+	char	*msg;
 
-	DEBUG("broadcast from %d: '%s'", args->player->id, msg);
-	list_it_all(map->players,
-		(list_it_fct_t)broadcast_to_player,
-		map, &from, args->player->id, msg);
+	if (args->nb_args > 1) {
+		msg = args->cmd + strlen(args->c->cmd) + 1;
+		DEBUG("broadcast from %d: '%s'", args->player->id, msg);
+		list_it_all(map->players,
+			(list_it_fct_t)broadcast_to_player,
+			map, &from, args->player->id, msg);
+	}
 	client_callback(CB_OK, args->client);
 }
