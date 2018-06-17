@@ -120,6 +120,7 @@ static void	client_callback_cmd(player_cmd_arg_t *args)
 	DEBUG("calling pl %s - %s", c->prototype, c->description);
 	c->fct(args);
 	free_tab(args->args);
+	SAFE_FREE(args->cmd);
 	free(args);
 }
 
@@ -141,6 +142,7 @@ static void	call_client_cmd(player_cmd_arg_t *args)
 		DEBUG("calling %s - %s", c->prototype, c->description);
 		c->fct(args);
 		free_tab(args->args);
+		SAFE_FREE(args->cmd);
 	}
 }
 
@@ -148,8 +150,13 @@ bool	client_cmd(t_server *serv, client_t *client, char *cmd, player_t *pl)
 {
 	char			**tab = str_to_tab(cmd, " \t");
 	const player_cmd_t	*c = get_client_cmd(tab, client);
-	player_cmd_arg_t	args = { c, cmd, tab, client, serv, pl };
+	int			nb_args = 0;
+	player_cmd_arg_t	args;
 
+	while (tab && tab[nb_args])
+		++nb_args;
+	args = (player_cmd_arg_t){ c, strdup(cmd), tab, nb_args,
+		client, serv, pl };
 	if (c && tab) {
 		call_client_cmd(&args);
 	}

@@ -21,6 +21,7 @@ typedef struct
 	const struct s_player_cmd	*c;
 	char				*cmd;
 	char				**args;
+	int				nb_args;
 	client_t			*client;
 	t_server			*server;
 	player_t			*player;
