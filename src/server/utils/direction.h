@@ -8,6 +8,8 @@
 #ifndef direction_HPP
 #define direction_HPP
 
+#define SIZE_ARRAY(x)	(sizeof(x) / sizeof(*x))
+
 typedef enum
 {
 	DIR_NONE,
@@ -29,5 +31,6 @@ char		*direction_repr(direction_t dir);
 direction_t	direction_turn_left(direction_t dir);
 direction_t	direction_turn_right(direction_t dir);
 direction_t	direction_from_angle(double degrees);
+int		direction_to_int(direction_t dir);
 
 #endif // !direction_HPP
