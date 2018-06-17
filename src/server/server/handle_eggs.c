@@ -13,7 +13,7 @@ void	handle_eggs_action(t_server *server)
 	list_iterator_t	it;
 	egg_t		*egg;
 
-	if (!INIT(LIST_IT, it, server->map->players))
+	if (!INIT(LIST_IT, it, server->map->eggs))
 		return;
 	while (list_it_can_iterate(&it)) {
 		egg = list_it_get(&it);
