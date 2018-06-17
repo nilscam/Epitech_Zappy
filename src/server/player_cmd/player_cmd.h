@@ -68,5 +68,7 @@ void	spectate_cmd_player_inventory(player_cmd_arg_t *args);
 void	spectate_cmd_time_unit(player_cmd_arg_t *args);
 void	spectate_cmd_time_unit_mod(player_cmd_arg_t *args);
 
+/* player_cmd/map_content_tile.c */
+void	show_content_tile(client_t *client, map_t *map, point_t point);
 
 #endif // !player_cmd_HPP

@@ -101,12 +101,6 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 		"content of a tile"
 	},
 	{
-		CB_CONTENT_MAP, player_callback_content_map,
-		"bct X Y q0 q1 q2 q3 q4 q5 q6\n * nbr_tiles",
-		"//todo special",
-		"content of the map (all the tiles)"
-	},
-	{
 		CB_NAME_TEAMS, player_callback_send_format,
 		"tna %s\n",
 		"<team>",
