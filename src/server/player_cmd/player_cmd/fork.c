@@ -9,6 +9,7 @@
 #include "player_callback.h"
 #include "debug.h"
 #include "player.h"
+#include "egg.h"
 
 void	player_cmd_fork(player_cmd_arg_t *args)
 {
@@ -17,6 +18,6 @@ void	player_cmd_fork(player_cmd_arg_t *args)
 	team_t		*team = args->player->team;
 	egg_t		*egg = NEW(EGG, map, pos, team);
 
-	list_push_back(args->server->eggs);
+	list_push_back(args->server->map->eggs, egg);
 	client_callback(CB_OK, args->client);
 }
