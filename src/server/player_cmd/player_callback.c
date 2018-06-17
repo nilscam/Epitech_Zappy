@@ -72,7 +72,13 @@ static const client_callback_t	CLIENT_CALLBACKS[] = {
 		"Current level: %d\n",
 		"<lvl>",
 		"Current level: k"
-	}
+	},
+	{
+		CB_BROADCAST, player_callback_send_format,
+		"message %d, %s\n",
+		"<direction> <message>",
+		"broadcast"
+	},
 };
 
 static const client_callback_t	SPECTATOR_CALLBACKS[] = {

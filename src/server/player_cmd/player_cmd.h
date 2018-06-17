@@ -33,7 +33,7 @@ typedef struct s_player_cmd
 	char		*cmd;
 	pl_cmd_fct_t	fct;
 	int		time_limit;
-	size_t		nb_args;
+	int		nb_args;
 	char		*prototype;
 	char		*description;
 }	player_cmd_t;

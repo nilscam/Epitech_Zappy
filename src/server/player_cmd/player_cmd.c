@@ -28,8 +28,8 @@ static const player_cmd_t	PLAYER_CMDS[] = {
 		"Look", "look around" },
 	{ "Inventory", player_cmd_inventory, 1, 0,
 		"Inventory", "inventory" },
-	{ "Broadcast text", player_cmd_broadcast, 7, 0,
-		"Broadcast text", "broadcast text" },
+	{ "Broadcast", player_cmd_broadcast, 7, -1,
+		"Broadcast <text>", "broadcast text" },
 	{ "Connect_nbr", player_cmd_connect_nbr, 0, 0,
 		"Connect_nbr", "number of team unused slots" },
 	{ "Fork", player_cmd_fork, 42, 0,
@@ -78,14 +78,15 @@ static const player_cmd_t	*get_cmd(char **args,
 	const player_cmd_t *cmds, int max_el)
 {
 	const player_cmd_t	*cmd = NULL;
-	size_t	n = 0;
+	int	n = 0;
 
 	if (!args || !(*args))
 		return NULL;
 	while (args && args[n] && args[++n]);
 	for (int i = 0; i < max_el; ++i) {
 		cmd = cmds + i;
-		if (strcmp(*args, cmd->cmd) == 0 && cmd->nb_args == n - 1)
+		if (strcmp(*args, cmd->cmd) == 0
+			&& (cmd->nb_args < 0 || cmd->nb_args == n - 1))
 			break;
 		cmd = NULL;
 	}
