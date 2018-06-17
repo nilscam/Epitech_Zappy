@@ -12,6 +12,11 @@
 
 void	player_cmd_fork(player_cmd_arg_t *args)
 {
-	//todo fork
+	map_t		*map = args->server->map;
+	map_content_t	*pos = args->player->pos;
+	team_t		*team = args->player->team;
+	egg_t		*egg = NEW(EGG, map, pos, team);
+
+	list_push_back(args->server->eggs);
 	client_callback(CB_OK, args->client);
 }
