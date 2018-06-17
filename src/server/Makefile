@@ -13,6 +13,8 @@ SRC	=	buffer/circular_buffer.c				\
 		client/client_read.c					\
 		client/client_write.c					\
 		client/client.c						\
+		egg/egg_hatch.c						\
+		egg/egg.c						\
 		list/list_extract.c					\
 		list/list_get.c						\
 		list/list_pop.c						\
@@ -24,6 +26,7 @@ SRC	=	buffer/circular_buffer.c				\
 		list_iterator/list_iterator_ops.c			\
 		list_iterator/list_iterator.c				\
 		map/inventory.c						\
+		map/map_egg.c						\
 		map/map_init.c						\
 		map/map_it.c						\
 		map/map_move.c						\
@@ -114,6 +117,7 @@ INC	=	-I .			\
 		-I buffer		\
 		-I class		\
 		-I client		\
+		-I egg			\
 		-I list			\
 		-I list_iterator	\
 		-I map			\

@@ -6,6 +6,7 @@
 */
 
 #include "player.h"
+#include "unique_id.h"
 
 static bool	new_player(player_t *self, va_list *args)
 {
@@ -14,6 +15,7 @@ static bool	new_player(player_t *self, va_list *args)
 	self->team = va_arg(*args, team_t *);
 	self->name = va_arg(*args, char *);
 	self->client = va_arg(*args, client_t *);
+	self->id = unique_id(SEED_PLAYER);
 	init_player_inventory(&self->inventory);
 	return true;
 }
@@ -44,7 +46,8 @@ static const player_t	PLAYER_CLASS = {
 	0,
 	NULL,
 	NULL,
-	NULL
+	NULL,
+	0
 };
 
 const class_t	*PLAYER = (class_t *) &PLAYER_CLASS;

@@ -47,10 +47,14 @@ typedef struct
 	map_content_t	*cases_buff;
 	map_content_t	**cases;
 	list_t		*players;
+	list_t		*eggs;
 }	map_t;
 
 /* map_init.c */
 void	init_map_contents(map_t *self);
+
+/* map_egg.c */
+void	map_add_egg_at(map_t *self, team_t *team, point_t pos);
 
 /* map_remove.c */
 void	map_remove_player_with_fd(map_t *self, int fd);
