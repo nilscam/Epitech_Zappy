@@ -16,7 +16,9 @@ static void	show_player(player_t *player)
 int	test_map_it(void)
 {
 	map_it_pl_t	show_player_fct = (map_it_pl_t)show_player;
-	map_t		*map = NEW(MAP, 2, 2);
+	int		players_per_team = 12;
+	int		nb_teams = 2;
+	map_t		*map = NEW(MAP, 2, 2, players_per_team, nb_teams);
 	team_t		*red_team = team_new("red", 12);
 	team_t		*blue_team = team_new("blue", 12);
 

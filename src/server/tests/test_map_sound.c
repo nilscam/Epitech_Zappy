@@ -46,7 +46,9 @@ static void	assert_valid_dirs(map_t *map, point_t to, int inc)
 
 int	test_map_sound(void)
 {
-	map_t *map = NEW(MAP, 10, 11);
+	int	players_per_team = 12;
+	int	nb_teams = 2;
+	map_t *map = NEW(MAP, 10, 11, players_per_team, nb_teams);
 	if (!map)
 		return 84;
 	assert_valid_dirs(map, (point_t){1, 1}, 1);
