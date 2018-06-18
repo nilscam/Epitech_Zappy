@@ -28,7 +28,7 @@ int	tests(
 	// return test_player();
 	// return test_map();
 	// return test_map_it();
-	// return test_vision();
+	return test_vision();
 	// return test_map_sound();
 	// return test_tcp_connection(ac, av);
 	// return test_player_cmd();

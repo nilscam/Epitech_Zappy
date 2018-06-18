@@ -11,19 +11,20 @@
 
 int	test_vision()
 {
-	map_t*		map = NEW(MAP, 5, 5);
+	map_t*		map = NEW(MAP, 25, 25);
 	player_t	*player = NULL;
 	team_t		*team = team_new("Red", 12);
 	char		*name = strdup("Ash");
 
-	printf("TESTING VISION\n");
+//	printf("TESTING VISION\n");
 	player = NEW(PLAYER, map, &map->cases[2][2], team, name, NULL);
 	add_player_to_map_at(map, (point_t){2, 2}, team, NULL);
 //	add_player_to_map_at(map, (point_t){10, 1}, "Red", NULL);
 
-/*	player->dir = DIR_LEFT;
+	player->dir = DIR_LEFT;
+	player->level = 8;
 	printf("LVL1 - Looking left\n%s\n", look(map, player));
-	player->dir = DIR_RIGHT;
+/*	player->dir = DIR_RIGHT;
 	printf("LVL1 - Looking right\n%s\n", look(map, player));
 	player->dir = DIR_DOWN;
 	printf("LVL1 - Looking down\n%s\n", look(map, player));*/
