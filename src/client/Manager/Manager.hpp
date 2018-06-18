@@ -35,10 +35,12 @@ private:
 	void	readInFd(int fd);
 	void	writeInFd(int fd);
 	void	parseCmd(void);
+	void	initReadCmd(void);
+	void	freeArgs(void);
 
 	bool	msz();//! X Y\n || msz\n map size
 	bool	bct();//! X Y q0 q1 q2 q3 q4 q5 q6\n || bct X Y\n content of a tile
-	//! bool	bct(); X Y q0 q1 q2 q3 q4 q5 q6\n * nbr_tiles || mct\n content of the map (all the tiles)
+	//! ool	bct(); X Y q0 q1 q2 q3 q4 q5 q6\n * nbr_tiles || mct\n content of the map (all the tiles)
 	bool	tna();//! N\n * nbr_teams || tna\n name of all the teams
 	bool	pnw();// #n X Y O L N\n connection of a new player
 	bool	ppo();//! n X Y O\n || ppo #n\n player’s position
