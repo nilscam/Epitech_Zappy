@@ -22,18 +22,6 @@ static const struct circle_direction_s	CIRCLES[] = {
 	{ 337.5, 360.0, DIR_DOWN }
 };
 
-static const direction_t DIRS_CONVERT[] = {
-	DIR_NONE,
-	DIR_UP,
-	DIR_UP | DIR_LEFT,
-	DIR_LEFT,
-	DIR_LEFT | DIR_DOWN,
-	DIR_DOWN,
-	DIR_DOWN | DIR_RIGHT,
-	DIR_RIGHT,
-	DIR_RIGHT | DIR_UP
-};
-
 char	*direction_repr(direction_t dir)
 {
 	char	buff[255];
@@ -83,14 +71,4 @@ direction_t	direction_from_angle(double d)
 		}
 	}
 	return DIR_NONE;
-}
-
-int	direction_to_int(direction_t dir)
-{
-	for (size_t i = 0; i < SIZE_ARRAY(DIRS_CONVERT); ++i) {
-		if (dir == DIRS_CONVERT[i]) {
-			return i;
-		}
-	}
-	return 0;
 }

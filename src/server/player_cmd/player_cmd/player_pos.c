@@ -11,11 +11,6 @@
 #include "player.h"
 #include "map_it.h"
 
-static int	direction_to_int_spec(direction_t d)
-{
-	return d & DIR_UP ? 1 : d & DIR_RIGHT ? 2 : d & DIR_DOWN ? 3 : 4;
-}
-
 void	spectate_cmd_player_pos(player_cmd_arg_t *args)
 {
 	player_t	*player;
