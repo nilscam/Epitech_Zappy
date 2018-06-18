@@ -11,7 +11,8 @@
 
 int	test_vision()
 {
-	map_t*		map = NEW(MAP, 25, 25);
+	int		players_per_team = 12;
+	map_t*		map = NEW(MAP, 25, 25, players_per_team);
 	player_t	*player = NULL;
 	team_t		*team = team_new("Red", 12);
 	char		*name = strdup("Ash");

@@ -51,7 +51,7 @@ typedef struct
 }	map_t;
 
 /* map_init.c */
-void	init_map_contents(map_t *self);
+void	init_map_contents(map_t *self, int players_per_team);
 
 /* map_egg.c */
 void	map_add_egg_at(map_t *self, team_t *team, point_t pos);
@@ -72,7 +72,7 @@ direction_t	map_dir_sound_from(map_t *self, point_t from, point_t to);
 /* inventory.c */
 void	fill_inv_ptrs(inventory_t *inv, int **ptrs);
 void	fill_inv_reprs(char **reprs);
-void init_map_inventory(inventory_t *inv, map_t *ptr);
+void 	init_map_inventory(inventory_t *inv);
 void	init_player_inventory(inventory_t *inv);
 void	empty_stones_inventory(inventory_t *inv);
 

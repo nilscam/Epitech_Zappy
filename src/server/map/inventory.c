@@ -31,11 +31,8 @@ void	fill_inv_reprs(char **reprs)
 	reprs[6] = "thystame";
 }
 
-void init_map_inventory(inventory_t *inv, map_t *map)
+void init_map_inventory(inventory_t *inv)
 {
-	int x = map->size.x;
-	int y = map->size.y;
-
 	inv->food = rand() % 2;
 	for (int i = 0; i < NUMBER_OF_INV_TYPE; ++i) {
 		if (rand() % 8 < 8)
