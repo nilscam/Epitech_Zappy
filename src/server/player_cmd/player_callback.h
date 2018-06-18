@@ -56,7 +56,8 @@ typedef enum
 	CB_PLAYER_LEVEL,
 	CB_PLAYER_INVENTORY,
 	CB_TIME_UNIT_REQUEST,
-	CB_TIME_UNIT_MODIF
+	CB_TIME_UNIT_MODIF,
+	CB_EJECT
 }	callback_type_t;
 
 struct client_callback_s

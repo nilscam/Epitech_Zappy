@@ -84,6 +84,12 @@ static const client_callback_t	CLIENT_CALLBACKS[] = {
 		CB_PLAYER_INV_1 CB_PLAYER_INV_2,
 		"<food> <6 stones>",
 		"Inventory"
+	},
+	{
+		CB_EJECT, player_callback_send_format,
+		"eject: %d\n",
+		"<direction>",
+		"Ejected from direction"
 	}
 };
 
