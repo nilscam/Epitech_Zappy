@@ -30,6 +30,9 @@ void	player_cmd_incantation(player_cmd_arg_t *args)
 		empty_stones_inventory(&args->player->pos->inventory);
 		client_callback(CB_CURRENT_LVL, args->client,
 			++args->player->level);
+		clients_callback(CB_EXPLUSION,
+			args->server->spectators_clients,
+			args->player->id);
 	} else {
 		client_callback(CB_KO, args->client);
 	}

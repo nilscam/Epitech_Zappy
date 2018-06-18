@@ -7,6 +7,7 @@
 
 #include "server.h"
 #include "egg.h"
+#include "player_callback.h"
 
 void	handle_eggs_action(t_server *server)
 {
@@ -19,6 +20,8 @@ void	handle_eggs_action(t_server *server)
 		egg = list_it_get(&it);
 		egg_wait(egg);
 		if (egg_is_hatched(egg)) {
+			clients_callback(CB_EGG_HATCHING,
+				server->spectators_clients, egg->id);
 			team_add_max_player(egg->team);
 			list_it_erase(&it, delete_class);
 		} else {

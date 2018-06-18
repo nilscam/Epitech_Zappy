@@ -62,12 +62,14 @@ bool	validate_eject(player_cmd_arg_t *args);
 void	player_cmd_eject(player_cmd_arg_t *args);
 
 /* player_cmd/error.c */
+void	spectate_cmd_error(player_cmd_arg_t *args);
 void	player_cmd_error(player_cmd_arg_t *args);
 
 /* player_cmd/fork.c */
 void	player_cmd_fork(player_cmd_arg_t *args);
 
 /* player_cmd/forward.c */
+bool	validate_fork(player_cmd_arg_t *args);
 void	player_cmd_forward(player_cmd_arg_t *args);
 
 /* player_cmd/incantation.c */

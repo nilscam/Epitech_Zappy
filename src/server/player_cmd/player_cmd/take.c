@@ -42,6 +42,9 @@ void	player_cmd_take(player_cmd_arg_t *args)
 			*from_ptrs[i] -= 1;
 			*to_ptrs[i] += 1;
 			client_callback(CB_OK, args->client);
+			clients_callback(CB_RESOURCE_COLLECTING,
+				args->server->spectators_clients,
+				args->player->id, i);
 			return;
 		}
 	}

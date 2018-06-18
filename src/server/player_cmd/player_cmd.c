@@ -32,7 +32,7 @@ static const player_cmd_t	PLAYER_CMDS[] = {
 		"Broadcast <text>", "broadcast text" },
 	{ "Connect_nbr", player_cmd_connect_nbr, NULL, 0, 0,
 		"Connect_nbr", "number of team unused slots" },
-	{ "Fork", player_cmd_fork, NULL, 42, 0,
+	{ "Fork", player_cmd_fork, validate_fork, 42, 0,
 		"Fork", "fork a player" },
 	{ "Eject", player_cmd_eject, validate_eject, 7, 0,
 		"Eject", "eject players from this tile" },
@@ -44,7 +44,7 @@ static const player_cmd_t	PLAYER_CMDS[] = {
 		"Incantation", "start incantation" }
 };
 static const player_cmd_t	DEFAULT_PLAYER_CMD = {
-	"", player_cmd_error, NULL, 0, 0, "ko", "ko"
+	"", spectate_cmd_error, NULL, 0, 0, "ko", "ko"
 };
 static const player_cmd_t	SPECTATOR_CMDS[] = {
 	{ "msz", spectate_cmd_map_size, NULL, 0, 0,

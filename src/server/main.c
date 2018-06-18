@@ -8,6 +8,7 @@
 #include "server.h"
 #include "parsing.h"
 #include "save_signal.h"
+#include "player_callback.h"
 #include <errno.h>
 
 int	tests(int ac, char **av);
@@ -44,6 +45,8 @@ static int	start_server_loop(t_server *server)
 			handle_eggs_action(server);
 		}
 	}
+	clients_callback(CB_END_OF_GAME, server->spectators_clients,
+		server->winner->name);
 	printf("winner: %s\n", server->winner->name);
 	return 0;
 }
