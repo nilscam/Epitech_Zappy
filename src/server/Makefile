@@ -89,6 +89,7 @@ SRC	=	buffer/circular_buffer.c				\
 		server/select.c						\
 		server/server.c						\
 		server/write.c						\
+		team/team_find.c					\
 		team/team_utils.c					\
 		team/team.c						\
 		tests/test_list_extract.c				\
