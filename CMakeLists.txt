@@ -3,10 +3,9 @@ project(zappy C)
 
 set(CMAKE_C_STANDARD 11)
 
-include_directories(src/server src/server/player src/server/map src/server/utils src/server/list src/server/list_iterator src/server/c_modular)
+include_directories(src/server src/server/player src/server/map src/server/utils src/server/list src/server/list_iterator src/server/big_buff)
 
 set(SRCTOOLS
-        src/server/c_modular/c_modular.c
         src/server/list/list.c
         src/server/list/list_push.c
         src/server/list/list_utils.c

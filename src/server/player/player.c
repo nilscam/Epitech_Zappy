@@ -41,7 +41,7 @@ static const player_t	PLAYER_CLASS = {
 	NULL,
 	NULL,
 	DIR_DOWN,
-	1,
+	8,
 	FOOD_TO_TIME_UNITS,
 	0,
 	NULL,

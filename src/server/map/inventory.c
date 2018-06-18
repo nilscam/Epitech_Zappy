@@ -33,8 +33,8 @@ void	init_map_inventory(inventory_t *inv)
 {
 	inv->food = rand() % 2;
 	for (int i = 0; i < NUMBER_OF_INV_TYPE; ++i) {
-		if (rand() % 5 == 1)
-			inv->stones[i] = rand() % 2;
+		if (rand() % 2 == 1)
+			inv->stones[i] = rand() % 100;
 		else
 			inv->stones[i] = 0;
 	}
