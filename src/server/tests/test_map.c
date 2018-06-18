@@ -6,6 +6,7 @@
 */
 
 #include "map.h"
+#include "map_it.h"
 #include <stdio.h>
 
 void	keep_switching(size_t i)
@@ -64,7 +65,7 @@ void	print_map_content(map_t *map)
 
 int	test_map(void)
 {
-	map_t *map = NEW(MAP, 2, 2);
+	map_t *map = NEW(MAP, 10, 10);
 	if (!map)
 		return 84;
 	print_map_content(map);
@@ -74,7 +75,18 @@ int	test_map(void)
 		printf("--> player : '%s'\n", (char*)list_it_get(it));
 		list_it_iterate(it);
 	}
-	delete_class(it);
-	delete_class(map);
+	inventory_t inv;
+
+	for (int i = 0 ; i < NUMBER_OF_INV_TYPE ; ++i)
+		inv.stones[i] = 0;
+	count_inv_in_map(map, &inv);
+	for (int i = 0 ; i < NUMBER_OF_INV_TYPE ; ++i) {
+		i == LINEMATE ? printf("linemate %d\n", inv.stones[i]) : 0;
+		i == DERAUMERE ? printf("deraumere %d\n", inv.stones[i]) : 0;
+		i == SIBUR ? printf("sibur %d\n", inv.stones[i]) : 0;
+		i == MENDIANE ? printf("mendiane %d\n", inv.stones[i]) : 0;
+		i == PHIRAS ? printf("phiras %d\n", inv.stones[i]) : 0;
+		i == THYSTAME ? printf("thystame %d\n", inv.stones[i]) : 0;
+	}
 	return 0;
 }

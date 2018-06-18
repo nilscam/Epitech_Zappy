@@ -7,10 +7,10 @@
 
 #include "map.h"
 
-static void	init_map_content(map_content_t *content, point_t pos)
+static void init_map_content(map_content_t *content, point_t pos, map_t *map)
 {
 	content->pos = pos;
-	init_map_inventory(&content->inventory);
+	init_map_inventory(&content->inventory, map);
 }
 
 void	init_map_contents(map_t *self)
@@ -25,7 +25,7 @@ void	init_map_contents(map_t *self)
 	for (int y = 0; y < size_y; ++y) {
 		for (int x = 0; x < size_x; ++x) {
 			content = &self->cases[y][x];
-			init_map_content(content, (point_t){x, y});
+			init_map_content(content, (point_t){x, y}, self);
 		}
 	}
 }

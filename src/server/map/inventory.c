@@ -5,6 +5,8 @@
 ** inventory.c
 */
 
+#include <utils/point.h>
+#include <list/list.h>
 #include "map.h"
 
 void	fill_inv_ptrs(inventory_t *inv, int **ptrs)
@@ -29,12 +31,15 @@ void	fill_inv_reprs(char **reprs)
 	reprs[6] = "thystame";
 }
 
-void	init_map_inventory(inventory_t *inv)
+void init_map_inventory(inventory_t *inv, map_t *map)
 {
+	int x = map->size.x;
+	int y = map->size.y;
+
 	inv->food = rand() % 2;
 	for (int i = 0; i < NUMBER_OF_INV_TYPE; ++i) {
-		if (rand() % 2 == 1)
-			inv->stones[i] = rand() % 100;
+		if (rand() % 8 < 8)
+			inv->stones[i] = (rand() % 7) + 11;
 		else
 			inv->stones[i] = 0;
 	}
