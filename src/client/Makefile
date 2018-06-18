@@ -6,24 +6,30 @@
 ##
 
 NAME	=	zappy_client
-MAIN	=	main.c
-SRC	=
+MAIN	=	main.cpp
+SRC	=		Manager/Buffer.cpp					\
+			Manager/Manager.cpp					\
+			Manager/parseMe.cpp					\
+			reseau/Client.cpp					\
+			reseau/Select.cpp
 
-INC	=	-I include
+INC	=	-I include		\
+		-I Manager		\
+		-I reseau
 F	=	-W -Wall -Werror -Wextra
 
-NAM_OBJ	=	$(MAIN:.c=.o)
-OBJ	=	$(SRC:.c=.o)
+NAM_OBJ	=	$(MAIN:.cpp=.o)
+OBJ	=	$(SRC:.cpp=.o)
 
-GCC	=	gcc -o
+G++	=	g++ -std=c++14 -o
 
 all:		$(NAME)
 
 $(NAME):	$(NAM_OBJ) $(OBJ)
-		$(GCC) $@ $^ $(LIB)
+		$(G++) $@ $^ $(LIB)
 
-%.o:		%.c
-		$(GCC) $@ $(F) $(FF) $(INC) -c $<
+%.o:		%.cpp
+		$(G++) $@ $(F) $(FF) $(INC) -c $<
 
 clean:
 		rm -f $(NAM_OBJ) $(OBJ) $(NAME)
