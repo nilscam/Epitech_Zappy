@@ -91,6 +91,7 @@ SRC	=	big_buff/big_buff.c					\
 		team/team_find.c					\
 		team/team_utils.c					\
 		team/team.c						\
+		tests/test_big_buff.c					\
 		tests/test_list_extract.c				\
 		tests/test_list.c					\
 		tests/test_map_it.c					\
