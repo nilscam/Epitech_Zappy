@@ -15,6 +15,8 @@ void	big_buff_init(big_buff_t *self)
 
 bool	big_buff_add_data(big_buff_t *self, char *data, size_t size_data)
 {
+	if (size_data <= 0)
+		return true;
 	if (size_data > BIG_BUFF_SIZE) {
 		data = strndup(data, size_data);
 		return data ? list_push_back(&self->list, data) : false;
