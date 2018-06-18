@@ -36,6 +36,7 @@ SRC	=	big_buff/big_buff.c					\
 		map/map_sound.c						\
 		map/map_utils.c						\
 		map/map.c						\
+		map/stat.c						\
 		map/vision.c						\
 		parsing/help.c						\
 		parsing/parsing.c					\
