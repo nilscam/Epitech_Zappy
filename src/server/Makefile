@@ -25,6 +25,7 @@ SRC	=	buffer/circular_buffer.c				\
 		list_iterator/list_iterator_move.c			\
 		list_iterator/list_iterator_ops.c			\
 		list_iterator/list_iterator.c				\
+		map/elevation.c						\
 		map/inventory.c						\
 		map/map_egg.c						\
 		map/map_init.c						\

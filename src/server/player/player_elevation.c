@@ -33,7 +33,7 @@ bool	elevation_can_elevate(int level, int nb_of_players, int *stones)
 	for (int i = 0; i < NUMBER_OF_INV_TYPE; ++i)
 		if (stones[i] != el->stones[i])
 			return false;
-	return nb_of_players >= el->nb_players;
+	return nb_of_players == el->nb_players;
 }
 
 void	player_elevate(player_t *self)

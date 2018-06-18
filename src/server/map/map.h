@@ -77,6 +77,7 @@ void	fill_inv_ptrs(inventory_t *inv, int **ptrs);
 void	fill_inv_reprs(char **reprs);
 void	init_map_inventory(inventory_t *inv);
 void	init_player_inventory(inventory_t *inv);
+void	empty_stones_inventory(inventory_t *inv);
 
 /* map.c */
 extern const class_t *MAP;

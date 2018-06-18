@@ -49,7 +49,8 @@ bool	map_it_players_at(map_t *self, point_t pos, map_it_pl_t fct, ...)
 	va_start(args, fct);
 	while (list_it_can_iterate(&it)) {
 		player = list_it_get(&it);
-		if (point_are_equals(player->pos->pos, map_content_at(self, pos)->pos)) {
+		if (point_are_equals(player->pos->pos,
+			map_content_at(self, pos)->pos)) {
 			has_it = true;
 			call_fct(fct, player, &args);
 		}

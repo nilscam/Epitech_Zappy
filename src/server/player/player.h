@@ -34,6 +34,7 @@ typedef struct
 	void		*is_busy_callback_args;
 	client_t	*client;
 	long long	id;
+	bool		is_elevating;
 }	player_t;
 
 struct elevation_tab_s

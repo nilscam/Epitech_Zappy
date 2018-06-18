@@ -47,3 +47,10 @@ void	init_player_inventory(inventory_t *inv)
 		inv->stones[i] = 0;
 	}
 }
+
+void	empty_stones_inventory(inventory_t *inv)
+{
+	for (int i = 0; i < NUMBER_OF_INV_TYPE; ++i) {
+		inv->stones[i] = 0;
+	}
+}

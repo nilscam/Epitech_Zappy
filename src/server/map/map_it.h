@@ -23,4 +23,7 @@ player_t	*get_player_from_id(map_t *self, int id);
 /* vision.c */
 char	*look(map_t *this, player_t *player);
 
+/* elevation.c */
+bool	player_can_elevate(map_t *self, player_t *player);
+
 #endif // !map_it_HPP
