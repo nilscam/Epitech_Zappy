@@ -19,3 +19,8 @@ double	to_valid_angle(double d)
 		d += 360.0;
 	return d;
 }
+
+int	randome_between(int min, int max)
+{
+	return rand() % (max - min + 1) + min;
+}
