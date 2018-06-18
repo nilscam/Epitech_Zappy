@@ -13,9 +13,9 @@ static void	init_map_content(map_content_t *content, point_t pos)
 	init_map_inventory(&content->inventory);
 }
 
-void	init_map_contents(map_t *self, int players_per_team)
+void	init_map_contents(map_t *self, int players_per_team, int nb_teams)
 {
-	(void)players_per_team;
+	(void)players_per_team;(void)nb_teams; //! tmp
 	map_content_t	*content;
 	int	size_x = self->size.x;
 	int	size_y = self->size.y;

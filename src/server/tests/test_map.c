@@ -65,7 +65,8 @@ void	print_map_content(map_t *map)
 int	test_map(void)
 {
 	int	players_per_team = 12;
-	map_t *map = NEW(MAP, 2, 2, players_per_team);
+	int	nb_teams = 2;
+	map_t *map = NEW(MAP, 2, 2, players_per_team, nb_teams);
 	if (!map)
 		return 84;
 	print_map_content(map);

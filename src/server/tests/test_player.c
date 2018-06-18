@@ -48,7 +48,8 @@ int	test_player(void)
 	team_t		*team = team_new("Red", 12);
 	char		*name = strdup("Ash");
 	int		players_per_team = 12;
-	map_t		*map = NEW(MAP, 3, 3, players_per_team);
+	int		nb_teams = 2;
+	map_t		*map = NEW(MAP, 3, 3, players_per_team, nb_teams);
 	player_t	*player = NULL;
 
 	if (!map)
