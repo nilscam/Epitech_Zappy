@@ -9,7 +9,10 @@
 # define MANAGER_HPP_
 
 #include <memory>
-#include <poll.h>
+#include <string>
+#include <iostream>
+#include <map>
+#include <functional>
 
 #include "Client.hpp"
 #include "Select.hpp"
@@ -23,13 +26,15 @@ class Manager
 public:
 	Manager(char *ip, int port);
 	~Manager();
-	int		connectClient(char *ip, int port, char *protocol);
+	int		connectClient(char *ip, int port);
 	void	spectateGame();
 
 private:
 	//! Methodes
+	char	**parseMe(char *str, const char *opt);
 	void	readInFd(int fd);
 	void	writeInFd(int fd);
+	void	parseCmd(void);
 
 	bool	msz();//! X Y\n || msz\n map size
 	bool	bct();//! X Y q0 q1 q2 q3 q4 q5 q6\n || bct X Y\n content of a tile
@@ -63,6 +68,7 @@ private:
 	std::unique_ptr<Client>		_client;
 	std::unique_ptr<Buffer>		_readBuffer;
 	std::unique_ptr<Buffer>		_sendBuffer;
+	std::map<std::string, std::function<void()>>	_cmd;
 
 	bool						_stop;
 	int							_char_read;

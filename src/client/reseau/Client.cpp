@@ -7,11 +7,11 @@
 
 #include "Client.hpp"
 
-int			Client::connect(char *ip, int port, char *protocol)
+int			Client::connectServer(char *ip, int port)
 {
 	int			fd;
 
-	fd = this->create_socket(protocol);
+	fd = this->create_socket();
 	if (fd == -1 || this->connect_socket(ip, port, fd) == -1)
 		return (-1);
 	this->_fd_server = fd;
@@ -43,11 +43,11 @@ int			Client::connect_socket(char *ip, int port, int fd)
 	return (connect(fd, (struct sockaddr *)&s_in, sizeof(s_in)));
 }
 
-int			Client::create_socket(char *protocol)
+int			Client::create_socket()
 {
 	struct protoent		*pe;
 
-	pe = getprotobyname(protocol);
+	pe = getprotobyname("TCP");
 	if (!pe)
 		return (-1);
 	return (socket(AF_INET, SOCK_STREAM, pe->p_proto));

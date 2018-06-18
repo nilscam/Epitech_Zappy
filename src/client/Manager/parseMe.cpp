@@ -5,12 +5,9 @@
 ** parseMe
 */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include "Manager.hpp"
 
-int	pars_opt(char *str, char *opt, int j)
+int	pars_opt(char *str, const char *opt, int j)
 {
     int	i = -1;
 
@@ -25,14 +22,14 @@ int	pars_opt(char *str, char *opt, int j)
     return (-1);
 }
 
-void	go_end(int *count, int *i, char *str, char *opt)
+void	go_end(int *count, int *i, char *str, const char *opt)
 {
     ++(*count);
     while (str[++(*i)] && (pars_opt(str, opt, *i)) == 0);
     *i = (str[*i] == 0 ? (*i) -1 : (*i));
 }
 
-int	malloc_tab(char *str, char *opt)
+int	malloc_tab(char *str, const char *opt)
 {
     int	i = -1;
     int	count = 0;
@@ -44,7 +41,7 @@ int	malloc_tab(char *str, char *opt)
     return (count + 2);
 }
 
-char	**my_str_to_wordtab(char *string, char *opt)
+char	**Manager::parseMe(char *string, const char *opt)
 {
     int	i = -1;
     int	j = -1;

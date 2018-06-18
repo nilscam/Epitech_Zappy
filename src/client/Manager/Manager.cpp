@@ -14,60 +14,103 @@ Manager::Manager(char *ip, int port)
 	_sendBuffer = std::make_unique<Buffer>(LIMIT_SEND);
 	_char_read = 0;
 	_args = NULL;
-	if (!this->connectClient(ip, port, "TCP")) {
+	if (!this->connectClient(ip, port)) {
 		throw std::runtime_error("Error: Failed to connect");
 	}
 }
 Manager::~Manager()
 {
 }
-int		Manager::connectClient(char *ip, int port, char *protocol)
+int		Manager::connectClient(char *ip, int port)
 {
-	struct pollfd   fds;
-
-	fds.fd = _client->getFdServer();
-	fds.events = POLLIN;
-	if (_client->connect(ip, port, protocol) == -1) {
+	if (_client->connectServer(ip, port) == -1) {
 		return (0);
 	}
-	while ("Cyril > Thery") {
-		if (!poll(&fds, 1, 2000)) {
-			return (0);
-		}
-		this->readInFd(_client->getFdServer());
-		if (_char_read > 0 && _readBuffer->isEndOfCommand()) {
-			char	buffer[LIMIT_READ] = _readBuffer->Get();
-			_args = my_str_to_wordtab(buffer, " \n");
-			if (_args && !strcmp(_args[0], "WELCOME")) {
-				_sendBuffer->Put("SPECTATOR\n");
-				this->writeInFd(_client->getFdServer());
-			} else if (_args && !strcmp(_args[0], "OK")) {
-				return (1);
+	while ("Cyril > Threy") {
+		Select select;
+		int fd = _client->getFdServer();
+		select.addFd(fd);
+		try
+		{ select.select(1); }
+		catch (Select::ExceptSelect const & err)
+		{ _stop = true; }
+		if (select.canRead(fd))
+		{
+			this->readInFd(_client->getFdServer());
+			if (_char_read > 0 && _readBuffer->isEndOfCommand()) {
+				_args = this->parseMe(_readBuffer->Get(), " \n");
+				if (_args && !strcmp(_args[0], "WELCOME")) {
+					_sendBuffer->Put("SPECTATOR\n");
+					this->writeInFd(_client->getFdServer());
+				} else if (_args && !strcmp(_args[0], "ok")) {
+					return (1);
+				}
+			} else {
+				return (0);
 			}
 		}
 	}
 	return (0);
 }
 void	Manager::spectateGame()
-{}
+{
+	_stop = false;
+	while (!_stop)
+	{
+		this->parseCmd();
+		return;
+		Select select;
+		int fd = _client->getFdServer();
+		select.addFd(fd);
+		try
+		{ select.select(1); }
+		catch (Select::ExceptSelect const & err)
+		{ _stop = true; }
+		try
+		{
+			if (select.canRead(fd))
+			{
+				this->readInFd(fd);
+			}
+			if (select.canWrite(fd))
+			{
+				this->writeInFd(fd);
+			}
+			if (select.canError(fd)) {}
+		}
+		catch (std::exception const & err)
+		{
+			_stop = true;
+		}
+	}
+}
 void	Manager::readInFd(int fd)
 {
-	char	buffer[LIMIT_READ];
+	char	*buffer = (char *)calloc(LIMIT_READ, 1);
 	_char_read = read(fd, buffer, LIMIT_READ);
 	if (_char_read <= 0) {
 		_args = NULL;
 		return;
 	}
+	std::cout << "RCV:" << buffer << std::endl;
 	_readBuffer->Put(buffer);
+	free(buffer);
 }
 void	Manager::writeInFd(int fd)
 {
-	char	buffer = _buffer->Get();
+	char	*buffer = _sendBuffer->Get();
 	write(fd, buffer, strlen(buffer));
+}
+
+void	Manager::parseCmd()
+{
+	_cmd["msz"] = std::bind(&Manager::msz, this);
+	_cmd["msz"]();
 }
 
 bool	Manager::msz()//! X Y\n || msz\n map size
 {
+	std::cout << "ON PASSE" << std::endl;
 	if (!_args || !_args[0] || strncmp(_args[0], "msz", 3)) {
 		return (false);
 	}

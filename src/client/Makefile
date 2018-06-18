@@ -21,7 +21,7 @@ F	=	-W -Wall -Werror -Wextra
 NAM_OBJ	=	$(MAIN:.cpp=.o)
 OBJ	=	$(SRC:.cpp=.o)
 
-G++	=	g++ -std=c++14 -o
+G++	=	g++ -std=c++14 -g3 -o
 
 all:		$(NAME)
 

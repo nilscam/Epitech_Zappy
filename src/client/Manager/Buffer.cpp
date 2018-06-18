@@ -23,7 +23,7 @@ Buffer::~Buffer()
 	}
 }
 
-void	Buffer::Put(char *str)
+void	Buffer::Put(const char *str)
 {
 	int	i = -1;
 

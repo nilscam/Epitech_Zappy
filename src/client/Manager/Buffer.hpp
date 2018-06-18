@@ -17,7 +17,7 @@ class Buffer
 public:
 	Buffer(int size);
 	~Buffer();
-	void	Put(char *str);
+	void	Put(const char *str);
 	char	*Get(void);
 	bool	isEndOfCommand(void);
 private:
