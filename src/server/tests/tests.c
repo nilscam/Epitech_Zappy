@@ -19,6 +19,7 @@ int	test_parsing(int ac, char **av);
 int	test_list_extract(void);
 int	test_zclock(void);
 int	test_unique_id(void);
+int	test_big_buff(void);
 
 int	tests(
 	__attribute__((unused))int ac,
@@ -36,5 +37,6 @@ int	tests(
 	// return test_list_extract();
 	// return test_zclock();
 	// return test_unique_id();
+	// return test_big_buff();
 	return 0;
 }
