@@ -51,7 +51,7 @@ typedef struct
 }	map_t;
 
 /* map_init.c */
-void	init_map_contents(map_t *self);
+void	init_map_contents(map_t *self, int players_per_team);
 
 /* map_egg.c */
 void	map_add_egg_at(map_t *self, team_t *team, point_t pos);

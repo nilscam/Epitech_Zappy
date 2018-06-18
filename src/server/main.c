@@ -16,7 +16,7 @@ int	tests(int ac, char **av);
 static map_t	*infos_init_map(t_infos *infos)
 {
 	srand((unsigned int)time(NULL));
-	return NEW(MAP, infos->_width, infos->_height);
+	return NEW(MAP, infos->_width, infos->_height, infos->_max_per_team);
 }
 
 static t_server	*infos_init_server(map_t *map, t_infos *infos)
