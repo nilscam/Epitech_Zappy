@@ -151,7 +151,7 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 	{
 		CB_START_INCANTATION, spectate_callback_start_incantation,
 		"pic X Y L n n ...\n",
-		"//todo special",
+		"<x> <y> <lvl> <id_first_player> <map_t *>",
 		"start of an incantation (by the first player)"
 	},
 	{
