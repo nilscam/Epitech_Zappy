@@ -36,10 +36,10 @@ static const player_cmd_t	PLAYER_CMDS[] = {
 		"Fork", "fork a player" },
 	{ "Eject", player_cmd_eject, 7, 0,
 		"Eject", "eject players from this tile" },
-	{ "Take object", player_cmd_take, 7, 0,
-		"Take object", "take object" },
-	{ "Set object", player_cmd_set_obj_down, 7, 0,
-		"Set object", "set object down" },
+	{ "Take", player_cmd_take, 7, 1,
+		"Take <object>", "take object" },
+	{ "Set", player_cmd_set_obj_down, 7, 1,
+		"Set <object>", "set object down" },
 	{ "Incantation", player_cmd_incantation, 300, 0,
 		"Incantation", "start incantation" }
 };

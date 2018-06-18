@@ -12,6 +12,21 @@
 
 void	player_cmd_take(player_cmd_arg_t *args)
 {
-	//todo take object
-	client_callback(CB_OK, args->client);
+	char	*obj = args->args[1];
+	int	*from_ptrs[7];
+	int	*to_ptrs[7];
+	char	*reprs[7];
+
+	fill_inv_reprs((char **)reprs);
+	fill_inv_ptrs(&args->player->pos->inventory, (int **)from_ptrs);
+	fill_inv_ptrs(&args->player->inventory, (int **)to_ptrs);
+	for (size_t i = 0; i < SIZE_ARRAY(reprs); ++i) {
+		if (strcmp(obj, reprs[i]) == 0 && *from_ptrs[i] > 0) {
+			*from_ptrs[i] -= 1;
+			*to_ptrs[i] += 1;
+			client_callback(CB_OK, args->client);
+			return;
+		}
+	}
+	client_callback(CB_KO, args->client);
 }
