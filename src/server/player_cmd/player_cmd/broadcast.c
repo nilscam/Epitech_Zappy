@@ -52,8 +52,9 @@ void	player_cmd_broadcast(player_cmd_arg_t *args)
 		list_it_all(map->players,
 			(list_it_fct_t)broadcast_to_player,
 			map, &from, args->player->id, msg);
+		clients_callback(CB_BROADCAST,
+			args->server->spectators_clients,
+			args->player->id, msg);
 	}
-	clients_callback(CB_BROADCAST, args->server->spectators_clients,
-		args->player->id, msg);
 	client_callback(CB_OK, args->client);
 }

@@ -7,7 +7,8 @@
 
 NAME	=	zappy_server
 MAIN	=	main.c
-SRC	=	buffer/circular_buffer.c				\
+SRC	=	big_buff/big_buff.c					\
+		buffer/circular_buffer.c				\
 		class/class.c						\
 		class/class_utils.c					\
 		client/client_read.c					\
@@ -116,6 +117,7 @@ SRC	=	buffer/circular_buffer.c				\
 		zclock/zclock.c
 
 INC	=	-I .			\
+		-I big_buff		\
 		-I buffer		\
 		-I class		\
 		-I client		\
