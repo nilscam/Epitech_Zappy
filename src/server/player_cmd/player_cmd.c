@@ -10,64 +10,64 @@
 #include <string.h>
 
 static const player_cmd_t	ANONYMOUS_CMDS[] = {
-	{ "SPECTATOR", anonymous_cmd_spectator, 0, 0,
+	{ "SPECTATOR", anonymous_cmd_spectator, NULL, 0, 0,
 		"", "select spectating mode" }
 };
 static const player_cmd_t	DEFAULT_ANONYMOUS_CMD = {
-	"", anonymous_cmd_anonymous, 0, 0,
+	"", anonymous_cmd_anonymous, NULL, 0, 0,
 		"TEAM-NAME", "select a team"
 };
 static const player_cmd_t	PLAYER_CMDS[] = {
-	{ "Forward", player_cmd_forward, 7, 0,
+	{ "Forward", player_cmd_forward, NULL, 7, 0,
 		"Forward", "move up one tile" },
-	{ "Right", player_cmd_right, 7, 0,
+	{ "Right", player_cmd_right, NULL, 7, 0,
 		"Right", "turn 90 degrees right" },
-	{ "Left", player_cmd_left, 7, 0,
+	{ "Left", player_cmd_left, NULL, 7, 0,
 		"Left", "turn 90 degrees left" },
-	{ "Look", player_cmd_look, 7, 0,
+	{ "Look", player_cmd_look, NULL, 7, 0,
 		"Look", "look around" },
-	{ "Inventory", player_cmd_inventory, 1, 0,
+	{ "Inventory", player_cmd_inventory, NULL, 1, 0,
 		"Inventory", "inventory" },
-	{ "Broadcast", player_cmd_broadcast, 7, -1,
+	{ "Broadcast", player_cmd_broadcast, NULL, 7, -1,
 		"Broadcast <text>", "broadcast text" },
-	{ "Connect_nbr", player_cmd_connect_nbr, 0, 0,
+	{ "Connect_nbr", player_cmd_connect_nbr, NULL, 0, 0,
 		"Connect_nbr", "number of team unused slots" },
-	{ "Fork", player_cmd_fork, 42, 0,
+	{ "Fork", player_cmd_fork, NULL, 42, 0,
 		"Fork", "fork a player" },
-	{ "Eject", player_cmd_eject, 7, 0,
+	{ "Eject", player_cmd_eject, validate_eject, 7, 0,
 		"Eject", "eject players from this tile" },
-	{ "Take", player_cmd_take, 7, 1,
+	{ "Take", player_cmd_take, validate_take, 7, 1,
 		"Take <object>", "take object" },
-	{ "Set", player_cmd_set_obj_down, 7, 1,
+	{ "Set", player_cmd_set_obj_down, validate_set_obj_down, 7, 1,
 		"Set <object>", "set object down" },
-	{ "Incantation", player_cmd_incantation, 300, 0,
+	{ "Incantation", player_cmd_incantation, validate_incant, 300, 0,
 		"Incantation", "start incantation" }
 };
 static const player_cmd_t	DEFAULT_PLAYER_CMD = {
-	"", player_cmd_error, 0, 0, "ko", "ko"
+	"", player_cmd_error, NULL, 0, 0, "ko", "ko"
 };
 static const player_cmd_t	SPECTATOR_CMDS[] = {
-	{ "msz", spectate_cmd_map_size, 0, 0,
+	{ "msz", spectate_cmd_map_size, NULL, 0, 0,
 		"msz", "map size" },
-	{ "bct", spectate_cmd_map_content_tile, 0, 2,
+	{ "bct", spectate_cmd_map_content_tile, NULL, 0, 2,
 		"bct X Y", "content of a tile" },
-	{ "mct", spectate_cmd_content_map, 0, 0,
+	{ "mct", spectate_cmd_content_map, NULL, 0, 0,
 		"mct", "content of the map (all the tiles)" },
-	{ "tna", spectate_cmd_name_teams, 0, 0,
+	{ "tna", spectate_cmd_name_teams, NULL, 0, 0,
 		"tna", "name of all the teams" },
-	{ "ppo", spectate_cmd_player_pos, 0, 1,
+	{ "ppo", spectate_cmd_player_pos, NULL, 0, 1,
 		"ppo #n", "player's position" },
-	{ "plv", spectate_cmd_player_level, 0, 1,
+	{ "plv", spectate_cmd_player_level, NULL, 0, 1,
 		"plv #n", "player's level" },
-	{ "pin", spectate_cmd_player_inventory, 0, 1,
+	{ "pin", spectate_cmd_player_inventory, NULL, 0, 1,
 		"pin #n", "player’s inventory" },
-	{ "sgt", spectate_cmd_time_unit, 0, 0,
+	{ "sgt", spectate_cmd_time_unit, NULL, 0, 0,
 		"sgt", "time unit request" },
-	{ "sst", spectate_cmd_time_unit_mod, 0, 1,
+	{ "sst", spectate_cmd_time_unit_mod, NULL, 0, 1,
 		"sst T", "time unit modification" }
 };
 static const player_cmd_t	DEFAULT_SPECTATOR_CMD = {
-	"", player_cmd_error, 0, 0, "ko", "ko"
+	"", player_cmd_error, NULL, 0, 0, "ko", "ko"
 };
 
 static const size_t	MAX_ANONYMOUS_CMDS = SIZE_ARRAY(ANONYMOUS_CMDS);
@@ -130,17 +130,19 @@ static void	call_client_cmd(player_cmd_arg_t *args)
 	player_t		*player = args->player;
 	int			time_limit = c->time_limit;
 	player_cmd_arg_t	*args_cp = NULL;
+	bool			exec = !c->validate || c->validate(args);
 
-	if (time_limit > 0 && args->client->type == CLIENT_PLAYER)
+	if (exec && time_limit > 0 && args->client->type == CLIENT_PLAYER)
 		args_cp = malloc(sizeof(player_cmd_arg_t));
-	if (args_cp) {
+	if (exec && args_cp) {
 		memcpy(args_cp, args, sizeof(player_cmd_arg_t));
 		player_wait_for(player, time_limit);
 		player_set_is_busy_callback(player,
 			(pl_callback_t)client_callback_cmd, args_cp);
 	} else {
 		DEBUG("calling %s - %s", c->prototype, c->description);
-		c->fct(args);
+		if (exec)
+			c->fct(args);
 		free_tab(args->args);
 		SAFE_FREE(args->cmd);
 	}

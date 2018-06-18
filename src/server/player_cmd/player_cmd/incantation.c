@@ -10,6 +10,12 @@
 #include "debug.h"
 #include "player.h"
 
+bool	validate_incant(player_cmd_arg_t *args)
+{
+	client_callback(CB_KO, args->client);
+	return false;
+}
+
 void	player_cmd_incantation(player_cmd_arg_t *args)
 {
 	client_callback(CB_ELEVATION_UNDERWAY, args->client);
