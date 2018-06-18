@@ -20,6 +20,12 @@ bool	map_it_players_team(map_t *self, const char *team,
 		map_it_pl_t fct, ...);
 player_t	*get_player_from_id(map_t *self, int id);
 
+/* map_utils.c */
+player_t	*add_player_to_map(map_t *map,
+	const team_t *team, client_t *client);
+player_t	*add_player_to_map_at(map_t *map, point_t pos,
+	const team_t *team, client_t *client);
+
 /* vision.c */
 char	*look(map_t *this, player_t *player);
 

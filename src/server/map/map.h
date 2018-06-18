@@ -65,9 +65,6 @@ point_t	map_move(map_t *self, point_t from, direction_t to, int inc);
 
 /* map_utils.c */
 map_content_t	*map_content_at(map_t *self, point_t pos);
-bool	add_player_to_map(map_t *map, const team_t *team, client_t *client);
-bool	add_player_to_map_at(map_t *map, point_t pos,
-		const team_t *team, client_t *client);
 
 /* map_sound.c */
 direction_t	map_dir_sound_from(map_t *self, point_t from, point_t to);

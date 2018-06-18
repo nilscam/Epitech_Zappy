@@ -106,6 +106,7 @@ SRC	=	buffer/circular_buffer.c				\
 		tests/tests.c						\
 		unique_id/unique_id.c					\
 		utils/debug.c						\
+		utils/direction_to_int.c				\
 		utils/direction.c					\
 		utils/math_utils.c					\
 		utils/point.c						\
