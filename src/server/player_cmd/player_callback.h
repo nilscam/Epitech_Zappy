@@ -73,14 +73,6 @@ struct client_callback_s
 void	client_callback(callback_type_t type, client_t *client, ...);
 void	clients_callback(callback_type_t type, list_t *clients, ...);
 
-/* player_callback/content_map.c */
-void	player_callback_content_map(
-	const client_callback_t *cb, client_t *client, va_list *args);
-
-/* player_callback/name_teams.c */
-void	player_callback_name_teams(
-	const client_callback_t *cb, client_t *client, va_list *args);
-
 /* player_callback/send_format.c */
 void	player_callback_send_format(
 	const client_callback_t *cb, client_t *client, va_list *args);
