@@ -44,9 +44,11 @@ typedef struct s_player_cmd
 /* player_cmd.c */
 bool	client_cmd(t_server *, client_t *, char *cmd, player_t *);
 
+/* player_cmd/anonymous_cmd_spectator.c */
+void	anonymous_cmd_spectator(player_cmd_arg_t *args);
+
 /* player_cmd/anonymous_cmd.c */
 void	anonymous_cmd_anonymous(player_cmd_arg_t *args);
-void	anonymous_cmd_spectator(player_cmd_arg_t *args);
 
 /* player_cmd/broadcast.c */
 void	player_cmd_broadcast(player_cmd_arg_t *args);

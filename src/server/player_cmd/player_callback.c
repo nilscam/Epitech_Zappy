@@ -33,7 +33,13 @@ static const client_callback_t	ANONYMOUS_CALLBACKS[] = {
 		"ko\n",
 		"",
 		"invalid team name"
-	}
+	},
+	{
+		CB_FULL_TEAM, player_callback_send_format,
+		"team is full\n",
+		"",
+		"team is full"
+	},
 };
 
 static const client_callback_t	CLIENT_CALLBACKS[] = {

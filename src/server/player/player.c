@@ -48,6 +48,7 @@ static const player_t	PLAYER_CLASS = {
 	NULL,
 	NULL,
 	0,
+	false,
 	false
 };
 
