@@ -9,13 +9,21 @@ NAME	=	zappy_client
 MAIN	=	main.cpp
 SRC	=		Manager/Buffer.cpp					\
 			Manager/Manager.cpp					\
+			Manager/Map.cpp						\
+			Manager/Player.cpp					\
 			Manager/parseMe.cpp					\
 			reseau/Client.cpp					\
-			reseau/Select.cpp
+			reseau/Select.cpp					\
+			Utils/Clock.cpp						\
+			Utils/Debug.cpp						\
+			Utils/Direction.cpp					\
+			Utils/Math.cpp						\
+			Utils/Point.cpp
 
 INC	=	-I include		\
 		-I Manager		\
-		-I reseau
+		-I reseau		\
+		-I Utils
 F	=	-W -Wall -Werror -Wextra
 
 NAM_OBJ	=	$(MAIN:.cpp=.o)

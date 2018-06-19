@@ -13,10 +13,14 @@
 #include <iostream>
 #include <map>
 #include <functional>
+#include <list>
+#include <vector>
 
 #include "Client.hpp"
 #include "Select.hpp"
 #include "Buffer.hpp"
+#include "Map.hpp"
+#include "Player.hpp"
 
 #define LIMIT_READ	10000000
 #define LIMIT_SEND	256

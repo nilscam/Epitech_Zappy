@@ -158,7 +158,7 @@ bool	Manager::msz()//! X Y\n || msz\n map size
 {
 	if (!_args[1] || !_args[2])
 		return (false);
-	map.createMap(atoi(_args[1]), atoi(_args[2]));
+	_map.createMap(atoi(_args[1]), atoi(_args[2]));
 	return (true);
 }
 
@@ -188,7 +188,7 @@ bool	Manager::pnw()// #n X Y O L N\n connection of a new player
 		return (false);
 	std::string teamName(_args[6]);
 	int	idxTeam = 0;
-	for(int i = 0; i < _teams.size(); i++)
+	for(size_t i = 0; i < _teams.size(); i++)
 	{
 		if (teamName == _teams[i]) {
 			idxTeam = i;
@@ -198,13 +198,13 @@ bool	Manager::pnw()// #n X Y O L N\n connection of a new player
 	_idxPlayers.push_back(atoi(_args[1]));
 	Direction dir;
 	dir.setDir(atoi(_args[4]));
+	Point	pos(atoi(_args[2]), atoi(_args[3]));
 	_players[_idxPlayers.back()] = std::make_shared<Player>(
-		{atoi(_args[2]), atoi(_args[3])},
+		pos,
 		dir,
 		teamName,
 		idxTeam,
-		atoi(_args[5])
-	);
+		atoi(_args[5]));
 	return (true);
 }
 bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
@@ -288,8 +288,8 @@ bool	Manager::pie()// X Y R\n end of an incantation
 	Point pos(atoi(_args[1]), atoi(_args[2]));
 	for(auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it)
 	{
-		if (_players[it]->getPos() == pos && _players[it]->getIsIncanting()) {
-			_players[it]->setIsIncanting(false);
+		if (_players[*it]->getPos() == pos && _players[*it]->getIsIncanting()) {
+			_players[*it]->setIsIncanting(false);
 		}
 	}
 	return (true);
@@ -308,28 +308,28 @@ bool	Manager::pdr()// n i\n resource dropping
 	if (_players.find(idxPlayer) != _players.end()) {
 		auto items = _map.getCase(_players[idxPlayer]->getPos());
 		if (nbRess == 0) {
-			_players[idxPLayer]->setNbFood(_players[idxPLayer]->getNbFood() - 1);
+			_players[idxPlayer]->setNbFood(_players[idxPlayer]->getNbFood() - 1);
 			items._food += 1;
 		} else if (nbRess == 1) {
-			_players[idxPLayer]->setNbStone1(_players[idxPLayer]->getNbStone1() - 1);
+			_players[idxPlayer]->setNbStone1(_players[idxPlayer]->getNbStone1() - 1);
 			items._stone1 += 1;
 		} else if (nbRess == 2) {
-			_players[idxPLayer]->setNbStone2(_players[idxPLayer]->getNbStone2() - 1);
+			_players[idxPlayer]->setNbStone2(_players[idxPlayer]->getNbStone2() - 1);
 			items._stone2 += 1;
 		} else if (nbRess == 3) {
-			_players[idxPLayer]->setNbStone3(_players[idxPLayer]->getNbStone3() - 1);
+			_players[idxPlayer]->setNbStone3(_players[idxPlayer]->getNbStone3() - 1);
 			items._stone3 += 1;
 		} else if (nbRess == 4) {
-			_players[idxPLayer]->setNbStone4(_players[idxPLayer]->getNbStone4() - 1);
+			_players[idxPlayer]->setNbStone4(_players[idxPlayer]->getNbStone4() - 1);
 			items._stone4 += 1;
 		} else if (nbRess == 5) {
-			_players[idxPLayer]->setNbStone5(_players[idxPLayer]->getNbStone5() - 1);
+			_players[idxPlayer]->setNbStone5(_players[idxPlayer]->getNbStone5() - 1);
 			items._stone5 += 1;
 		} else if (nbRess == 6) {
-			_players[idxPLayer]->setNbStone6(_players[idxPLayer]->getNbStone6() - 1);
+			_players[idxPlayer]->setNbStone6(_players[idxPlayer]->getNbStone6() - 1);
 			items._stone6 += 1;
 		}
-		_map.setCase(_players[idxPlayer], items);
+		_map.setCase(_players[idxPlayer]->getPos(), items);
 	}
 	return (true);
 }
@@ -343,28 +343,28 @@ bool	Manager::pgt()// n i\n resource collecting
 	if (_players.find(idxPlayer) != _players.end()) {
 		auto items = _map.getCase(_players[idxPlayer]->getPos());
 		if (nbRess == 0) {
-			_players[idxPLayer]->setNbFood(_players[idxPLayer]->getNbFood() + 1);
+			_players[idxPlayer]->setNbFood(_players[idxPlayer]->getNbFood() + 1);
 			items._food -= 1;
 		} else if (nbRess == 1) {
-			_players[idxPLayer]->setNbStone1(_players[idxPLayer]->getNbStone1() + 1);
+			_players[idxPlayer]->setNbStone1(_players[idxPlayer]->getNbStone1() + 1);
 			items._stone1 -= 1;
 		} else if (nbRess == 2) {
-			_players[idxPLayer]->setNbStone2(_players[idxPLayer]->getNbStone2() + 1);
+			_players[idxPlayer]->setNbStone2(_players[idxPlayer]->getNbStone2() + 1);
 			items._stone2 -= 1;
 		} else if (nbRess == 3) {
-			_players[idxPLayer]->setNbStone3(_players[idxPLayer]->getNbStone3() + 1);
+			_players[idxPlayer]->setNbStone3(_players[idxPlayer]->getNbStone3() + 1);
 			items._stone3 -= 1;
 		} else if (nbRess == 4) {
-			_players[idxPLayer]->setNbStone4(_players[idxPLayer]->getNbStone4() + 1);
+			_players[idxPlayer]->setNbStone4(_players[idxPlayer]->getNbStone4() + 1);
 			items._stone4 -= 1;
 		} else if (nbRess == 5) {
-			_players[idxPLayer]->setNbStone5(_players[idxPLayer]->getNbStone5() + 1);
+			_players[idxPlayer]->setNbStone5(_players[idxPlayer]->getNbStone5() + 1);
 			items._stone5 -= 1;
 		} else if (nbRess == 6) {
-			_players[idxPLayer]->setNbStone6(_players[idxPLayer]->getNbStone6() + 1);
+			_players[idxPlayer]->setNbStone6(_players[idxPlayer]->getNbStone6() + 1);
 			items._stone6 -= 1;
 		}
-		_map.setCase(_players[idxPlayer], items);
+		_map.setCase(_players[idxPlayer]->getPos(), items);
 	}
 	return (true);
 }
@@ -377,7 +377,7 @@ bool	Manager::pdi()// n\n death of a player
 	if (_players.find(idxPlayer) != _players.end()) {
 		_players[idxPlayer]->setIsDead(true);
 		for(auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it) {
-			if (it == idxPlayer) {
+			if (*it == idxPlayer) {
 				_idxPlayers.erase(it);
 				break;
 			}
@@ -391,7 +391,6 @@ bool	Manager::enw()// e n X Y\n an egg was laid by a player
 		return (false);
 	}
 	int	eggNumber = atoi(_args[1]);
-	int idxPlayer = atoi(_args[2]);
 	Point eggPos(atoi(_args[3]), atoi(_args[4]));
 	_idxEggs.push_back(eggNumber);
 	_eggs[eggNumber] = eggPos;
@@ -405,7 +404,7 @@ bool	Manager::eht()// e\n egg hatching
 	int idxEgg = atoi(_args[1]);
 	if (_eggs.find(idxEgg) != _eggs.end()) {
 		for(auto it = _idxEggs.begin(); it != _idxEggs.end(); ++it) {
-			if (it == idxEgg) {
+			if (*it == idxEgg) {
 				_idxEggs.erase(it);
 				break;
 			}

@@ -38,13 +38,13 @@ void	Map::updateMap(char **infos)
 		Point point(atoi(infos[i + 1]), atoi(infos[i + 2]));
 		if (this->isInMap(point)) {
 			struct MapCase items;
-			items._food = atoi(_args[i + 3]);
-			items._stone1 = atoi(_args[i + 4]);
-			items._stone2 = atoi(_args[i + 5]);
-			items._stone3 = atoi(_args[i + 6]);
-			items._stone4 = atoi(_args[i + 7]);
-			items._stone5 = atoi(_args[i + 8]);
-			items._stone6 = atoi(_args[i + 9]);
+			items._food = atoi(infos[i + 3]);
+			items._stone1 = atoi(infos[i + 4]);
+			items._stone2 = atoi(infos[i + 5]);
+			items._stone3 = atoi(infos[i + 6]);
+			items._stone4 = atoi(infos[i + 7]);
+			items._stone5 = atoi(infos[i + 8]);
+			items._stone6 = atoi(infos[i + 9]);
 			_map[point.y()][point.x()] = items;
 		}
 		i += 10;
@@ -64,14 +64,14 @@ Map::MapCase	Map::getCase(Point const & pos) const
 	int x = pos.getX();
 	int y = pos.getY();
 
-	if (y < 0 || y >= this->map.size())
-		return DEFAULT_SQT;
-	else if (x < 0 || x >= this->map[y].size())
-		return DEFAULT_SQT;
-	return this->map[y][x];
+	if (y < 0 || y >= static_cast<int>(this->_map.size()))
+		return DEFAULT_CASE;
+	else if (x < 0 || x >= static_cast<int>(this->_map[y].size()))
+		return DEFAULT_CASE;
+	return this->_map[y][x];
 }
 
-void	setCase(Point const & pos, MapCase items)
+void	Map::setCase(Point const & pos, MapCase items)
 {
 	if (!this->isInMap(pos)) {
 		return;
@@ -81,13 +81,13 @@ void	setCase(Point const & pos, MapCase items)
 
 std::vector<std::vector<Map::MapCase>>	Map::getMapCase() const
 {
-	return map;
+	return _map;
 }
 
 bool	Map::isInMap(Point pos)
 {
-	if (0 <= pos.getY() && pos.getY() < map.size()) {
-		if (0 <= pos.getX() && pos.getX() < map[pos.getY()].size())
+	if (0 <= pos.getY() && pos.getY() < static_cast<int>(_map.size())) {
+		if (0 <= pos.getX() && pos.getX() < static_cast<int>(_map[pos.getY()].size()))
 			return (true);
 	}
 	return (false);
@@ -95,7 +95,7 @@ bool	Map::isInMap(Point pos)
 
 Map::Map(const std::vector<std::vector<Map::MapCase>> &map)
 {
-	this->map = map;
+	this->_map = map;
 }
 
 std::ostream & operator<<(std::ostream & os, Map const & map)
