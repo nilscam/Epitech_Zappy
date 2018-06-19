@@ -44,6 +44,9 @@ int		Manager::connectClient(char *ip, int port)
 					_sendBuffer->Put("SPECTATOR\n");
 					this->writeInFd(_client->getFdServer());
 				} else if (_args && !strcmp(_args[0], "ok")) {
+					_sendBuffer->Put("msz\nmct\ntna\n");
+					this->writeInFd(_client->getFdServer());
+					this->freeArgs();
 					return (1);
 				}
 				this->freeArgs();
@@ -56,6 +59,7 @@ int		Manager::connectClient(char *ip, int port)
 }
 void	Manager::spectateGame()
 {
+	return;
 	_stop = false;
 	while (!_stop)
 	{
@@ -101,7 +105,10 @@ void	Manager::readInFd(int fd)
 void	Manager::writeInFd(int fd)
 {
 	char	*buffer = _sendBuffer->Get();
-	write(fd, buffer, strlen(buffer));
+	if (buffer) {
+		write(fd, buffer, strlen(buffer));
+		free(buffer);
+	}
 }
 
 void	Manager::initReadCmd()

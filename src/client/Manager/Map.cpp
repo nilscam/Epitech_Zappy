@@ -100,6 +100,23 @@ Map::Map(const std::vector<std::vector<Map::MapCase>> &map)
 
 std::ostream & operator<<(std::ostream & os, Map const & map)
 {
-	(void)os; (void)map;
+	auto mymap = map.getMapCase();
+	os << "Map:\n";
+	for(size_t i = 0; i < mymap.size(); i++)
+	{
+		os << "{\n";
+		for(size_t j = 0; j < mymap[i].size(); j++)
+		{
+			os << "\t" << mymap[i][j]._food << "\n";
+			os << "\t" << mymap[i][j]._stone1 << "\n";
+			os << "\t" << mymap[i][j]._stone2 << "\n";
+			os << "\t" << mymap[i][j]._stone3 << "\n";
+			os << "\t" << mymap[i][j]._stone4 << "\n";
+			os << "\t" << mymap[i][j]._stone5 << "\n";
+			os << "\t" << mymap[i][j]._stone6 << "\n";
+		}
+		os << "}\n";	
+	}
+	os << "\n";
 	return os;
 }
