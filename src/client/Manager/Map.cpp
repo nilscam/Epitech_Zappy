@@ -9,9 +9,17 @@
 
 void	Map::createMap(int width, int height)
 {
-	std::vector<MapSqt>	v;
+	std::vector<MapCase>	v;
+	struct	MapCase m;
+	m._food = 0;
+	m._stone1 = 0;
+	m._stone2 = 0;
+	m._stone3 = 0;
+	m._stone4 = 0;
+	m._stone5 = 0;
+	m._stone6 = 0;
 	for(int i = 0; i < width; i++) {
-		v.push_back(None);
+		v.push_back(m);
 	}
 	for(int i = 0; i < height; i++){
 		_map.push_back(v);
@@ -29,48 +37,30 @@ void	Map::updateMap(char **infos)
 			break;
 		Point point(atoi(infos[i + 1]), atoi(infos[i + 2]));
 		if (this->isInMap(point)) {
-			MapSqt items = None;
-			if (infos[i + 3][0] == '0') {
-				items |= Food;
-			} if (infos[i + 4][0] == '0') {
-				items |= Stone1;
-			} if (infos[i + 5][0] == '0') {
-				items |= Stone2;
-			} if (infos[i + 6][0] == '0') {
-				items |= Stone3;
-			} if (infos[i + 7][0] == '0') {
-				items |= Stone4;
-			} if (infos[i + 8][0] == '0') {
-				items |= Stone5;
-			} if (infos[i + 9][0] == '0') {
-				items |= Stone6;
-			}
+			struct MapCase items;
+			items._food = atoi(_args[i + 3]);
+			items._stone1 = atoi(_args[i + 4]);
+			items._stone2 = atoi(_args[i + 5]);
+			items._stone3 = atoi(_args[i + 6]);
+			items._stone4 = atoi(_args[i + 7]);
+			items._stone5 = atoi(_args[i + 8]);
+			items._stone6 = atoi(_args[i + 9]);
 			_map[point.y()][point.x()] = items;
 		}
 		i += 10;
 	}
 }
 
-std::vector<Point>	Map::getSqtPoints(MapSqt sqt) const
+Map::MapCase	Map::getCase(Point const & pos) const
 {
-	std::vector<Point> points;
-	int y = 0;
-	for (auto const & l : this->map) {
-		int x = 0;
-		for (auto const & c : l) {
-			if (c & sqt) {
-				points.push_back({ x, y });
-			}
-			++x;
-		}
-		++y;
-	}
-	return points;
-}
-
-Map::MapSqt	Map::getSqt(Point const & pos) const
-{
-	const MapSqt DEFAULT_SQT = HardWall;
+	MapCase DEFAULT_CASE;
+	DEFAULT_CASE._food = 0;
+	DEFAULT_CASE._stone1 = 0;
+	DEFAULT_CASE._stone2 = 0;
+	DEFAULT_CASE._stone3 = 0;
+	DEFAULT_CASE._stone4 = 0;
+	DEFAULT_CASE._stone5 = 0;
+	DEFAULT_CASE._stone6 = 0;
 	int x = pos.getX();
 	int y = pos.getY();
 
@@ -81,7 +71,15 @@ Map::MapSqt	Map::getSqt(Point const & pos) const
 	return this->map[y][x];
 }
 
-std::vector<std::vector<Map::MapSqt>>	Map::getMapSqt() const
+void	setCase(Point const & pos, MapCase items)
+{
+	if (!this->isInMap(pos)) {
+		return;
+	}
+	_map[pos.y()][pos.x()] = items;
+}
+
+std::vector<std::vector<Map::MapCase>>	Map::getMapCase() const
 {
 	return map;
 }
@@ -95,26 +93,13 @@ bool	Map::isInMap(Point pos)
 	return (false);
 }
 
-Map::Map(const std::vector<std::vector<Map::MapSqt>> &map)
+Map::Map(const std::vector<std::vector<Map::MapCase>> &map)
 {
 	this->map = map;
 }
 
 std::ostream & operator<<(std::ostream & os, Map const & map)
 {
-	auto sqtPoints = map.getMapSqt();
-	for (int y = 0; y < sqtPoints.size(); ++y)
-	{
-		for (int x = 0; x < sqtPoints[y].size(); ++x)
-		{
-			char repr = ' ';
-			if (sqtPoints[y][x] & Map::SoftWall)
-				repr = '.';
-			else if (sqtPoints[y][x] & Map::HardWall)
-				repr = '#';
-			os << (char)repr;
-		}
-		os << std::endl;
-	}
+	(void)os; (void)map;
 	return os;
 }

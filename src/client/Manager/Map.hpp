@@ -28,20 +28,19 @@ public:
 		char const * what() const throw() { return s.c_str(); }
 	};
 
-	enum MapSqt
+	struct	MapCase
 	{
-		None = 0x0,
-		Food = 0x1,
-		Stone1 = 0x2,
-		Stone2 = 0x4,
-		Stone3 = 0x8,
-		Stone4 = 0x10,
-		Stone5 = 0x20,
-		Stone6 = 0x40
+		int		_food;
+		int		_stone1;
+		int		_stone2;
+		int		_stone3;
+		int		_stone4;
+		int		_stone5;
+		int		_stone6;
 	};
 
 	Map() = default;
-	Map(const std::vector<std::vector<MapSqt>> &map);
+	Map(const std::vector<std::vector<MapCase>> &map);
 	virtual ~Map() = default;
 	Map(Map const & rhs) = default;
 	Map(Map && rhs) = default;
@@ -50,16 +49,16 @@ public:
 
 	void	createMap(int width, int height);
 	void	updateMap(char **infos);
-	MapSqt	getSqt(Point const & pos) const;
-	std::vector<Point>	getSqtPoints(MapSqt sqt) const;
-	std::vector<std::vector<MapSqt>>	getMapSqt() const;
+	MapCase	getCase(Point const & pos) const;
+	void	setCase(Point const & pos, MapCase items);
+	std::vector<std::vector<MapCase>>	getMapCase() const;
 	bool				isInMap(Point pos);
 
 	friend std::ostream & operator<<(std::ostream & os, Map const & map);
 
 private:
 
-	std::vector<std::vector<MapSqt>>	_map;
+	std::vector<std::vector<MapCase>>	_map;
 };
 
 #endif // !Map_HPP

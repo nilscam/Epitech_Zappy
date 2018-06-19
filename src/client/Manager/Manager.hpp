@@ -78,6 +78,8 @@ private:
 	std::map<int, Point>							_eggs;
 	std::list<int>									_idxEggs;
 	std::vector<std::string>						_teams;
+	int												_freq;
+	std::string										_winner;
 
 	bool						_stop;
 	int							_char_read;
