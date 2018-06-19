@@ -44,6 +44,7 @@ public:
 	bool	operator!=(Direction const & rhs) const noexcept;
 
 	void			setDir(Dir_t dir) noexcept;
+	void			setDir(int dir) noexcept;
 	/* ASerializable.hpp */
 	void	serialize(Saver & saver) const override;
 	void	deserialize(Loader & loader) override;

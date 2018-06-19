@@ -71,7 +71,13 @@ private:
 	std::unique_ptr<Buffer>		_readBuffer;
 	std::unique_ptr<Buffer>		_sendBuffer;
 	std::map<std::string, std::function<void()>>	_cmd;
-	Map							_map;
+
+	Map												_map;
+	std::map<int, std::shared_ptr<Player>>			_players;
+	std::list<int>									_idxPlayers;
+	std::map<int, Point>							_eggs;
+	std::list<int>									_idxEggs;
+	std::vector<std::string>						_teams;
 
 	bool						_stop;
 	int							_char_read;

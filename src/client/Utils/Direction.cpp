@@ -68,6 +68,14 @@ void	Direction::setDir(Direction::Dir_t dir) noexcept
 	_dir = dir;
 }
 
+void	Direction::setDir(int dir) noexcept
+{
+	dir == 1 ? dir.setDir(Direction::Up) : 0;
+	dir == 2 ? dir.setDir(Direction::Right) : 0;
+	dir == 3 ? dir.setDir(Direction::Down) : 0;
+	dir == 4 ? dir.setDir(Direction::Left) : 0;
+}
+
 void	Direction::serialize(Saver & saver) const
 {
 	saver.save(_dir);

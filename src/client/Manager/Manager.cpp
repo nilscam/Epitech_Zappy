@@ -171,22 +171,85 @@ bool	Manager::bct()//! X Y q0 q1 q2 q3 q4 q5 q6\n || bct X Y\n content of a tile
 
 bool	Manager::tna()//! N\n * nbr_teams || tna\n name of all the teams
 {
+	int	i = 0;
+	_teams.clear();
+	while (_args[i]) {
+		if (!_args[i + 1]) {
+			break;
+		}
+		_teams.emplace_back(std::string(_args[i + 1]));
+	}
 	return (true);
 }
 bool	Manager::pnw()// #n X Y O L N\n connection of a new player
 {
+	if (!_args[1] || !_args[2] || !_args[3]
+		|| !_args[4] || !_args[5] || !_args[6])
+		return (false);
+	std::string teamName(_args[6]);
+	int	idxTeam = 0;
+	for(int i = 0; i < _teams.size(); i++)
+	{
+		if (teamName == _teams[i]) {
+			idxTeam = i;
+			break;
+		}
+	}
+	_idxPlayers.push_back(atoi(_args[1]));
+	Direction dir;
+	dir.setDir(atoi(_args[4]));
+	_players[_idxPlayers.back()] = std::make_shared<Player>(
+		{atoi(_args[2]), atoi(_args[3])},
+		dir,
+		teamName,
+		idxTeam,
+		atoi(_args[5])
+	);
 	return (true);
 }
 bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
 {
+	if (!_args[1] || !_args[2] || !_args[3] || !_args[4]) {
+		return (false);
+	}
+	int idxPlayer = atoi(_args[1]);
+	if (_players.find(idxPlayer) != _players.end()) {
+		_players[idxPlayer]->setPos({atoi(_args[2]), atoi(_args[3])});
+		Direction dir;
+		dir.setDir(atoi(_args[4]));
+		_players[idxPlayer]->setCurrentDir(dir);
+	}
 	return (true);
 }
 bool	Manager::plv()//! n L\n || plv #n\n player’s level
 {
+	if (!_args[1] || !_args[2]) {
+		return (false);
+	}
+	int idxPlayer = atoi(_args[1]);
+	if (_players.find(idxPlayer) != _players.end()) {
+		_players[idxPlayer]->setLevel(atoi(_args[2]));
+	}
 	return (true);
 }
 bool	Manager::pin()//! n X Y q0 q1 q2 q3 q4 q5 q6\n || pin #n\n player’s inventory
 {
+	if (!_args[1] || !_args[2] || !_args[3]
+		|| !_args[4] || !_args[5] || !_args[6]
+		|| !_args[7] || !_args[8] || !_args[9] || !_args[10] ) {
+		return (false);
+	}
+	int idxPlayer = atoi(_args[1]);
+	if (_players.find(idxPlayer) != _players.end()) {
+		_players[idxPlayer]->setPos({atoi(_args[2]), atoi(_args[3])});
+		_players[idxPlayer]->setNbFood(atoi(_args[4]));
+		_players[idxPlayer]->setNbStone1(atoi(_args[5]));
+		_players[idxPlayer]->setNbStone2(atoi(_args[6]));
+		_players[idxPlayer]->setNbStone3(atoi(_args[7]));
+		_players[idxPlayer]->setNbStone4(atoi(_args[8]));
+		_players[idxPlayer]->setNbStone5(atoi(_args[9]));
+		_players[idxPlayer]->setNbStone6(atoi(_args[10]));
+	}
 	return (true);
 }
 bool	Manager::pex()// n\n explusion
@@ -195,10 +258,27 @@ bool	Manager::pex()// n\n explusion
 }
 bool	Manager::pbc()// n M\n broadcast
 {
+	if (!_args[1] || !_args[2]) {
+		return (false);
+	}
+	int idxPlayer = atoi(_args[1]);
+	if (_players.find(idxPlayer) != _players.end()) {
+		_players[idxPlayer]->setIsBroadcasting(true);
+	}	
 	return (true);
 }
 bool	Manager::pic()// X Y L n n . . . \n start of an incantation (by the first player)
 {
+	if (!_args[1] || !_args[2] || !_args[3] || !_args[4]) {
+		return (false);
+	}
+	
+	for(int i = 4; _args[i]; i++) {
+		int idxPlayer = atoi(_args[i]);
+		if (_players.find(idxPlayer) != _players.end()) {
+			_players[idxPlayer]->setIsIncanting(true);
+		}
+	}
 	return (true);
 }
 bool	Manager::pie()// X Y R\n end of an incantation
