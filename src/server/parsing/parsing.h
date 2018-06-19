@@ -29,6 +29,7 @@ struct 				s_infos
 };
 
 //				help.c
+bool	check_is_help(int ac, char **av);
 int	help(char *self);
 
 //				get_infos.c

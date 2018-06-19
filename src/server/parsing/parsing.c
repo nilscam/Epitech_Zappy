@@ -6,16 +6,14 @@
 */
 
 #include "parsing.h"
+#include "str_to_tab.h"
 
-static bool	check_is_help(int ac, char **av)
+static void	check_error(t_infos *i)
 {
-	for (int i = 1; i < ac; ++i) {
-		if (strcmp("-h", av[i]) == 0
-		|| strcmp("--help", av[i]) == 0) {
-			return true;
-		}
-	}
-	return false;
+	if (i->_port <= 0 || i->_width <= 0 || i->_height <= 0
+		|| i->_max_per_team <= 0 || i->_freq <= 0
+		|| !i->_team_name || !(*i->_team_name))
+		i->_err = 0;
 }
 
 int			get_team_name(t_infos *infos, int *i, int ac, char **av)
@@ -75,13 +73,18 @@ t_infos		parse_args(int ac, char **av)
 
 	init_infos(&infos);
 	infos._is_help = check_is_help(ac, av);
-	if (infos._is_help)
+	if (infos._is_help) 
 		return (infos);
 	for (int i = 1; i < ac; ++i) {
 		parse_info(&infos, &i, ac, av);
-		if (!infos._err)
+		if (!infos._err) {
+			free_tab(infos._team_name);
 			return (infos);
+		}
 	}
 	infos._err = 1;
+	check_error(&infos);
+	if (!infos._err)
+		free_tab(infos._team_name);
 	return (infos);
 }
