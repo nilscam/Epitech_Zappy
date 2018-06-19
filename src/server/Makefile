@@ -16,16 +16,18 @@ SRC	=	big_buff/big_buff.c					\
 		client/client.c						\
 		egg/egg_hatch.c						\
 		egg/egg.c						\
+		list/list_iterator/list_iterator_erase.c			\
+		list/list_iterator/list_iterator_it.c			\
+		list/list_iterator/list_iterator_move.c			\
+		list/list_iterator/list_iterator_ops.c			\
+		list/list_iterator/list_iterator.c				\
 		list/list_extract.c					\
 		list/list_get.c						\
+		list/list_node.c					\
 		list/list_pop.c						\
 		list/list_push.c					\
 		list/list_utils.c					\
 		list/list.c						\
-		list_iterator/list_iterator_it.c			\
-		list_iterator/list_iterator_move.c			\
-		list_iterator/list_iterator_ops.c			\
-		list_iterator/list_iterator.c				\
 		map/elevation.c						\
 		map/inventory.c						\
 		map/map_egg.c						\
@@ -93,6 +95,7 @@ SRC	=	big_buff/big_buff.c					\
 		team/team_utils.c					\
 		team/team.c						\
 		tests/test_big_buff.c					\
+		tests/test_list_alloc.c					\
 		tests/test_list_extract.c				\
 		tests/test_list.c					\
 		tests/test_map_it.c					\
@@ -124,8 +127,8 @@ INC	=	-I .			\
 		-I class		\
 		-I client		\
 		-I egg			\
+		-I list/list_iterator	\
 		-I list			\
-		-I list_iterator	\
 		-I map			\
 		-I parsing		\
 		-I player		\

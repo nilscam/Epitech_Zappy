@@ -27,7 +27,6 @@ bool	list_it_can_iterate(list_iterator_t *self);
 void	list_it_iterate(list_iterator_t *self);
 
 /* list_iterator_ops.c */
-void	list_it_erase(list_iterator_t *self, void (*fct)(void *));
 void	*list_it_get(list_iterator_t *self);
 void	list_it_set(list_iterator_t *self, void *data);
 
@@ -35,6 +34,10 @@ void	list_it_set(list_iterator_t *self, void *data);
 bool	list_it_all(list_t *list, list_it_fct_t fct, ...);
 bool	list_it_remove(list_t *list, list_it_fct_remove_t fct_remove, ...);
 void	*list_it_find(list_t *list, list_it_fct_find_t fct_find, ...);
+
+/* list_iterator_erase.c */
+void	list_it_erase(list_iterator_t *self, list_fct_t fct);
+bool	list_erase_at(list_t *self, list_fct_t fct, int idx);
 
 /* list_iterator.c */
 extern const class_t *LIST_IT;

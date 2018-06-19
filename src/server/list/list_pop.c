@@ -15,7 +15,7 @@ void	*list_pop_front(list_t *self)
 	if (tail) {
 		self->tail = self->tail->next;
 		data = tail->data;
-		free(tail);
+		list_node_deinit(tail, self, NULL);
 		if (self->tail)
 			self->tail->prev = NULL;
 	}
@@ -30,7 +30,7 @@ void	*list_pop_back(list_t *self)
 	if (head) {
 		self->head = self->head->prev;
 		data = head->data;
-		free(head);
+		list_node_deinit(head, self, NULL);
 		if (self->head)
 			self->head->next = NULL;
 	}

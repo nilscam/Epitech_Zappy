@@ -61,10 +61,11 @@ bool	list_it_remove(list_t *list, list_it_fct_remove_t fct_remove, ...)
 	va_start(args, fct_remove);
 	while (list_it_can_iterate(&it)) {
 		has_it = true;
-		if (call_fct_bool(fct_remove, list_it_get(&it), &args))
+		if (call_fct_bool(fct_remove, list_it_get(&it), &args)) {
 			list_it_erase(&it, NULL);
-		else
+		} else {
 			list_it_iterate(&it);
+		}
 	}
 	va_end(args);
 	DEINIT(it);
@@ -82,8 +83,9 @@ void	*list_it_find(list_t *list, list_it_fct_find_t fct_find, ...)
 	va_start(args, fct_find);
 	while (list_it_can_iterate(&it)) {
 		data = list_it_get(&it);
-		if (call_fct_bool(fct_find, data, &args))
+		if (call_fct_bool(fct_find, data, &args)) {
 			break;
+		}
 		list_it_iterate(&it);
 		data = NULL;
 	}
