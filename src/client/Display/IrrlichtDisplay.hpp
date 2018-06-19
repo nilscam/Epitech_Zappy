@@ -9,8 +9,11 @@
 #define IrrlichtDisplay_H_
 
 #include <irrlicht/irrlicht.h>
+#include "Player.hpp"
 #include <iostream>
 #include <map>
+#include <memory>
+#include <list>
 
 #include "Map.hpp"
 
@@ -18,7 +21,11 @@ class IrrlichtDisplay {
 public:
 		IrrlichtDisplay();
 		~IrrlichtDisplay();
-		void 	Display(Map &map);
+		void 	Display(Map &map,
+						std::map<int, std::shared_ptr<Player>> players,
+						std::list<int> idxPlayers,
+						std::map<int, Point> eggs,
+						std::list<int> idxEggs);
 		bool	isDeviceRunning(void);
 private:
 	//! Methodes

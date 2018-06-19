@@ -92,7 +92,7 @@ void	Manager::spectateGame()
 		}
 		if (refresh.timeSinceMark() > 500) {
 			if (disp.isDeviceRunning()) {
-				disp.Display(_map);
+				disp.Display(_map, _players, _idxPlayers, _eggs, _idxEggs);
 			} else {
 				_stop = true;
 			}

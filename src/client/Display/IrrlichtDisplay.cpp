@@ -41,8 +41,28 @@ IrrlichtDisplay::~IrrlichtDisplay() {
 	_device->drop();
 }
 
-void IrrlichtDisplay::Display(Map &map) {
+void IrrlichtDisplay::Display(Map &map,
+							std::map<int, std::shared_ptr<Player>> players,
+							std::list<int> idxPlayers,
+							std::map<int, Point> eggs,
+							std::list<int> idxEggs) {
 	displayMap(map);
+	(void)players; (void)idxPlayers;
+	//! display PLayer
+	// for(auto it = idxPlayers.begin(); it != idxPlayers.end(); ++it)
+	// {
+	// 	players[*it]->getPos();
+	// }
+	//!----------
+
+	(void)eggs; (void)idxEggs;
+	//! display Eggs
+	// for(auto it = idxEggs.begin(); it != idxEggs.end(); ++it)
+	// {
+	// 	eggs[*it].x();
+	// 	eggs[*it].y();
+	// }
+	//!----------
 	render();
 }
 
