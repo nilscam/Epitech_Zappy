@@ -156,13 +156,19 @@ void	Manager::parseCmd()
 
 bool	Manager::msz()//! X Y\n || msz\n map size
 {
+	if (!_args[1] || !_args[2])
+		return (false);
+	map.createMap(atoi(_args[1]), atoi(_args[2]));
 	return (true);
 }
+
+//! boo	bct(); X Y q0 q1 q2 q3 q4 q5 q6\n * nbr_tiles || mct\n content of the map (all the tiles)
 bool	Manager::bct()//! X Y q0 q1 q2 q3 q4 q5 q6\n || bct X Y\n content of a tile
 {
+	_map.updateMap(_args);
 	return (true);
 }
-//! boo	bct(); X Y q0 q1 q2 q3 q4 q5 q6\n * nbr_tiles || mct\n content of the map (all the tiles)
+
 bool	Manager::tna()//! N\n * nbr_teams || tna\n name of all the teams
 {
 	return (true);
