@@ -21,6 +21,8 @@
 #include "Buffer.hpp"
 #include "Map.hpp"
 #include "Player.hpp"
+#include "IrrlichtDisplay.hpp"
+#include "Clock.hpp"
 
 #define LIMIT_READ	10000000
 #define LIMIT_SEND	256

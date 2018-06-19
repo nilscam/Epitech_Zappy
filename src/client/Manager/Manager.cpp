@@ -59,6 +59,9 @@ int		Manager::connectClient(char *ip, int port)
 }
 void	Manager::spectateGame()
 {
+	Clock refresh;
+	refresh.mark();
+	IrrlichtDisplay disp;
 	_stop = false;
 	while (!_stop)
 	{
@@ -86,6 +89,14 @@ void	Manager::spectateGame()
 		catch (std::exception const & err)
 		{
 			_stop = true;
+		}
+		if (refresh.timeSinceMark() > 500) {
+			if (disp.isDeviceRunning()) {
+				disp.Display(_map);
+			} else {
+				_stop = true;
+			}
+			refresh.mark();
 		}
 	}
 }

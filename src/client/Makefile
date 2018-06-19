@@ -7,7 +7,8 @@
 
 NAME	=	zappy_client
 MAIN	=	main.cpp
-SRC	=		Manager/Buffer.cpp					\
+SRC	=		Display/IrrlichtDisplay.cpp			\
+			Manager/Buffer.cpp					\
 			Manager/Manager.cpp					\
 			Manager/Map.cpp						\
 			Manager/Player.cpp					\
@@ -23,11 +24,14 @@ SRC	=		Manager/Buffer.cpp					\
 INC	=	-I include		\
 		-I Manager		\
 		-I reseau		\
-		-I Utils
+		-I Utils		\
+		-I Display
 F	=	-W -Wall -Werror -Wextra
 
 NAM_OBJ	=	$(MAIN:.cpp=.o)
 OBJ	=	$(SRC:.cpp=.o)
+
+LIB		=	-lIrrlicht -lGL -lXxf86vm -lXext -lX11
 
 G++	=	g++ -std=c++14 -g3 -o
 

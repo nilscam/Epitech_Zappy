@@ -6,39 +6,39 @@
 
 #define TEXTURE_BASE			"./model/wood.jpg"
 #define IRON_BOX				"./model/iron_box.png"
-#define GRASS				"./model/grass.jpg"
-#define PURPLE_GEM			"./model/PowerGem/purplegem.png"
+#define GRASS					"./model/grass.jpg"
+#define PURPLE_GEM				"./model/PowerGem/purplegem.png"
 #define PINK_GEM				"./model/PowerGem/pinkgem.png"
-#define RED_GEM				"./model/Gem1/Red.png"
-#define GREEN_GEM			"./model/Gem1/Green.png"
-#define	YELLOW_GEM			"./model/Gem1/Yellow.png"
+#define RED_GEM					"./model/Gem1/Red.png"
+#define GREEN_GEM				"./model/Gem1/Green.png"
+#define	YELLOW_GEM				"./model/Gem1/Yellow.png"
 #define BLUE_GEM				"./model/Gem1/Blue.png"
-#define YOSHI_EGG			"./model/Egg/YoshSS00.png"
+#define YOSHI_EGG				"./model/Egg/YoshSS00.png"
 
 #define TEXTURE_BASE_IDX		0
 #define IRON_BOX_IDX			1
-#define	GRASS_IDX			2
-#define PURPLE_GEM_IDX		3
+#define	GRASS_IDX				2
+#define PURPLE_GEM_IDX			3
 #define PINK_GEM_IDX			4
-#define RED_GEM_IDX			5
+#define RED_GEM_IDX				5
 #define GREEN_GEM_IDX			6
-#define	YELLOW_GEM_IDX		7
+#define	YELLOW_GEM_IDX			7
 #define BLUE_GEM_IDX			8
 #define YOSHI_EGG_IDX			9
 
 IrrlichtDisplay::IrrlichtDisplay() {
-
+	this->init();
+	this->initTexture();
+	this->create_camera();
+	this->create_sky();
+	_device->setWindowCaption(L"Zappy");
 }
 
 IrrlichtDisplay::~IrrlichtDisplay() {
-
+	_device->drop();
 }
 
 void IrrlichtDisplay::Display() {
-	init();
-	initTexture();
-	create_camera();
-	create_sky();
 	displayMap();
 	render();
 }
@@ -88,14 +88,14 @@ void IrrlichtDisplay::displayMap() {
 			for (auto y = 0; y <= 4; ++y) {
 				map[i].x = x;
 				map[i].y = y;
-				map[i].egs = true;
-				map[i].incentation = false;
-				map[i].stone1 = true;
-				map[i].stone2 = true;
-				map[i].stone3 = true;
-				map[i].stone4 = true;
-				map[i].stone5 = true;
-				map[i].stone6 = true;
+				// map[i].egs = true;
+				// map[i].incentation = false;
+				map[i].stone1 = rand() % 3;
+				map[i].stone2 = rand() % 3;
+				map[i].stone3 = rand() % 3;
+				map[i].stone4 = rand() % 3;
+				map[i].stone5 = rand() % 3;
+				map[i].stone6 = rand() % 3;
 				i += 1;
 			}
 
@@ -169,12 +169,10 @@ irr::scene::ICameraSceneNode *IrrlichtDisplay::create_camera() {
 
 void IrrlichtDisplay::render() {
 	while (_device->run()) {
-		_device->setWindowCaption(L"BOmBiBOOM");
 		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
 		_sceneManager->drawAll();
 		_driver->endScene();
 	}
-	_device->drop();
 }
 
 void IrrlichtDisplay::create_fx(irr::core::vector3df pos, irr::core::vector3df scale) {
@@ -227,9 +225,16 @@ void IrrlichtDisplay::create_sky() {
 
 }
 
+bool	IrrlichtDisplay::isDeviceRunning(void)
+{
+	return (this->_device->run());
+}
+
 int main(void)
 {
 	IrrlichtDisplay display;
-	display.Display();
+	while (display.isDeviceRunning()) {
+		display.Display();
+	}
 	return (0);
 }
