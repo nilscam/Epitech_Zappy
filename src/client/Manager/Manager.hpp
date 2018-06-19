@@ -71,6 +71,7 @@ private:
 	std::unique_ptr<Buffer>		_readBuffer;
 	std::unique_ptr<Buffer>		_sendBuffer;
 	std::map<std::string, std::function<void()>>	_cmd;
+	Map							_map;
 
 	bool						_stop;
 	int							_char_read;
