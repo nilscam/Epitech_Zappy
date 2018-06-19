@@ -18,8 +18,8 @@ static bool	new_map(map_t *self, va_list *args)
 	self->size.y = y;
 	self->cases_buff = malloc(sizeof(map_content_t) * (x * y));
 	self->cases = malloc(sizeof(map_content_t *) * (y + 1));
-	self->players = NEW(LIST);
-	self->eggs = NEW(LIST);
+	self->players = NEW(LIST_ALLOC, 255);
+	self->eggs = NEW(LIST_ALLOC, 255);
 	if (!self->cases_buff || !self->cases
 		|| !self->players || !self->eggs)
 		return false;

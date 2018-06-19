@@ -13,10 +13,10 @@ client_t	*client_new(int fd, client_type_t type)
 
 	if (client) {
 		client->_fd = fd;
-		client->read_buff = NEW(LIST);
+		client->read_buff = NEW(LIST_ALLOC, 4096);
 		client->nb_newline = 0;
 		client->block_until_newline = false;
-		client->write_buff = NEW(LIST);
+		client->write_buff = NEW(LIST_ALLOC, 4096);
 		if (!client->read_buff || !client->write_buff)
 			return NULL;
 		client->type = type;
