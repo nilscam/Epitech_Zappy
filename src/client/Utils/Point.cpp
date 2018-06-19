@@ -105,7 +105,11 @@ Point &	Point::operator/=(Point const & rhs) noexcept
 
 std::array<int, 2>	Point::getArray() const noexcept
 {
-	return { _x, _y };
+	std::array<int, 2> arr;
+
+	arr[0] = _x;
+	arr[1] = _y;
+	return arr;
 }
 
 int		Point::x(void) const noexcept

@@ -33,6 +33,7 @@ char	*look(map_t *this, player_t *player);
 bool	player_can_elevate(map_t *self, player_t *player);
 
 /* stat.c */
+void	remove_inv_from_to(inventory_t *from, inventory_t *to);
 void	count_inv_in_map(map_t *self, inventory_t *inv);
 
 #endif // !map_it_HPP
