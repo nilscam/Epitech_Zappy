@@ -26,3 +26,8 @@ size_t	list_size(list_t *self)
 {
 	return self->size;
 }
+
+bool	list_is_empty(list_t *self)
+{
+	return list_size(self) <= 0;
+}

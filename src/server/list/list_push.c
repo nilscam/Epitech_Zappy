@@ -26,6 +26,7 @@ static list_node_t	*new_list_node(list_t *self, void *data)
 	} else {
 		list_node_reinit(node, self, data);
 	}
+	++self->size;
 	return node;
 }
 
@@ -43,7 +44,6 @@ bool	list_push_back(list_t *self, void *data)
 		self->head->next = node;
 		self->head = node;
 	}
-	++self->size;
 	return true;
 }
 
@@ -61,6 +61,5 @@ bool	list_push_front(list_t *self, void *data)
 		self->tail->prev = node;
 		self->tail = node;
 	}
-	++self->size;
 	return true;
 }

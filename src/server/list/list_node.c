@@ -41,4 +41,6 @@ void	list_node_deinit(list_node_t *self, list_t *list, list_fct_t fct)
 			list->last_unused_buffers = self->buffers_idx;
 		}
 	}
+	if (list->size > 0)
+		--list->size;
 }
