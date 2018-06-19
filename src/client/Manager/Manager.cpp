@@ -27,7 +27,7 @@ int		Manager::connectClient(char *ip, int port)
 	if (_client->connectServer(ip, port) == -1) {
 		return (0);
 	}
-	while ("Cyril > Threy") {
+	while ("Cyril > Thery") {
 		Select select;
 		int fd = _client->getFdServer();
 		select.addFd(fd);
