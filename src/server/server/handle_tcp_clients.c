@@ -9,7 +9,22 @@
 #include "player.h"
 #include "player_cmd.h"
 
-static bool	client_handle(t_server *server, client_t *client, player_t *player)
+static bool	check_client_to_kill(t_server *server,
+	client_t *client, player_t *player)
+{
+	if (client->kill_me && list_is_empty(client->write_buff)) {
+		if (client->type == CLIENT_PLAYER) {
+			remove_player(server, player);
+		} else {
+			client_delete(client);
+		}
+		return true;
+	}
+	return false;
+}
+
+static bool	client_handle(t_server *server,
+	client_t *client, player_t *player)
 {
 	char		*cmd;
 	client_type_t	type;
@@ -41,26 +56,31 @@ static bool	check_tcp_client(client_t *client, va_list *args)
 	if (server->can_write(server, client->_fd)) {
 		client_write(client);
 	}
-	return client_handle(server, client, NULL);
+	return client_handle(server, client, NULL)
+		|| check_client_to_kill(server, client, NULL);
 }
 
-static bool	check_tcp_player(player_t *player, va_list *args)
+static bool	check_tcp_player(player_t *pl, va_list *args)
 {
 	t_server	*server = va_arg(*args, t_server *);
+	bool		handle = false;
 
-	if (server->can_read(server, player->client->_fd)) {
-		if (!client_read(player->client)) {
-			remove_player(server, player);
+	if (server->can_read(server, pl->client->_fd)) {
+		if (!client_read(pl->client)) {
+			remove_player(server, pl);
 			return true;
 		}
 	}
-	if (server->can_write(server, player->client->_fd)) {
-		client_write(player->client);
+	if (server->can_write(server, pl->client->_fd)) {
+		client_write(pl->client);
 	}
-	if (!player_is_busy(player)) {
-		return client_handle(server, player->client, player);
+	if (!player_is_busy(pl)) {
+		handle = client_handle(server, pl->client, pl);
 	}
-	return false;
+	if (!handle) {
+		handle = check_client_to_kill(server, pl->client, pl);
+	}
+	return handle;
 }
 
 void	handle_tcp_clients(t_server *server)

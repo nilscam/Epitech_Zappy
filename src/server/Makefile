@@ -52,6 +52,7 @@ SRC	=	big_buff/big_buff.c					\
 		player/player.c						\
 		player_cmd/player_callback/send_format.c		\
 		player_cmd/player_callback/start_incantation.c		\
+		player_cmd/player_cmd/anonymous_cmd_spectator.c		\
 		player_cmd/player_cmd/anonymous_cmd.c			\
 		player_cmd/player_cmd/broadcast.c			\
 		player_cmd/player_cmd/connect_nbr.c			\

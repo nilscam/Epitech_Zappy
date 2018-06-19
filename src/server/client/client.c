@@ -20,6 +20,7 @@ client_t	*client_new(int fd, client_type_t type)
 		if (!client->read_buff || !client->write_buff)
 			return NULL;
 		client->type = type;
+		client->kill_me = false;
 	}
 	return client;
 }

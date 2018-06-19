@@ -13,7 +13,7 @@ int	test_parsing(int ac, char **av)
 
 	help(av[0]);
 	if (!infos._err)
-		return (84); //error ./zappy_server -c 12 -x 10
+		return (84);
 	printf("Help: %d\n", infos._is_help);
 	printf("Port: %d\n", infos._port);
 	printf("Width: %d\n", infos._width);

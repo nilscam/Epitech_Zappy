@@ -35,6 +35,7 @@ typedef struct
 	client_t	*client;
 	long long	id;
 	bool		is_elevating;
+	bool		is_waiting_to_die;
 }	player_t;
 
 struct elevation_tab_s

@@ -14,4 +14,10 @@ void	player_cmd_right(player_cmd_arg_t *args)
 {
 	player_turn_right(args->player);
 	client_callback(CB_OK, args->client);
+	clients_callback(CB_PLAYER_POSITION,
+		args->server->spectators_clients,
+		args->player->id,
+		args->player->pos->pos.x,
+		args->player->pos->pos.y,
+		direction_to_int_spec(args->player->dir));
 }

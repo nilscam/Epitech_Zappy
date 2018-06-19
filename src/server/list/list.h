@@ -55,6 +55,7 @@ bool	list_push_front(list_t *self, void *data);
 /* list_utils.c */
 void	list_clear(list_t *self, list_fct_t fct);
 size_t	list_size(list_t *self);
+bool	list_is_empty(list_t *self);
 
 /* list_pop.c */
 void	*list_pop_front(list_t *self);

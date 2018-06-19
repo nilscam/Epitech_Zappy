@@ -7,6 +7,17 @@
 
 #include "parsing.h"
 
+bool	check_is_help(int ac, char **av)
+{
+	for (int i = 1; i < ac; ++i) {
+		if (strcmp("-h", av[i]) == 0
+		|| strcmp("--help", av[i]) == 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
 int	help(char *self)
 {
 	printf("USAGE: %s -p port -x width -y ", self);

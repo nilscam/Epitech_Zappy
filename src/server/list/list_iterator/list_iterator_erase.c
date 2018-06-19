@@ -23,7 +23,6 @@ void	list_it_erase(list_iterator_t *self, list_fct_t fct)
 	else
 		self->list->head = self->node->prev;
 	list_node_deinit(self->node, self->list, fct);
-	--self->list->size;
 	self->node = next;
 }
 
