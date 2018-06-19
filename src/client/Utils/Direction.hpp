@@ -8,11 +8,9 @@
 #ifndef Direction_HPP
 #define Direction_HPP
 
-#include "ASerializable.hpp"
 #include "Point.hpp"
-#include "Event.hpp"
 
-class Direction : public ASerializable
+class Direction
 {
 public:
 
@@ -30,7 +28,6 @@ public:
 	Direction(Point const & from, Point const & to);
 	Direction(Point const & dir);
 	Direction(double degrees);
-	Direction(Event event);
 	virtual ~Direction() = default;
 	Direction(Direction const & rhs) = default;
 	Direction(Direction && rhs) = default;
@@ -44,9 +41,7 @@ public:
 	bool	operator!=(Direction const & rhs) const noexcept;
 
 	void			setDir(Dir_t dir) noexcept;
-	/* ASerializable.hpp */
-	void	serialize(Saver & saver) const override;
-	void	deserialize(Loader & loader) override;
+	void			setDir(int dir) noexcept;
 
 	Direction &		reverse() noexcept;
 	Direction &		turnLeft() noexcept;
@@ -56,7 +51,6 @@ public:
 
 	Dir_t			getDir() const noexcept;
 	std::string		getRepr() const noexcept;
-	Event			getEvent() const noexcept;
 
 	friend std::ostream & operator<<(std::ostream & os, Direction const & dir);
 
@@ -65,7 +59,6 @@ private:
 	Dir_t	dirFromPos(Point const & from, Point const & to) const noexcept;
 	Dir_t	dirFromDir(Point const & dir) const noexcept;
 	Dir_t	dirFromAngle(double degrees) const noexcept;
-	Dir_t	dirFromEvent(Event event) const noexcept;
 
 	Dir_t	_dir;
 

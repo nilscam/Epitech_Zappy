@@ -11,7 +11,7 @@
 
 #define TEXTURE_BASE			"./model/wood.jpg"
 #define IRON_BOX				"./model/iron_box.png"
-#define GRASS				"./model/grass.jpg"
+#define GRASS					"./model/grass.jpg"
 
 
 struct          s_map
@@ -86,8 +86,6 @@ void testBaptiste() {
 				map[i].stone5 = true;
 				map[i].stone6 = true;
 				i += 1;
-				//std::cout << "x: '" << map[i].x << "' ";
-				//std::cout << "y: '" << map[i].y << "'" << std::endl;
 			}
 
 		}
@@ -98,8 +96,6 @@ void testBaptiste() {
 
 	for (int i = 0 ; i < 20; i++)
 	{
-		//std::cout << "x: '" << map[i].x << "' ";
-		//std::cout << "y: '" << map[i].y << "' " << std::endl;
 		x_pos = (map[i].x + 1) * 50;
 		y_pos = (map[i].y + 1) * 50;
 
@@ -161,7 +157,33 @@ void testBaptiste() {
 		egg->addAnimator(ani);
 		ani->drop();
 
+		irr::scene::IVolumeLightSceneNode * n = sceneManager->addVolumeLightSceneNode(0, -1, 32, 32,
+																					  irr::video::SColor(0, 255, 255, 255),
+																					  irr::video::SColor(0, 0, 0, 0));
+
+		if (n)
+		{
+			n->setScale(irr::core::vector3df(20.0f, 20.0f, 20.0f));
+			n->setPosition(irr::core::vector3df(x_pos - 20, 27.5, y_pos - 15));
+			irr::core::array<irr::video::ITexture*> textures;
+			for (irr::s32 g=7; g > 0; --g)
+			{
+				irr::core::stringc tmp;
+				tmp = "./model/portal";
+				tmp += g;
+				tmp += ".bmp";
+				irr::video::ITexture* t = driver->getTexture( tmp.c_str() );
+				textures.push_back(t);
+			}
+
+			// create texture animator
+			irr::scene::ISceneNodeAnimator* glow = sceneManager->createTextureAnimator(textures, 150);
+			n->addAnimator(glow);
+			glow->drop();
+		}
+
 	}
+
 
 	irr::scene::IAnimatedMeshSceneNode* Jack = sceneManager->addAnimatedMeshSceneNode(sceneManager->getMesh("./model/JDJak/jak.obj"));
 	Jack->setPosition(irr::core::vector3df(x_pos, 27.5, y_pos));
@@ -185,15 +207,6 @@ void testBaptiste() {
 
 	driver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, true);
 
-	//gem->setPosition({800, 0, 300});
-	/*irr::scene::ISceneNode *block = sceneManager->addCubeSceneNode();
-	block->setPosition({0, 0, 0});
-	block->setScale({10, 10, 10});
-	block->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-	block->setMaterialTexture(0, driver->getTexture(IRON_BOX));*/
-
-
-
 	irr::SKeyMap keyMap[5];                             // re-assigne les commandes
 	keyMap[0].Action = irr::EKA_MOVE_FORWARD;           // avancer
 	keyMap[0].KeyCode = irr::KEY_KEY_Z;                 // w
@@ -206,16 +219,14 @@ void testBaptiste() {
 	keyMap[4].Action = irr::EKA_JUMP_UP;                // saut
 	keyMap[4].KeyCode = irr::KEY_SPACE;                 // barre espace
 
-	sceneManager->addCameraSceneNodeFPS(0, 1.0 , 1.0f, -1, keyMap, 5);
+	irr::scene::ICameraSceneNode* camera = sceneManager->addCameraSceneNodeFPS(0, 1.0 , 1.0f, -1, keyMap, 5);
 
 	/*	 RENDU */
-	while (device->run()) {                         // la boucle de rendu
+	while (device->run()) {
 		device->setWindowCaption(L"BOmBiBOOM");
 		driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
-		//driver->beginScene(true, true, irr::video::SColor(0,255,255,255));
-		//driver->beginScene(true, true, irr::video::SColor(0, 0, 0, 0));
-		sceneManager->drawAll();                         // calcule le rendu
-		driver->endScene();                              // affiche le rendu
+		sceneManager->drawAll();
+		driver->endScene();
 	}
 	device->drop();
 }

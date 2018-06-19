@@ -28,10 +28,6 @@ Direction::Direction(double degrees)
 	:	_dir(dirFromAngle(degrees))
 {}
 
-Direction::Direction(Event event)
-	:	_dir(dirFromEvent(event))
-{}
-
 Direction::Dir_t	Direction::operator*() noexcept
 {
 	return getDir();
@@ -68,14 +64,17 @@ void	Direction::setDir(Direction::Dir_t dir) noexcept
 	_dir = dir;
 }
 
-void	Direction::serialize(Saver & saver) const
+void	Direction::setDir(int dir) noexcept
 {
-	saver.save(_dir);
-}
-
-void	Direction::deserialize(Loader & loader)
-{
-	loader.load(_dir);
+	if (dir == 1) {
+		this->setDir(Direction::Up);
+	} else if (dir == 2) {
+		this->setDir(Direction::Right);
+	} else if (dir == 3) {
+		this->setDir(Direction::Down);
+	} else if (dir == 4) {
+		this->setDir(Direction::Left);
+	}
 }
 
 Direction &	Direction::reverse() noexcept
@@ -180,30 +179,4 @@ Direction::Dir_t	Direction::dirFromAngle(double d) const noexcept
 	else if (d >= 135 && d <= 225)
 		return Up;
 	return Down;
-}
-
-Direction::Dir_t	Direction::dirFromEvent(Event event) const noexcept
-{
-	if (event & Event::Left)
-		return Dir_t::Left;
-	else if (event & Event::Right)
-		return Dir_t::Right;
-	else if (event & Event::Up)
-		return Dir_t::Up;
-	else if (event & Event::Down)
-		return Dir_t::Down;
-	return None;
-}
-
-Event	Direction::getEvent() const noexcept
-{
-	if (_dir == Dir_t::Left)
-		return Event::Left;
-	else if (_dir == Dir_t::Right)
-		return Event::Right;
-	else if (_dir == Dir_t::Up)
-		return Event::Up;
-	else if (_dir == Dir_t::Down)
-		return Event::Down;
-	return Event::None;
 }

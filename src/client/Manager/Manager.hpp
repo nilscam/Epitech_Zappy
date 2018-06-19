@@ -13,10 +13,14 @@
 #include <iostream>
 #include <map>
 #include <functional>
+#include <list>
+#include <vector>
 
 #include "Client.hpp"
 #include "Select.hpp"
 #include "Buffer.hpp"
+#include "Map.hpp"
+#include "Player.hpp"
 
 #define LIMIT_READ	10000000
 #define LIMIT_SEND	256
@@ -71,7 +75,15 @@ private:
 	std::unique_ptr<Buffer>		_readBuffer;
 	std::unique_ptr<Buffer>		_sendBuffer;
 	std::map<std::string, std::function<void()>>	_cmd;
-	Map							_map;
+
+	Map												_map;
+	std::map<int, std::shared_ptr<Player>>			_players;
+	std::list<int>									_idxPlayers;
+	std::map<int, Point>							_eggs;
+	std::list<int>									_idxEggs;
+	std::vector<std::string>						_teams;
+	int												_freq;
+	std::string										_winner;
 
 	bool						_stop;
 	int							_char_read;

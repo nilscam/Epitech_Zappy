@@ -18,18 +18,6 @@ Point::Point(int x, int y)
 	:	_x(x), _y(y)
 {}
 
-void	Point::serialize(Saver & saver) const
-{
-	saver.save(_x);
-	saver.save(_y);
-}
-
-void	Point::deserialize(Loader & loader)
-{
-	loader.load(_x);
-	loader.load(_y);
-}
-
 std::array<int, 2>	Point::operator*() const noexcept
 {
 	return getArray();

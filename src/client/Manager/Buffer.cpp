@@ -45,7 +45,7 @@ char	*Buffer::Get(void)
 	if (size < 0)
 		size = _size - (_rd - _wr);
 	str = (char *)malloc(size + 4);
-	if (!str)
+	if (!str || !size)
 		return (NULL);
 	memset(str, 0, size + 3);
 	while (++i < size) {

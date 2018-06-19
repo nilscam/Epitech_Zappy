@@ -35,6 +35,14 @@ public:
 	int			getLevel(void) const;
 	bool		getIsDead(void) const;
 	bool		getIsIncanting(void) const;
+	bool		getIsBroadcasting(void) const;
+	int			getNbFood(void) const;
+	int			getNbStone1(void) const;
+	int			getNbStone2(void) const;
+	int			getNbStone3(void) const;
+	int			getNbStone4(void) const;
+	int			getNbStone5(void) const;
+	int			getNbStone6(void) const;
 
 	void		setPos(Point const & pos);
 	void		setCurrentDir(Direction & currentDir);
@@ -43,11 +51,18 @@ public:
 	void		setLevel(int level);
 	void		setIsDead(bool isDead);
 	void		setIsIncanting(bool isIncanting);
+	void		setIsBroadcasting(bool isBroadcasting);
+	void		setNbFood(int Food);
+	void		setNbStone1(int Stone1);
+	void		setNbStone2(int Stone2);
+	void		setNbStone3(int Stone3);
+	void		setNbStone4(int Stone4);
+	void		setNbStone5(int Stone5);
+	void		setNbStone6(int Stone6);
 
 	friend std::ostream & operator<<(std::ostream & os, Player const & info);
 
 private:
-
 	Point		_pos;
 	Direction	_currentDir;
 	std::string	_nameTeam;
@@ -62,7 +77,7 @@ private:
 	int			_level;
 	bool		_isDead;
 	bool		_isIncanting;
-
+	bool		_isBroadcasting;
 };
 
 #endif // !Player_HPP

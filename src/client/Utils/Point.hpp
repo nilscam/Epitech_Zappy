@@ -10,11 +10,10 @@
 
 #include <iostream>
 #include <array>
-#include "ASerializable.hpp"
 
 class Direction;
 
-class Point : public ASerializable
+class Point
 {
 public:
 
@@ -42,10 +41,6 @@ public:
 	Point &	operator/=(Point const & rhs) noexcept;
 
 	std::array<int, 2>	operator*() const noexcept;
-
-	/* ASerializable.hpp */
-	void	serialize(Saver & saver) const override;
-	void	deserialize(Loader & loader) override;
 
 	std::array<int, 2>	getArray() const noexcept;
 	int		x(void) const noexcept;
