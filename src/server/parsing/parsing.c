@@ -7,6 +7,17 @@
 
 #include "parsing.h"
 
+static bool	check_is_help(int ac, char **av)
+{
+	for (int i = 1; i < ac; ++i) {
+		if (strcmp("-h", av[i]) == 0
+		|| strcmp("--help", av[i]) == 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
 int			get_team_name(t_infos *infos, int *i, int ac, char **av)
 {
 	int		start = *i, end = 0, idx_tab = -1;
@@ -31,11 +42,12 @@ int			get_team_name(t_infos *infos, int *i, int ac, char **av)
 
 void		init_infos(t_infos *infos)
 {
-	infos->_port = 0;
-	infos->_width = 0;
-	infos->_height = 0;
-	infos->_max_per_team = 0;
-	infos->_freq = 0;
+	infos->_is_help = false;
+	infos->_port = 4242;
+	infos->_width = -1;
+	infos->_height = -1;
+	infos->_max_per_team = -1;
+	infos->_freq = 100;
 	infos->_err = 0;
 	infos->_team_name = NULL;
 }
@@ -62,6 +74,9 @@ t_infos		parse_args(int ac, char **av)
 	t_infos	infos;
 
 	init_infos(&infos);
+	infos._is_help = check_is_help(ac, av);
+	if (infos._is_help)
+		return (infos);
 	for (int i = 1; i < ac; ++i) {
 		parse_info(&infos, &i, ac, av);
 		if (!infos._err)

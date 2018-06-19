@@ -7,16 +7,16 @@
 
 #include "parsing.h"
 
-int	help(void)
+int	help(char *self)
 {
-	printf("USAGE: ./zappy_server -p port -x width -y ");
+	printf("USAGE: %s -p port -x width -y ", self);
 	printf("height -n name1 name2 ... -c clientsNb -f freq\n");
-	printf("port\t\tis the port number\n");
-	printf("width\t\tis the width of the world\n");
-	printf("height\t\tis the height of the world\n");
-	printf("nameX\t\tis the name of the team X\n");
-	printf("clientsNb\tis the number of authorized clients per team\n");
-	printf("freq\t\tis the reciprocal of time unit ");
+	printf("\tport\t\tis the port number\n");
+	printf("\twidth\t\tis the width of the world\n");
+	printf("\theight\t\tis the height of the world\n");
+	printf("\tnameX\t\tis the name of the team X\n");
+	printf("\tclientsNb\tis the number of authorized clients");
+	printf(" per team\n\tfreq\t\tis the reciprocal of time unit ");
 	printf("for execution of actions\n");
 	return (0);
 }

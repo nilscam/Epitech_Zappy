@@ -11,8 +11,10 @@ int	test_parsing(int ac, char **av)
 {
 	t_infos	infos = parse_args(ac, av);
 
+	help(av[0]);
 	if (!infos._err)
-		return (84);
+		return (84); //error ./zappy_server -c 12 -x 10
+	printf("Help: %d\n", infos._is_help);
 	printf("Port: %d\n", infos._port);
 	printf("Width: %d\n", infos._width);
 	printf("Height: %d\n", infos._height);
