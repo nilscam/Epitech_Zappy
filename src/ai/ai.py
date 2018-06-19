@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
-import commands
+import utils
 
 class inventory:
     def __init__(self):
@@ -18,10 +18,10 @@ class inventory:
             setattr(self, key, value)
 
 class map:
-    def __init__(self):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
         self.map = []
-        self.x = 0
-        self.y = 0
 
 class ai:
 
@@ -30,16 +30,26 @@ class ai:
     'RIGHT': {'UP': 'RIGHT', 'DOWN': 'LEFT', 'LEFT': 'UP', 'RIGHT': 'DOWN'}
     }
 
-    def __init__(self):
+    optimizeDir = {
+    0: (0, 0)
+    1: (-1, 0)
+    2: (-1, 1)
+    3: (0, 1)
+    4: (1, 1)
+    5: (1, 0)
+    6: (1, -1)
+    7: (0, -1)
+    8: (-1, -1)
+    }
+
+    def __init__(self, mapx, mapy):
         self.x = 0
         self.y = 0
+        self.level = 1
         self.orientation = 'DOWN'
+        self.listIncantationsDir = {}
         self.inventory = inventory()
-        self.map = map()
-
-    def start(self):
-        self.firstPart()
-        self.secondPart()
+        self.map = map(mapx, mapy)
 
     def move(self):
         if self.orientation == 'UP':
@@ -67,3 +77,19 @@ class ai:
 
     def inventory(self, newInventory):
         self.inventory.update(newInventory)
+
+    def joinForIncantation(self, listDir):
+        actualDir = [0, 0]
+        for id, dir in listIncantationsDir.items():
+            actualDir[0] += self.optimizeDir[dir][0]
+            actualDir[1] += self.optimizeDir[dir][1]
+
+        actualDir[0] = utils.smoothDir(actualDir[0])
+        actualDir[1] = utils.smoothDir(actualDir[1])
+        return actualDir
+
+
+
+    #core function of the ia
+    # return a string defining the decision to take depending on the situation
+    def takeDecision(self):

@@ -9,12 +9,22 @@ class commands:
         self.cmdBuffer = []
         self.networkManager = network.network(port, ip)
 
+    def getWelcome(self):
+        welcome = self.networkManager.getServerMessages()
+        while len(welcome) < 4:
+            welcome += self.networkManager.getServerMessages()
+        return welcome[:4]
+
     def getResponse(self):
         responses = self.networkManager.getServerMessages()
         cmdResponses = []
         for r in responses:
-            cmdResponses.append(self.cmdBuffer[0], r)
-            self.cmdBuffer.pop(0)
+            # rajouter le fait que si c'est un message d'un joueur on ne l'associe pas à une commande
+            if r.split()[0] != 'message':
+                cmdResponses.append({ 'type': 'cmd', 'cmd': self.cmdBuffer[0], 'response': r })
+                self.cmdBuffer.pop(0)
+            else:
+                cmdResponses.append({ 'type': 'message', 'response': r })
         return cmdResponses
 
     def sendCmd(self, command):

@@ -17,7 +17,14 @@ class test:
 
 
 
-toto = test()
-nbs = { 'a': 3, 'b': 5, 'c': 6 }
-toto.update(nbs)
-print (toto)
+#toto = test()
+#nbs = { 'a': 3, 'b': 5, 'c': 6 }
+#toto.update(nbs)
+#print (toto)
+
+a = range(10)
+
+print (a[:4])
+print (a[4:])
+print (a[-4:])
+print (a[:-4])
