@@ -28,26 +28,21 @@ void	Map::createMap(int width, int height)
 
 void	Map::updateMap(char **infos)
 {
-	int	i = 0;
-
-	while (infos[i]) {
-		if (!infos[i + 1] || !infos[i + 2] || !infos[i + 3]
-		|| !infos[i + 4] || !infos[i + 5] || !infos[i + 6]
-		|| !infos[i + 7] || !infos[i + 8] || !infos[i + 9])
-			break;
-		Point point(atoi(infos[i + 1]), atoi(infos[i + 2]));
-		if (this->isInMap(point)) {
-			struct MapCase items;
-			items._food = atoi(infos[i + 3]);
-			items._stone1 = atoi(infos[i + 4]);
-			items._stone2 = atoi(infos[i + 5]);
-			items._stone3 = atoi(infos[i + 6]);
-			items._stone4 = atoi(infos[i + 7]);
-			items._stone5 = atoi(infos[i + 8]);
-			items._stone6 = atoi(infos[i + 9]);
-			_map[point.y()][point.x()] = items;
-		}
-		i += 10;
+	if (!infos[1] || !infos[2] || !infos[3]
+	|| !infos[4] || !infos[5] || !infos[6]
+	|| !infos[7] || !infos[8] || !infos[9])
+		return;
+	Point point(atoi(infos[1]), atoi(infos[2]));
+	if (this->isInMap(point)) {
+		struct MapCase items;
+		items._food = atoi(infos[3]);
+		items._stone1 = atoi(infos[4]);
+		items._stone2 = atoi(infos[5]);
+		items._stone3 = atoi(infos[6]);
+		items._stone4 = atoi(infos[7]);
+		items._stone5 = atoi(infos[8]);
+		items._stone6 = atoi(infos[9]);
+		_map[point.y()][point.x()] = items;
 	}
 }
 
@@ -107,13 +102,15 @@ std::ostream & operator<<(std::ostream & os, Map const & map)
 		os << "{\n";
 		for(size_t j = 0; j < mymap[i].size(); j++)
 		{
-			os << "\t" << mymap[i][j]._food << "\n";
-			os << "\t" << mymap[i][j]._stone1 << "\n";
-			os << "\t" << mymap[i][j]._stone2 << "\n";
-			os << "\t" << mymap[i][j]._stone3 << "\n";
-			os << "\t" << mymap[i][j]._stone4 << "\n";
-			os << "\t" << mymap[i][j]._stone5 << "\n";
-			os << "\t" << mymap[i][j]._stone6 << "\n";
+			os << "\t{\n";
+			os << "\t\t" << mymap[i][j]._food << "\n";
+			os << "\t\t" << mymap[i][j]._stone1 << "\n";
+			os << "\t\t" << mymap[i][j]._stone2 << "\n";
+			os << "\t\t" << mymap[i][j]._stone3 << "\n";
+			os << "\t\t" << mymap[i][j]._stone4 << "\n";
+			os << "\t\t" << mymap[i][j]._stone5 << "\n";
+			os << "\t\t" << mymap[i][j]._stone6 << "\n";
+			os << "\t}\n";
 		}
 		os << "}\n";	
 	}

@@ -59,7 +59,6 @@ int		Manager::connectClient(char *ip, int port)
 }
 void	Manager::spectateGame()
 {
-	return;
 	_stop = false;
 	while (!_stop)
 	{
@@ -143,8 +142,8 @@ void	Manager::initReadCmd()
 void	Manager::freeArgs()
 {
 	if (_args) {
-		for(size_t i = 0; _args[i]; i++) {
-			free(_args[i]);
+		if (_args[0]) {
+			free(_args[0]);
 		}
 		free(_args);
 		_args = NULL;
@@ -153,11 +152,19 @@ void	Manager::freeArgs()
 
 void	Manager::parseCmd()
 {
-	_args = this->parseMe(_readBuffer->Get(), " \n");
-	if (_args && _args[0] && _cmd.find(std::string(_args[0])) != _cmd.end()) {
-		_cmd[std::string(_args[0])]();
-	} else {
-		std::cout << "Command Not found" << std::endl;
+	char **cmd = this->parseMe(_readBuffer->Get(), "\n");
+	
+	for(size_t i = 0; cmd && cmd[i]; i++) {
+		_args = this->parseMe(cmd[i], " ");
+		if (_args && _args[0] && _cmd.find(std::string(_args[0])) != _cmd.end()) {
+			_cmd[std::string(_args[0])]();
+		} else {
+			std::cout << "Command Not found" << std::endl;
+		}
+	}
+	if (cmd) {
+		free(cmd[0]);
+		free(cmd);
 	}
 }
 
@@ -166,6 +173,7 @@ bool	Manager::msz()//! X Y\n || msz\n map size
 	if (!_args[1] || !_args[2])
 		return (false);
 	_map.createMap(atoi(_args[1]), atoi(_args[2]));
+	std::cout << _map;
 	return (true);
 }
 
@@ -173,19 +181,16 @@ bool	Manager::msz()//! X Y\n || msz\n map size
 bool	Manager::bct()//! X Y q0 q1 q2 q3 q4 q5 q6\n || bct X Y\n content of a tile
 {
 	_map.updateMap(_args);
+	//std::cout << _map;
 	return (true);
 }
 
 bool	Manager::tna()//! N\n * nbr_teams || tna\n name of all the teams
 {
-	int	i = 0;
-	_teams.clear();
-	while (_args[i]) {
-		if (!_args[i + 1]) {
-			break;
-		}
-		_teams.emplace_back(std::string(_args[i + 1]));
+	if (!_args[1]) {
+		return (false);
 	}
+	_teams.emplace_back(std::string(_args[1]));	
 	return (true);
 }
 bool	Manager::pnw()// #n X Y O L N\n connection of a new player
