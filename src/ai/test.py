@@ -1,43 +1,57 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
-class test:
-
+class inventory:
     def __init__(self):
-        self.a = 0
-        self.b = 0
-        self.c = 1
+        self.life = 1260
+        self.linemate = 0
+        self.deraumere = 0
+        self.sibur = 0
+        self.mendiane = 0
+        self.phiras = 0
+        self.thystame = 0
 
     def __str__(self):
-        return "a = %d, b = %d, c = %d" % (self.a, self.b, self.c)
+        str = "{'linemate':%d,'deraumere':%d,'sibur':%d,'mendiane':%d,'phiras':%d,'thystame':%d}"
+        return str % (self.linemate, self.deraumere, self.sibur, self.mendiane, self.phiras, self.thystame)
 
     def update(self, list_infos):
         for key, value in list_infos.items():
             setattr(self, key, value)
 
 
-
-#toto = test()
-#nbs = { 'a': 3, 'b': 5, 'c': 6 }
-#toto.update(nbs)
-#print (toto)
-
-a = range(10)
-
-print (a[:4])
-print (a[4:])
-print (a[-4:])
-print (a[:-4])
-
 print ()
 #print ([[None] * 50] * 10)
 
-s = " topas topas topas , food food, roche roche, cailloux"
+i = inventory()
+print (i)
+print (eval(str(i)))
 
-# Separate on comma.
-cities = s.split(",")
-square = dict()
-for city in cities:
-    item = city.split()
-    square[item[0]] = len(item)
-print (square)
+message = "message 3 , " + "toto" + " 4 " + " 123 " + str(i)
+
+splitted = message.split(',', 1)
+
+dir = int(splitted[0].split()[1])
+print ()
+print ()
+print ()
+print (dir)
+print ()
+print ()
+print ()
+print (splitted)
+print (splitted[0].split())
+print (splitted[1].split())
+
+print ()
+
+recv = splitted[1].split()
+info = {'player_id': int(recv[2]), 'level': int(recv[1]), 'inventory': eval(recv[3])}
+print (info)
+
+dict1 = {'one':1, 'two':2, 'three': {'three.1': 3.1, 'three.2': 3.2 }}
+str1 = str(dict1)
+
+dict2 = eval(str1)
+
+print (dict2)

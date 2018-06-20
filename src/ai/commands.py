@@ -24,11 +24,10 @@ class commands:
                 cmdResponses.append({ 'type': 'cmd', 'cmd': self.cmdBuffer[0], 'response': r })
                 self.cmdBuffer.pop(0)
             else:
-                cmdResponses.append({ 'type': 'message', 'response': r })
+                cmdResponses.append({ 'type': 'message', 'message': r })
         return cmdResponses
 
     def sendCmd(self, command):
-        # ne pas ajouter au buffer si c'est un broadcast
         if len(cmdBuffer) >= 10:
             print("too many commands are already in queue")
         else:

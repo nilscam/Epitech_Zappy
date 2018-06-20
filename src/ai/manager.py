@@ -19,35 +19,60 @@ class IAManager(ai.ai):
         self.play()
 
     def firstStep(self):
-        self.castCmd("Look")
+        self.castCmd("Look\n")
         self.takeAllItem()
-        self.castCmd("Left")
-        self.castCmd("Forward")
-        self.castCmd("Look")
+        self.castCmd("Left\n")
+        self.castCmd("Forward\n")
+        self.castCmd("Look\n")
         self.takeAllItem()
-        self.castCmd("Left")
-        self.castCmd("Forward")
-        self.castCmd("Look")
+        self.castCmd("Left\n")
+        self.castCmd("Forward\n")
+        self.castCmd("Look\n")
         self.takeAllItem()
-        self.castCmd("Left")
-        self.castCmd("Forward")
-        self.castCmd("Look")
+        self.castCmd("Left\n")
+        self.castCmd("Forward\n")
+        self.castCmd("Look\n")
         self.takeAllItem()
+
+    def exploreStep(self):
+        #Broadcast
+        #Look
+        #takeAllItem
+        #Oriente
+        #Move
 
     def play(self):
         while self.level < 8:
+            if self.canIncante():
+                self.reGroup()
+            else:
+                self.exploreStep()
 
-
-
+    def broadcastInfos(self):
+        # on envoie le nom de team + son id + son level + son inventaire
+        message = "Broadcast " + self.team + " " + str(self.randomNumber) + " " + str(self.level) + " " + str(self.inventory) + "\n"
+        self.castCmd(message)
 
     def interpreteMsg(self, message):
-        # modifier les variables de l'ia en fonction du message
+        splitted = message.split(',', 1)
+
+        dir = int(splitted[0].split()[1])
+        recv = splitted[1].split()
+
+        #si il est de ma clic
+        if recv[0] == self.team:
+            info = {'direction': dir, 'id': int(recv[2]), 'level': int(recv[1]), 'inventory': eval(recv[3])}
+            if self.level == info['level']:
+                #rajouter ou update à la liste
+                # del then add
+            elif self.level < info['level']:
+                # le supprimer de la liste
 
     def interpreteCmd(self, cmdResponse):
         # modifier les variables de l'ia en fonction du message
 
     def takeAllItem(self):
-        actualSquare = self.map[self.y][self.x]
+        actualSquare = self.map.getSquare(self.x, self.y)
         if actualSquare:
             for item, number in actualSquare.items():
                 for i in range(number):
