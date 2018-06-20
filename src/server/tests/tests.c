@@ -6,6 +6,8 @@
 */
 
 #include "debug.h"
+#include <stdlib.h>
+#include <time.h>
 
 int	test_list(void);
 int	test_map(void);
@@ -26,9 +28,10 @@ int	tests(
 	__attribute__((unused))int ac,
 	__attribute__((unused))char **av)
 {
+	srand((unsigned int)time(NULL));
 	// return test_list();
 	// return test_player();
-	return test_map();
+	// return test_map();
 	// return test_map_it();
 	// return test_vision();
 	// return test_map_sound();
