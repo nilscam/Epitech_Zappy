@@ -34,6 +34,7 @@
 # IDE
 *.vscode*
 cmake-build-debug
+cmake*
 .idea
 
 # GTAGS

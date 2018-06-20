@@ -76,7 +76,7 @@ direction_t	map_dir_sound_from(map_t *self, point_t from, point_t to);
 /* inventory.c */
 void	fill_inv_ptrs(inventory_t *inv, int **ptrs);
 void	fill_inv_reprs(char **reprs);
-void	init_map_inventory(inventory_t *inv);
+void 	init_map_inventory(inventory_t *inv, inventory_t *map_inv);
 void	init_player_inventory(inventory_t *inv);
 void	empty_stones_inventory(inventory_t *inv);
 
