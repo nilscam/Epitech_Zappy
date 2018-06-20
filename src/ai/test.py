@@ -28,3 +28,16 @@ print (a[:4])
 print (a[4:])
 print (a[-4:])
 print (a[:-4])
+
+print ()
+#print ([[None] * 50] * 10)
+
+s = " topas topas topas , food food, roche roche, cailloux"
+
+# Separate on comma.
+cities = s.split(",")
+square = dict()
+for city in cities:
+    item = city.split()
+    square[item[0]] = len(item)
+print (square)

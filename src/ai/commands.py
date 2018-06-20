@@ -28,6 +28,7 @@ class commands:
         return cmdResponses
 
     def sendCmd(self, command):
+        # ne pas ajouter au buffer si c'est un broadcast
         if len(cmdBuffer) >= 10:
             print("too many commands are already in queue")
         else:

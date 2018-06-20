@@ -13,12 +13,45 @@ class IAManager(ai.ai):
         self.nbClients = welcome[2]
         ai.ai.__init__(self, *list(map(int, welcome[3].split())))
 
+        # play firsts moves optimized
+        self.firstStep()
+        # play the rest of the game
+        self.play()
+
+    def firstStep(self):
+        self.castCmd("Look")
+        self.takeAllItem()
+        self.castCmd("Left")
+        self.castCmd("Forward")
+        self.castCmd("Look")
+        self.takeAllItem()
+        self.castCmd("Left")
+        self.castCmd("Forward")
+        self.castCmd("Look")
+        self.takeAllItem()
+        self.castCmd("Left")
+        self.castCmd("Forward")
+        self.castCmd("Look")
+        self.takeAllItem()
+
+    def play(self):
+        while self.level < 8:
+
+
+
 
     def interpreteMsg(self, message):
         # modifier les variables de l'ia en fonction du message
 
     def interpreteCmd(self, cmdResponse):
         # modifier les variables de l'ia en fonction du message
+
+    def takeAllItem(self):
+        actualSquare = self.map[self.y][self.x]
+        if actualSquare:
+            for item, number in actualSquare.items():
+                for i in range(number):
+                    self.castCmd("Take" + item)
 
     def castCmd(self, cmd):
         self.cmdManager.sendCmd(cmd)

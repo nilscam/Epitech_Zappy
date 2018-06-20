@@ -19,9 +19,18 @@ class inventory:
 
 class map:
     def __init__(self, x, y):
+        # size x and y
         self.x = x
         self.y = y
-        self.map = []
+        self.map = [[None] * x] * y
+
+    def setSquare(self, x, y, infoStr):
+        items = infoStr.split(",")
+        square = dict()
+        for item in items:
+            i = city.split()
+            square[i[0]] = len(i)
+        map[y][x] = square
 
 class ai:
 
@@ -90,6 +99,6 @@ class ai:
 
 
 
-    #core function of the ia
+    # core function of the ia
     # return a string defining the decision to take depending on the situation
     def takeDecision(self):
