@@ -21,7 +21,7 @@
 #include "Buffer.hpp"
 #include "Map.hpp"
 #include "Player.hpp"
-#include "IrrlichtDisplay.hpp"
+#include "OldIrrlichtDisplay.hpp"
 #include "Clock.hpp"
 #include "Rectangle.hpp"
 #include "GUI.hpp"

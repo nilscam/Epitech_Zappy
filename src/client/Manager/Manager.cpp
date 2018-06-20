@@ -60,7 +60,7 @@ int		Manager::connectClient(char *ip, int port)
 void	Manager::spectateGame()
 {
 	Clock refresh;
-	IrrlichtDisplay disp;
+	OldIrrlichtDisplay disp;
 	_gui = std::make_shared<GUI>(disp.getDevice());
 
 	refresh.mark();
