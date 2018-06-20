@@ -20,6 +20,7 @@ int	test_list_extract(void);
 int	test_zclock(void);
 int	test_unique_id(void);
 int	test_big_buff(void);
+int	test_list_alloc(void);
 
 int	tests(
 	__attribute__((unused))int ac,
@@ -29,7 +30,7 @@ int	tests(
 	// return test_player();
 	return test_map();
 	// return test_map_it();
-	//return test_vision();
+	// return test_vision();
 	// return test_map_sound();
 	// return test_tcp_connection(ac, av);
 	// return test_player_cmd();
@@ -38,5 +39,6 @@ int	tests(
 	// return test_zclock();
 	// return test_unique_id();
 	// return test_big_buff();
+	// return test_list_alloc();
 	return 0;
 }

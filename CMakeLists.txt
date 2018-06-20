@@ -9,9 +9,9 @@ set(SRCTOOLS
         src/server/list/list.c
         src/server/list/list_push.c
         src/server/list/list_utils.c
-        src/server/list_iterator/list_iterator.c
-        src/server/list_iterator/list_iterator_move.c
-        src/server/list_iterator/list_iterator_ops.c
+        src/server/list/list_iterator/list_iterator.c
+        src/server/list/list_iterator/list_iterator_move.c
+        src/server/list/list_iterator/list_iterator_ops.c
         src/server/main.c
         src/server/map/map.c
         src/server/map/inventory.c

@@ -7,21 +7,32 @@
 
 #include "list.h"
 
-static list_node_t	*new_list_node(void *data)
+static list_node_t	*new_list_node(list_t *self, void *data)
 {
-	list_node_t	*node = malloc(sizeof(list_node_t));
+	list_node_t	*node = NULL;
+	int		i = self->last_unused_buffers;
 
-	if (!node)
-		return NULL;
-	node->prev = NULL;
-	node->next = NULL;
-	node->data = data;
+	for (; i >= 0 && i < self->max_buffers; ++i) {
+		if (self->buffers[i].type == NODE_UNUSED) {
+			node = self->buffers + i;
+			break;
+		}
+	}
+	if (!node) {
+		node = malloc(sizeof(list_node_t));
+		if (!node)
+			return NULL;
+		list_node_init(node, NODE_EXTRA, data, -1);
+	} else {
+		list_node_reinit(node, self, data);
+	}
+	++self->size;
 	return node;
 }
 
 bool	list_push_back(list_t *self, void *data)
 {
-	list_node_t	*node = new_list_node(data);
+	list_node_t	*node = new_list_node(self, data);
 
 	if (!node) {
 		return false;
@@ -33,13 +44,12 @@ bool	list_push_back(list_t *self, void *data)
 		self->head->next = node;
 		self->head = node;
 	}
-	++self->size;
 	return true;
 }
 
 bool	list_push_front(list_t *self, void *data)
 {
-	list_node_t	*node = new_list_node(data);
+	list_node_t	*node = new_list_node(self, data);
 
 	if (!node) {
 		return false;
@@ -51,6 +61,5 @@ bool	list_push_front(list_t *self, void *data)
 		self->tail->prev = node;
 		self->tail = node;
 	}
-	++self->size;
 	return true;
 }

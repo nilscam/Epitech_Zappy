@@ -16,7 +16,8 @@ void	spectate_cmd_time_unit_mod(player_cmd_arg_t *args)
 
 	if (unit > 0) {
 		args->server->f = unit;
-		client_callback(CB_TIME_UNIT_REQUEST, args->client,
+		clients_callback(CB_TIME_UNIT_MODIF,
+			args->server->spectators_clients,
 			(int)args->server->f);
 	}
 }

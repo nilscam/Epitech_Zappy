@@ -22,6 +22,7 @@ static bool	new_player(player_t *self, va_list *args)
 
 static void	delete_player(player_t *self)
 {
+	player_remove_from_map(self);
 	SAFE_FREE(self->name);
 }
 
@@ -41,13 +42,14 @@ static const player_t	PLAYER_CLASS = {
 	NULL,
 	NULL,
 	DIR_DOWN,
-	8,
+	1,
 	FOOD_TO_TIME_UNITS,
 	0,
 	NULL,
 	NULL,
 	NULL,
 	0,
+	false,
 	false
 };
 

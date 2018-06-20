@@ -69,6 +69,12 @@ static player_t	*try_add_player_from_egg(t_server *server,
 	return player;
 }
 
+static void	kill_anonymous(player_cmd_arg_t *a)
+{
+	client_callback(CB_FULL_TEAM, a->client);
+	a->client->kill_me = true;
+}
+
 void	anonymous_cmd_anonymous(player_cmd_arg_t *a)
 {
 	team_t		*team = team_find(a->server->teams, a->cmd);
@@ -86,17 +92,9 @@ void	anonymous_cmd_anonymous(player_cmd_arg_t *a)
 			add_player_from_ano(a->server, player);
 		} else {
 			team_remove_player(team);
-			client_callback(CB_KO, a->client);
+			kill_anonymous(a);
 		}
+	} else {
+		kill_anonymous(a);
 	}
-}
-
-void	anonymous_cmd_spectator(player_cmd_arg_t *args)
-{
-	t_server	*server = args->server;
-	client_t	*client = args->client;
-
-	client_callback(CB_WELCOME_SPECTATOR, client);
-	client->type = CLIENT_SPECTATOR;
-	list_push_back(server->spectators_clients, client);
 }

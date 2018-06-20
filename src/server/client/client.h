@@ -31,6 +31,7 @@ typedef struct
 	bool		block_until_newline;
 	list_t		*write_buff;
 	client_type_t	type;
+	bool		kill_me;
 }	client_t;
 
 /* client.c */

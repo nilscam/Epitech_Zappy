@@ -51,4 +51,7 @@ void	player_cmd_eject(player_cmd_arg_t *args)
 		(map_it_pl_t)eject_players,
 		args->player->id, args->player->dir);
 	client_callback(CB_OK, args->client);
+	clients_callback(CB_EXPLUSION,
+		args->server->spectators_clients,
+		args->player->id);
 }

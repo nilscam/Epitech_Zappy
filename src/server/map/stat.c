@@ -7,7 +7,7 @@
 
 #include "map_it.h"
 
-static void	count_stones(inventory_t *from, inventory_t *to)
+void	remove_inv_from_to(inventory_t *from, inventory_t *to)
 {
 	to->food += from->food;
 	to->stones[LINEMATE] += from->stones[LINEMATE];
@@ -22,7 +22,8 @@ void	count_inv_in_map(map_t *self, inventory_t *inv)
 {
 	for (int y = 0; y < self->size.y; ++y) {
 		for (int x = 0; x < self->size.x; ++x) {
-			count_stones(&self->cases[y][x].inventory, inv);
+			remove_inv_from_to(&self->cases[y][x].inventory,
+				inv);
 		}
 	}
 }
