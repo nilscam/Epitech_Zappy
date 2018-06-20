@@ -49,8 +49,8 @@ bool	init_map_contents(map_t *self, int players_per_team, int nb_teams)
 	inventory_t inv;
 
 	init_total_map_content(&inv, players_per_team, nb_teams);
-	for (int i = 0 ; i < NUMBER_OF_INV_TYPE ; ++i)
-		printf("%d\n", inv.stones[i]);
+	// for (int i = 0 ; i < NUMBER_OF_INV_TYPE ; ++i)
+	// 	printf("%d\n", inv.stones[i]);
 	for (int i = 0; i < size_y; ++i)
 		self->cases[i] = self->cases_buff + size_x * i;
 	self->cases[size_y] = NULL;
