@@ -22,6 +22,7 @@ static bool	new_player(player_t *self, va_list *args)
 
 static void	delete_player(player_t *self)
 {
+	player_remove_from_map(self);
 	SAFE_FREE(self->name);
 }
 

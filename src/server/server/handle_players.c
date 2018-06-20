@@ -26,8 +26,8 @@ void	handle_players_action(t_server *server)
 			player->is_waiting_to_die = true;
 		} else {
 			player_wait(player);
-			list_it_iterate(&it);
 		}
+		list_it_iterate(&it);
 	}
 	DEINIT(it);
 }

@@ -30,6 +30,7 @@ SRC	=	big_buff/big_buff.c					\
 		list/list.c						\
 		map/elevation.c						\
 		map/inventory.c						\
+		map/map_deinit.c					\
 		map/map_egg.c						\
 		map/map_init.c						\
 		map/map_it.c						\
