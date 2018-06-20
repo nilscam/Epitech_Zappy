@@ -165,6 +165,12 @@ class ai:
     def inventory(self, newInventory):
         self.inventory.update(newInventory)
 
+    def removeFromAlly(self, id):
+        self.listIncantationsDir = [x for x in self.listIncantationsDir if x['id'] != id]
+
+    def addToAlly(self, player):
+        self.listIncantationsDir.append(player)
+
     def joinForIncantation(self, listDir):
         actualDir = [0, 0]
         for id, dir in listIncantationsDir.items():

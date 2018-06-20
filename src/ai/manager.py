@@ -63,10 +63,10 @@ class IAManager(ai.ai):
         if recv[0] == self.team:
             info = {'direction': dir, 'id': int(recv[2]), 'level': int(recv[1]), 'inventory': eval(recv[3])}
             if self.level == info['level']:
-                #rajouter ou update à la liste
-                # del then add
+                self.removeFromAlly(info['id'])
+                self.addToAlly(info)
             elif self.level < info['level']:
-                # le supprimer de la liste
+                self.removeFromAlly(info['id'])
 
     def interpreteCmd(self, cmdResponse):
         # modifier les variables de l'ia en fonction du message
