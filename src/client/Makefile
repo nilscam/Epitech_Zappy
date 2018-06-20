@@ -8,6 +8,15 @@
 NAME	=	zappy_client
 MAIN	=	main.cpp
 SRC	=		Display/IrrlichtDisplay.cpp			\
+			Hud/Button.cpp						\
+			Hud/ButtonManager.cpp				\
+			Hud/GUI.cpp							\
+			Hud/Image.cpp						\
+			Hud/ImageManager.cpp				\
+			Hud/ListBox.cpp						\
+			Hud/main.cpp						\
+			Hud/Rectangle.cpp					\
+			Hud/Table.cpp						\
 			Manager/Buffer.cpp					\
 			Manager/Manager.cpp					\
 			Manager/Map.cpp						\
@@ -22,10 +31,11 @@ SRC	=		Display/IrrlichtDisplay.cpp			\
 			Utils/Point.cpp
 
 INC	=	-I include		\
+		-I Display		\
+		-I Hud			\
 		-I Manager		\
 		-I reseau		\
-		-I Utils		\
-		-I Display
+		-I Utils
 F	=	-W -Wall -Werror -Wextra
 
 NAM_OBJ	=	$(MAIN:.cpp=.o)

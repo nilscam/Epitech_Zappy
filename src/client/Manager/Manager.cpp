@@ -60,8 +60,10 @@ int		Manager::connectClient(char *ip, int port)
 void	Manager::spectateGame()
 {
 	Clock refresh;
-	refresh.mark();
 	IrrlichtDisplay disp;
+	_gui = std::make_shared<GUI>(disp.getDevice());
+
+	refresh.mark();
 	_stop = false;
 	while (!_stop)
 	{
@@ -90,9 +92,9 @@ void	Manager::spectateGame()
 		{
 			_stop = true;
 		}
-		if (refresh.timeSinceMark() > 500) {
+		if (refresh.timeSinceMark() > 20) {
 			if (disp.isDeviceRunning()) {
-				disp.Display(_map, _players, _idxPlayers, _eggs, _idxEggs);
+				disp.Display(_map, _players, _idxPlayers, _eggs, _idxEggs, _gui);
 			} else {
 				_stop = true;
 			}
@@ -201,7 +203,9 @@ bool	Manager::tna()//! N\n * nbr_teams || tna\n name of all the teams
 	if (!_args[1]) {
 		return (false);
 	}
-	_teams.emplace_back(std::string(_args[1]));	
+	_teams.emplace_back(std::string(_args[1]));
+	_gui->table.addTeamName({{_teams.back()}});
+	_gui->addListBoxMessage("New team Connected", ListBox::SYSTEM);
 	return (true);
 }
 bool	Manager::pnw()// #n X Y O L N\n connection of a new player

@@ -23,11 +23,11 @@ public:
 	void addCol(const wchar_t *name);
 	void addRow(const wchar_t *name);
 	
-	bool setValue(int col, int row, const wchar_t *value);
+	bool setValue(int col, int row, const std::string &value);
 	/* setValue in a cell from row and col nb */
 	
-	bool setValue(const wchar_t *colName, const wchar_t *rowName,
-		      const wchar_t *data);
+	bool setValue(const std::string &colName, const std::string &rowName,
+		      const std::string &data);
 	/* setValue in a cell from row and col name */
 
 	int getIdFromRow(const wchar_t * rowName);
@@ -38,8 +38,11 @@ public:
 	void initTable();
 	/* init the column */
 	
-	void addTeamName(std::vector<const wchar_t *> list);
+	void addTeamName(std::vector<std::string> list);
 	/* init the row from a list of name */
+
+	const wchar_t	*getWC(const char *str);
+	std::string		wcToString(const wchar_t *arr);
 private:
 	int _col;
 	int _row;
