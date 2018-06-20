@@ -40,6 +40,8 @@ public:
 	int	random_pos();
 	bool					isDeviceRunning(void);
 	irr::IrrlichtDevice		*getDevice(void) const;
+	irr::scene::ICameraSceneNode	*create_camera();
+	void 							create_sky();
 
 private:
 

@@ -37,6 +37,8 @@ void IrrlichtDisplay::init(void) {
 	_sceneManager = _device->getSceneManager();
 	_device->getCursorControl()->setVisible(true);
 	this->initTexture();
+	this->create_sky();
+	this->create_camera();
 }
 
 void IrrlichtDisplay::deinit(void) {
@@ -123,7 +125,7 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content) 
 		x_pos = (pos.getX() + 1) * 50;
 		y_pos = (pos.getX()+ 1) * 50;
 		auto stone1 = std::make_shared<AStone>();
-		stone1->node= create_gem(PURPLE_GEM_IDX, {x_pos + random_pos(), 28, y_pos - random_pos()}, {0.1, 0.1, 0.1});
+		stone1->node= create_gem(PURPLE_GEM_IDX, {x_pos + random_pos(), 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
 		m->_stones.push_back(stone1);
 	}
 	x_pos = 50;
@@ -133,7 +135,7 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content) 
 		x_pos = (pos.getX() + 1) * 50;
 		y_pos = (pos.getY() + 1) * 50;
 		auto stone2 = std::make_shared<AStone>();
-		stone2->node = create_gem(RED_GEM_IDX, {x_pos - random_pos(), 28, y_pos}, {0.1, 0.1, 0.1});
+		stone2->node = create_gem(RED_GEM_IDX, {x_pos + random_pos(), 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
 		m->_stones.push_back(stone2);
 	}
 
@@ -141,7 +143,7 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content) 
 		x_pos = (pos.getX() + 1) * 50;
 		y_pos = (pos.getY() + 1) * 50;
 		auto stone3 = std::make_shared<AStone>();
-		stone3->node = create_gem(YELLOW_GEM_IDX, {x_pos, 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
+		stone3->node = create_gem(YELLOW_GEM_IDX, {x_pos + random_pos(), 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
 		m->_stones.push_back(stone3);
 	}
 
@@ -149,7 +151,7 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content) 
 		x_pos = (pos.getX() + 1) * 50;
 		y_pos = (pos.getY() + 1) * 50;
 		auto stone4 = std::make_shared<AStone>();
-		stone4->node = create_gem(PINK_GEM_IDX, {x_pos + random_pos(), 28, y_pos}, {0.1, 0.1, 0.1});
+		stone4->node = create_gem(PINK_GEM_IDX, {x_pos + random_pos(), 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
 		m->_stones.push_back(stone4);
 	}
 
@@ -157,7 +159,7 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content) 
 		x_pos = (pos.getX() + 1) * 50;
 		y_pos = (pos.getY() + 1) * 50;
 		auto stone5 = std::make_shared<AStone>();
-		stone5->node = create_gem(GREEN_GEM_IDX, {x_pos, 28, y_pos}, {0.1, 0.1, 0.1});
+		stone5->node = create_gem(GREEN_GEM_IDX, {x_pos + random_pos(), 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
 		m->_stones.push_back(stone5);
 	}
 
@@ -165,7 +167,7 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content) 
 		x_pos = (pos.getX() + 1) * 50;
 		y_pos = (pos.getY() + 1) * 50;
 		auto stone6 = std::make_shared<AStone>();
-		stone6->node = create_gem(GREEN_GEM_IDX, {x_pos - random_pos(), 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
+		stone6->node = create_gem(BLUE_GEM_IDX, {x_pos + random_pos(), 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
 		m->_stones.push_back(stone6);
 	}
 
@@ -175,6 +177,9 @@ int	IrrlichtDisplay::random_pos()
 {
 	int pos;
 	pos = rand() % 20;
+	if (rand() & 1) {
+		return -pos;
+	}
 	return (pos);
 }
 
@@ -257,6 +262,38 @@ irr::scene::IMeshSceneNode *IrrlichtDisplay::create_mesh(int texture, irr::core:
 irr::scene::IMeshSceneNode *IrrlichtDisplay::create_food(int texture, irr::core::vector3df pos, irr::core::vector3df scale) {
 	irr::scene::IMeshSceneNode* food = create_mesh(texture, pos, scale, "../../Ress/model/PowerGem/gem.dae");
 	return (food);
+}
+
+irr::scene::ICameraSceneNode *IrrlichtDisplay::create_camera() {
+	irr::SKeyMap keyMap[5];                             // re-assigne les commandes
+	keyMap[0].Action = irr::EKA_MOVE_FORWARD;           // avancer
+	keyMap[0].KeyCode = irr::KEY_KEY_Z;                 // w
+	keyMap[1].Action = irr::EKA_MOVE_BACKWARD;          // reculer
+	keyMap[1].KeyCode = irr::KEY_KEY_S;                 // s
+	keyMap[2].Action = irr::EKA_STRAFE_LEFT;            // a gauche
+	keyMap[2].KeyCode = irr::KEY_KEY_Q;                 // a
+	keyMap[3].Action = irr::EKA_STRAFE_RIGHT;           // a droite
+	keyMap[3].KeyCode = irr::KEY_KEY_D;                 // d
+	keyMap[4].Action = irr::EKA_JUMP_UP;                // saut
+	keyMap[4].KeyCode = irr::KEY_SPACE;                 // barre espace
+
+	irr::scene::ICameraSceneNode* camera = _sceneManager->addCameraSceneNodeFPS(0, 1.0 , 1.0f, -1, keyMap, 5);
+	return (camera);
+}
+
+void IrrlichtDisplay::create_sky()
+{
+	_driver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, false);
+
+	_sceneManager->addSkyBoxSceneNode(
+			_driver->getTexture("../../Ress/model/irrlicht2_up.jpg"),
+			_driver->getTexture("../../Ress/model/irrlicht2_dn.jpg"),
+			_driver->getTexture("../../Ress/model/irrlicht2_lf.jpg"),
+			_driver->getTexture("../../Ress/model/irrlicht2_rt.jpg"),
+			_driver->getTexture("../../Ress/model/irrlicht2_ft.jpg"),
+			_driver->getTexture("../../Ress/model/irrlicht2_bk.jpg"));
+
+	_driver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, true);
 }
 
 bool	IrrlichtDisplay::isDeviceRunning(void)

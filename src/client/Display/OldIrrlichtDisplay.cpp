@@ -241,7 +241,6 @@ void OldIrrlichtDisplay::create_sky() {
 			_driver->getTexture("../../Ress/model/irrlicht2_bk.jpg"));
 
 	_driver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, true);
-
 }
 
 bool	OldIrrlichtDisplay::isDeviceRunning(void)
