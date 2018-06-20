@@ -100,7 +100,12 @@ void IrrlichtDisplay::setTimeUnit(double unit) {
 }
 
 void IrrlichtDisplay::display(void) {
-
+	if (_device->run()) {
+		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
+		_sceneManager->drawAll();
+		//gui->draw();
+		_driver->endScene();
+	}
 }
 
 void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content) {

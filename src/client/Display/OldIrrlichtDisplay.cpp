@@ -131,7 +131,7 @@ void OldIrrlichtDisplay::displayMap(Map &map) {
 				create_gem(PINK_GEM_IDX, {x_pos, 28, y_pos}, {0.1, 0.1, 0.1});
 			}
 			if (mapCase[i][j]._stone6) {
-				create_gem(RED_GEM_IDX, {x_pos - random_pos(), 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
+				create_gem(RED_GEM_IDX, {x_pos - random_pos()- random_pos(), 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
 			}
 
 			// auto posx_egg = x_pos + random_pos();
