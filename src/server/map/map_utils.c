@@ -31,6 +31,10 @@ player_t	*add_player_to_map_at(map_t *map, point_t pos,
 	player = NEW(PLAYER, map, c, team, name, client);
 	if (!player || !list_push_back(map->players, player))
 		return NULL;
+	else if (!list_push_back(c->players, player)) {
+		list_pop_back(map->players);
+		return NULL;
+	}
 	return player;
 }
 

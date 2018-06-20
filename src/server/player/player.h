@@ -56,6 +56,7 @@ void	player_consume_food(player_t *self);
 void	player_consume_time(player_t *self);
 
 /* player_move.c */
+void	player_remove_from_map(player_t *self);
 void	player_move(player_t *self);
 void	player_move_to(player_t *self, point_t pos);
 void	player_move_toward(player_t *self, direction_t dir, int inc);

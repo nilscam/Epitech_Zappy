@@ -23,18 +23,19 @@ static bool	new_map(map_t *self, va_list *args)
 	if (!self->cases_buff || !self->cases
 		|| !self->players || !self->eggs)
 		return false;
-	init_map_contents(self, players_per_team, nb_teams);
-	return true;
+	return init_map_contents(self, players_per_team, nb_teams);
 }
 
 static void	delete_map(map_t *self)
 {
-	SAFE_FREE(self->cases_buff);
-	SAFE_FREE(self->cases);
-	list_clear(self->players, delete_class);
+	if (self->cases_buff && self->cases)
+		deinit_map_contents(self);
 	list_clear(self->eggs, delete_class);
-	SAFE_DELETE(self->players);
 	SAFE_DELETE(self->eggs);
+	list_clear(self->players, delete_class);
+	SAFE_DELETE(self->players);
+	SAFE_FREE(self->cases);
+	SAFE_FREE(self->cases_buff);
 }
 
 static const map_t	MAP_CLASS = {

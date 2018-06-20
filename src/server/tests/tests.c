@@ -34,7 +34,7 @@ int	tests(
 	// return test_map_sound();
 	// return test_tcp_connection(ac, av);
 	// return test_player_cmd();
-	return test_parsing(ac, av);
+	// return test_parsing(ac, av);
 	// return test_list_extract();
 	// return test_zclock();
 	// return test_unique_id();
