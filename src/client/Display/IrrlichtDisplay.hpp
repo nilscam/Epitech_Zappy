@@ -16,6 +16,7 @@
 #include <list>
 
 #include "Map.hpp"
+#include "GUI.hpp"
 
 class IrrlichtDisplay {
 public:
@@ -25,14 +26,16 @@ public:
 						std::map<int, std::shared_ptr<Player>> players,
 						std::list<int> idxPlayers,
 						std::map<int, Point> eggs,
-						std::list<int> idxEggs);
+						std::list<int> idxEggs,
+						std::shared_ptr<GUI> gui);
 		bool	isDeviceRunning(void);
+		irr::IrrlichtDevice		*getDevice(void) const;
 private:
 	//! Methodes
 	void 	init();
 	void 	displayMap(Map &map);
 	void 	initTexture();
-	void 	render();
+	void 	render(std::shared_ptr<GUI> gui);
 	irr::scene::ISceneNode		*create_block(int texture, irr::core::vector3df pos, irr::core::vector3df scale);
 	irr::scene::IAnimatedMesh	*create_gem(int texture,
 											irr::core::vector3df pos,

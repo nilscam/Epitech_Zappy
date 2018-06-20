@@ -28,6 +28,7 @@
 
 #define RES_PANEL "panel.png"
 #define GLOBAL_FONT "font.xml"
+#define PATH_TO_RES "../../Ress/hud/"
 
 class GUI
 {
@@ -40,15 +41,15 @@ public:
 	GUI(irr::IrrlichtDevice *device);
 	~GUI();
 
-	void addListBoxMessage(const wchar_t *str, /* Add a string to the chat */
+	void addListBoxMessage(const std::string &str, /* Add a string to the chat */
 			       ListBox::MSGtype = ListBox::DEFAULT);
 	
-	void createTable(Rectangle rect, irr::video::ITexture *texture, /* Create the table with a panel.png and coressponding enum*/
+	void createTable(Rectangle rect, const std::string &path, /* Create the table with a panel.png and coressponding enum*/
 			 int id = -1);
-	void createListBox(Rectangle rect, irr::video::ITexture *texture, /* Create the chat with a panel.png and coressponding enum*/
+	void createListBox(Rectangle rect, const std::string &path, /* Create the chat with a panel.png and coressponding enum*/
 			   int id = -1);
 	
-	Image addImage(Rectangle rect, irr::video::ITexture *texture,
+	Image addImage(Rectangle rect, const std::string &path,
 		       int id = -1);
 	Table addTable(Rectangle rect);
 	ListBox addListBox(Rectangle rect);
@@ -63,6 +64,8 @@ public:
 	
 	void setTableVisible(bool visible);
 	void setListBoxVisible(bool visible);
+
+	const wchar_t *getWC(const char *str);
 	
 	ButtonManager buttonManager;
 	ImageManager imageManager;
@@ -73,7 +76,9 @@ private:
 	int listBoxId;
 	int buttonId;
 	int imageId;
-	irr::gui::IGUIEnvironment *env;
+	irr::gui::IGUIEnvironment	*env;
+	irr::video::IVideoDriver	*_driver;
+	irr::scene::ISceneManager	*_scene;
 };
 
 #endif

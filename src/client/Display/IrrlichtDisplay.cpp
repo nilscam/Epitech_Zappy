@@ -45,7 +45,8 @@ void IrrlichtDisplay::Display(Map &map,
 							std::map<int, std::shared_ptr<Player>> players,
 							std::list<int> idxPlayers,
 							std::map<int, Point> eggs,
-							std::list<int> idxEggs) {
+							std::list<int> idxEggs,
+							std::shared_ptr<GUI> gui) {
 	displayMap(map);
 	(void)players; (void)idxPlayers;
 	//! display PLayer
@@ -63,13 +64,13 @@ void IrrlichtDisplay::Display(Map &map,
 	// 	eggs[*it].y();
 	// }
 	//!----------
-	render();
+	render(gui);
 }
 
 void IrrlichtDisplay::init() {
 	_device = irr::createDevice(    // creation du device
 			irr::video::EDT_OPENGL,                           // API = OpenGL
-			irr::core::dimension2d<irr::u32>(800, 800),        // taille fenetre 640x480p
+			irr::core::dimension2d<irr::u32>(1920, 1080),        // taille fenetre 640x480p
 			32);                                              // 32 bits par pixel
 	_driver = _device->getVideoDriver();                 // creation du driver video
 	_sceneManager = _device->getSceneManager();          // creation du scene manager
@@ -184,10 +185,11 @@ irr::scene::ICameraSceneNode *IrrlichtDisplay::create_camera() {
 	return (camera);
 }
 
-void IrrlichtDisplay::render() {
-	while (_device->run()) {
+void IrrlichtDisplay::render(std::shared_ptr<GUI> gui) {
+	if (_device->run()) {
 		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
 		_sceneManager->drawAll();
+		gui->draw();
 		_driver->endScene();
 	}
 }
@@ -245,4 +247,9 @@ void IrrlichtDisplay::create_sky() {
 bool	IrrlichtDisplay::isDeviceRunning(void)
 {
 	return (this->_device->run());
+}
+
+irr::IrrlichtDevice		*IrrlichtDisplay::getDevice(void) const
+{
+	return _device;
 }

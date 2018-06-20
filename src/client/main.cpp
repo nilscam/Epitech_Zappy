@@ -7,8 +7,12 @@
 
 #include "Manager.hpp"
 
+int test_hud();
+
 int	main(int ac, char **av)
 {
+	// (void)ac; (void)av;
+	// test_hud();
 	if (ac != 3) {
 		std::cout << "USAGE: " << av[0] << " IP PORT" << std::endl;
 		return (0);

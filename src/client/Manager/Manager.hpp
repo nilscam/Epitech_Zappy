@@ -23,6 +23,8 @@
 #include "Player.hpp"
 #include "IrrlichtDisplay.hpp"
 #include "Clock.hpp"
+#include "Rectangle.hpp"
+#include "GUI.hpp"
 
 #define LIMIT_READ	10000000
 #define LIMIT_SEND	256
@@ -76,6 +78,7 @@ private:
 	std::unique_ptr<Client>		_client;
 	std::unique_ptr<Buffer>		_readBuffer;
 	std::unique_ptr<Buffer>		_sendBuffer;
+	std::shared_ptr<GUI>		_gui;
 	std::map<std::string, std::function<void()>>	_cmd;
 
 	Map												_map;
