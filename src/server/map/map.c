@@ -12,6 +12,7 @@ static bool	new_map(map_t *self, va_list *args)
 	int	x = va_arg(*args, int);
 	int	y = va_arg(*args, int);
 	int	players_per_team = va_arg(*args, int);
+	int	nb_teams = va_arg(*args, int);
 
 	self->size.x = x;
 	self->size.y = y;
@@ -22,7 +23,7 @@ static bool	new_map(map_t *self, va_list *args)
 	if (!self->cases_buff || !self->cases
 		|| !self->players || !self->eggs)
 		return false;
-	init_map_contents(self, players_per_team);
+	init_map_contents(self, players_per_team, nb_teams);
 	return true;
 }
 

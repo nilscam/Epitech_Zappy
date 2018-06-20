@@ -17,8 +17,9 @@ max = [REQUIS] * [rand entre 1 et nb_max_joueurs] * nb_teams
 	to_place = rand(max / 2, max)
 */
 
-void	init_map_contents(map_t *self, int players_per_team)
+void	init_map_contents(map_t *self, int players_per_team, int nb_teams)
 {
+	(void)players_per_team;(void)nb_teams; //! tmp
 	map_content_t	*content;
 	int	size_x = self->size.x;
 	int	size_y = self->size.y;
