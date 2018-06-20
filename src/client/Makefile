@@ -22,6 +22,7 @@ SRC	=		Display/IrrlichtDisplay.cpp			\
 			Manager/Map.cpp						\
 			Manager/Player.cpp					\
 			Manager/parseMe.cpp					\
+			Manager/Egg.cpp						\
 			reseau/Client.cpp					\
 			reseau/Select.cpp					\
 			Utils/Clock.cpp						\

@@ -7,12 +7,9 @@
 
 #include "Egg.hpp"
 
-Egg::Egg(
-	Point pos,
-	int idxEggFrom,
-)
+Egg::Egg(Point pos,int idxPlayerFrom)
 	:	_pos(pos)
-	,	_idxEggFrom(idxEggFrom)
+	,	_idxPlayerFrom(idxPlayerFrom)
 {}
 
 Point		Egg::getPos(void) const

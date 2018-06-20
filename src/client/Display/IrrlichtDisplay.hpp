@@ -27,6 +27,7 @@ public:
 				   PlayerOrigin const &origin) override;
 	void killPlayer(size_t id) override;
 	void movePlayer(size_t id, Point const &to, PlayerMoveStyle const &how) override;
+	void changePlayerDir(size_t id, Direction const & dir) override;
 	void setPlayerLevel(size_t id, size_t level) override;
 	void addEgg(size_t idEgg, size_t idPlayerFrom) override;
 	void removeEgg(size_t id) override;
@@ -37,6 +38,8 @@ public:
 	void 	initTexture();
 	irr::scene::IMeshSceneNode *create_gem(int texture, irr::core::vector3df pos, irr::core::vector3df scale);
 	int	random_pos();
+	bool					isDeviceRunning(void);
+	irr::IrrlichtDevice		*getDevice(void) const;
 
 private:
 

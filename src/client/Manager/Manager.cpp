@@ -62,7 +62,7 @@ void	Manager::spectateGame()
 	Clock refresh;
 	// * baptiste
 	// _display = std::make_unique<IrrlichtDisplay>();
-	_display = std::make_unique<IDisplay>();
+	_display = std::make_unique<IrrlichtDisplay>();
 	_display->init();
 	_gui = std::make_shared<GUI>(_display->getDevice());
 
@@ -97,7 +97,7 @@ void	Manager::spectateGame()
 		}
 		if (refresh.timeSinceMark() > 20) {
 			if (_display->isDeviceRunning()) {
-				_display->Display(_map, _players, _idxPlayers, _eggs, _idxEggs, _gui);
+				//_display->Display(_map, _players, _idxPlayers, _eggs, _idxEggs, _gui);
 			} else {
 				_stop = true;
 			}
@@ -202,9 +202,9 @@ bool	Manager::bct()//! X Y q0 q1 q2 q3 q4 q5 q6\n || bct X Y\n content of a tile
 	if (!_args[1] || !_args[2] || !_args[3]
 	|| !_args[4] || !_args[5] || !_args[6]
 	|| !_args[7] || !_args[8] || !_args[9])
-		return;
+		return (false);
 	Point point(atoi(_args[1]), atoi(_args[2]));
-	if (_map->isInMap(point)) {
+	if (_map.isInMap(point)) {
 		Map::MapCase items;
 		items._food = atoi(_args[3]);
 		items._stone1 = atoi(_args[4]);

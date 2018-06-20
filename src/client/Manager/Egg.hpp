@@ -14,10 +14,7 @@ class Egg
 {
 public:
 
-	Egg(
-		Point pos,
-		int idxPlayerFrom,
-	);
+	Egg(Point pos, int idxPlayerFrom);
 	virtual ~Egg() = default;
 	Egg(Egg const & rhs) = default;
 	Egg(Egg && rhs) = default;

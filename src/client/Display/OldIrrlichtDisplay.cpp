@@ -23,7 +23,7 @@
 #define	GRASS_IDX				2
 #define PURPLE_GEM_IDX			3
 #define PINK_GEM_IDX			4
-#define RED_GEM_IDX			5
+#define RED_GEM_IDX				5
 #define GREEN_GEM_IDX			6
 #define	YELLOW_GEM_IDX			7
 #define BLUE_GEM_IDX			8

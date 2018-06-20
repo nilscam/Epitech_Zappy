@@ -20,7 +20,7 @@
 #define	GRASS_IDX				2
 #define PURPLE_GEM_IDX			3
 #define PINK_GEM_IDX			4
-#define RED_GEM_IDX			5
+#define RED_GEM_IDX				5
 #define GREEN_GEM_IDX			6
 #define	YELLOW_GEM_IDX			7
 #define BLUE_GEM_IDX			8
@@ -36,6 +36,7 @@ void IrrlichtDisplay::init(void) {
 	_driver = _device->getVideoDriver();
 	_sceneManager = _device->getSceneManager();
 	_device->getCursorControl()->setVisible(true);
+	this->initTexture();
 }
 
 void IrrlichtDisplay::deinit(void) {
@@ -204,6 +205,11 @@ void IrrlichtDisplay::setPlayerLevel(size_t id, size_t level) {
 	_players[id]->level = level;
 }
 
+void	IrrlichtDisplay::changePlayerDir(size_t id, Direction const & dir)
+{
+	_players[id]->dir = dir;
+}
+
 void IrrlichtDisplay::addEgg(size_t idEgg, size_t idPlayerFrom) {
 	removeEgg(idEgg);
 	_eggs[idEgg]->id = idEgg;
@@ -246,4 +252,14 @@ irr::scene::IMeshSceneNode *IrrlichtDisplay::create_mesh(int texture, irr::core:
 irr::scene::IMeshSceneNode *IrrlichtDisplay::create_food(int texture, irr::core::vector3df pos, irr::core::vector3df scale) {
 	irr::scene::IMeshSceneNode* food = create_mesh(texture, pos, scale, "../../Ress/model/PowerGem/gem.dae");
 	return (food);
+}
+
+bool	IrrlichtDisplay::isDeviceRunning(void)
+{
+	return (this->_device->run());
+}
+
+irr::IrrlichtDevice		*IrrlichtDisplay::getDevice(void) const
+{
+	return _device;
 }
