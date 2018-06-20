@@ -21,10 +21,10 @@
 #include "Buffer.hpp"
 #include "Map.hpp"
 #include "Player.hpp"
-#include "IrrlichtDisplay.hpp"
 #include "Clock.hpp"
 #include "Rectangle.hpp"
 #include "GUI.hpp"
+#include "IDisplay.hpp"
 
 #define LIMIT_READ	10000000
 #define LIMIT_SEND	256
@@ -79,12 +79,13 @@ private:
 	std::unique_ptr<Buffer>		_readBuffer;
 	std::unique_ptr<Buffer>		_sendBuffer;
 	std::shared_ptr<GUI>		_gui;
+	std::unique_ptr<IDisplay>	_display;
 	std::map<std::string, std::function<void()>>	_cmd;
 
 	Map												_map;
 	std::map<int, std::shared_ptr<Player>>			_players;
 	std::list<int>									_idxPlayers;
-	std::map<int, Point>							_eggs;
+	std::map<int, std::shared_ptr<Egg>>				_eggs;
 	std::list<int>									_idxEggs;
 	std::vector<std::string>						_teams;
 	int												_freq;

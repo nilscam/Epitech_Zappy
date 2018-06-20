@@ -60,8 +60,11 @@ int		Manager::connectClient(char *ip, int port)
 void	Manager::spectateGame()
 {
 	Clock refresh;
-	IrrlichtDisplay disp;
-	_gui = std::make_shared<GUI>(disp.getDevice());
+	// * baptiste
+	// _display = std::make_unique<IrrlichtDisplay>();
+	_display = std::make_unique<IDisplay>();
+	_display->init();
+	_gui = std::make_shared<GUI>(_display->getDevice());
 
 	refresh.mark();
 	_stop = false;
@@ -93,14 +96,15 @@ void	Manager::spectateGame()
 			_stop = true;
 		}
 		if (refresh.timeSinceMark() > 20) {
-			if (disp.isDeviceRunning()) {
-				disp.Display(_map, _players, _idxPlayers, _eggs, _idxEggs, _gui);
+			if (_display->isDeviceRunning()) {
+				_display->Display(_map, _players, _idxPlayers, _eggs, _idxEggs, _gui);
 			} else {
 				_stop = true;
 			}
 			refresh.mark();
 		}
 	}
+	_display->deinit();
 }
 void	Manager::readInFd(int fd)
 {
@@ -186,6 +190,7 @@ bool	Manager::msz()//! X Y\n || msz\n map size
 	if (!_args[1] || !_args[2])
 		return (false);
 	_map.createMap(atoi(_args[1]), atoi(_args[2]));
+	_display->setMapSize({atoi(_args[1]), atoi(_args[2])});
 	std::cout << _map;
 	return (true);
 }
@@ -194,7 +199,22 @@ bool	Manager::msz()//! X Y\n || msz\n map size
 bool	Manager::bct()//! X Y q0 q1 q2 q3 q4 q5 q6\n || bct X Y\n content of a tile
 {
 	_map.updateMap(_args);
-	//std::cout << _map;
+	if (!_args[1] || !_args[2] || !_args[3]
+	|| !_args[4] || !_args[5] || !_args[6]
+	|| !_args[7] || !_args[8] || !_args[9])
+		return;
+	Point point(atoi(_args[1]), atoi(_args[2]));
+	if (_map->isInMap(point)) {
+		Map::MapCase items;
+		items._food = atoi(_args[3]);
+		items._stone1 = atoi(_args[4]);
+		items._stone2 = atoi(_args[5]);
+		items._stone3 = atoi(_args[6]);
+		items._stone4 = atoi(_args[7]);
+		items._stone5 = atoi(_args[8]);
+		items._stone6 = atoi(_args[9]);
+		_display->setMapTile(point, items);
+	}
 	return (true);
 }
 
@@ -204,8 +224,11 @@ bool	Manager::tna()//! N\n * nbr_teams || tna\n name of all the teams
 		return (false);
 	}
 	_teams.emplace_back(std::string(_args[1]));
+	_display->setTeams({{_teams.back()}});
 	_gui->table.addTeamName({{_teams.back()}});
-	_gui->addListBoxMessage("New team Connected", ListBox::SYSTEM);
+	std::string	str("New team Connected : ");
+	str.append(_teams.back());
+	_gui->addListBoxMessage(str, ListBox::SYSTEM);
 	return (true);
 }
 bool	Manager::pnw()// #n X Y O L N\n connection of a new player
@@ -226,12 +249,24 @@ bool	Manager::pnw()// #n X Y O L N\n connection of a new player
 	Direction dir;
 	dir.setDir(atoi(_args[4]));
 	Point	pos(atoi(_args[2]), atoi(_args[3]));
+	int level = atoi(_args[5]);
 	_players[_idxPlayers.back()] = std::make_shared<Player>(
 		pos,
 		dir,
 		teamName,
 		idxTeam,
-		atoi(_args[5]));
+		level);
+	_display->addPlayer(
+		_idxPlayers.back(),
+		pos,
+		dir,
+		level,
+		teamName,
+		IDisplay::PlayerOrigin::TELEPORT
+		);
+	std::string	str("New Player Connected : #");
+	str.append(std::to_string(_idxPlayers.back()));
+	_gui->addListBoxMessage(str, ListBox::SYSTEM);
 	return (true);
 }
 bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
@@ -240,11 +275,22 @@ bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
 		return (false);
 	}
 	int idxPlayer = atoi(_args[1]);
+	Point pos(atoi(_args[2]), atoi(_args[3]));
+	Direction dir;
+	dir.setDir(atoi(_args[4]));
 	if (_players.find(idxPlayer) != _players.end()) {
-		_players[idxPlayer]->setPos({atoi(_args[2]), atoi(_args[3])});
-		Direction dir;
-		dir.setDir(atoi(_args[4]));
-		_players[idxPlayer]->setCurrentDir(dir);
+		if (dir != _players[idxPlayer]->getCurrentDir()) {
+			_display->changePlayerDir(idxPlayer, dir);
+			_players[idxPlayer]->setCurrentDir(dir);
+		}
+		if (pos != _players[idxPlayer]->getPos()) {
+			_display->movePlayer(idxPlayer, pos, IDisplay::PlayerMoveStyle::WALK);
+			_players[idxPlayer]->setPos(pos);
+		}
+		std::string	str("Player #");
+		str.append(std::to_string(idxPlayer));
+		str.append(" Move");
+		_gui->addListBoxMessage(str);
 	}
 	return (true);
 }
@@ -254,8 +300,10 @@ bool	Manager::plv()//! n L\n || plv #n\n player’s level
 		return (false);
 	}
 	int idxPlayer = atoi(_args[1]);
+	int	level = atoi(_args[2]);
 	if (_players.find(idxPlayer) != _players.end()) {
-		_players[idxPlayer]->setLevel(atoi(_args[2]));
+		_display->setPlayerLevel(idxPlayer, level);
+		_players[idxPlayer]->setLevel(level);
 	}
 	return (true);
 }
@@ -290,8 +338,10 @@ bool	Manager::pbc()// n M\n broadcast
 	}
 	int idxPlayer = atoi(_args[1]);
 	if (_players.find(idxPlayer) != _players.end()) {
+		_display->setPlayerAction(
+			idxPlayer, IDisplay::PlayerAnimationStyle::BROADCAST);
 		_players[idxPlayer]->setIsBroadcasting(true);
-	}	
+	}
 	return (true);
 }
 bool	Manager::pic()// X Y L n n . . . \n start of an incantation (by the first player)
@@ -302,6 +352,8 @@ bool	Manager::pic()// X Y L n n . . . \n start of an incantation (by the first p
 	for(int i = 4; _args[i]; i++) {
 		int idxPlayer = atoi(_args[i]);
 		if (_players.find(idxPlayer) != _players.end()) {
+			_display->setPlayerAction(
+				idxPlayer, IDisplay::PlayerAnimationStyle::INCANTATION);
 			_players[idxPlayer]->setIsIncanting(true);
 		}
 	}
@@ -357,6 +409,8 @@ bool	Manager::pdr()// n i\n resource dropping
 			items._stone6 += 1;
 		}
 		_map.setCase(_players[idxPlayer]->getPos(), items);
+		_display->setPlayerAction(
+			idxPlayer, IDisplay::PlayerAnimationStyle::DROP_RESOURCE);
 	}
 	return (true);
 }
@@ -392,6 +446,8 @@ bool	Manager::pgt()// n i\n resource collecting
 			items._stone6 -= 1;
 		}
 		_map.setCase(_players[idxPlayer]->getPos(), items);
+		_display->setPlayerAction(
+			idxPlayer, IDisplay::PlayerAnimationStyle::TAKE_RESOURCE);
 	}
 	return (true);
 }
@@ -405,6 +461,7 @@ bool	Manager::pdi()// n\n death of a player
 		_players[idxPlayer]->setIsDead(true);
 		for(auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it) {
 			if (*it == idxPlayer) {
+				_display->killPlayer(idxPlayer);
 				_idxPlayers.erase(it);
 				break;
 			}
@@ -418,9 +475,14 @@ bool	Manager::enw()// e n X Y\n an egg was laid by a player
 		return (false);
 	}
 	int	eggNumber = atoi(_args[1]);
+	int idxPlayer = atoi(_args[2]);
 	Point eggPos(atoi(_args[3]), atoi(_args[4]));
 	_idxEggs.push_back(eggNumber);
-	_eggs[eggNumber] = eggPos;
+	auto egg = std::make_shared<Egg>(eggPos, idxPlayer);
+	_eggs[eggNumber] = egg;
+	_display->addEgg(eggNumber, idxPlayer);
+	_display->setPlayerAction(
+			idxPlayer, IDisplay::PlayerAnimationStyle::EGG_LAYING);
 	return (true);
 }
 bool	Manager::eht()// e\n egg hatching
@@ -432,6 +494,7 @@ bool	Manager::eht()// e\n egg hatching
 	if (_eggs.find(idxEgg) != _eggs.end()) {
 		for(auto it = _idxEggs.begin(); it != _idxEggs.end(); ++it) {
 			if (*it == idxEgg) {
+				_display->removeEgg(idxEgg);
 				_idxEggs.erase(it);
 				break;
 			}
@@ -439,12 +502,59 @@ bool	Manager::eht()// e\n egg hatching
 	}
 	return (true);
 }
-bool	Manager::ebo()// e\n player connection for an egg
+bool	Manager::ebo()// <egg_nb> <player_nb> <X> <Y> <dir> <lvl> <team>\n player connection for an egg
 {
+	if (!_args[1] || !_args[2] || !_args[3]
+		|| !_args[4] || !_args[5] || !_args[6] || !_args[7])
+		return (false);
+	std::string teamName(_args[7]);
+	int	idxTeam = 0;
+	for(size_t i = 0; i < _teams.size(); i++)
+	{
+		if (teamName == _teams[i]) {
+			idxTeam = i;
+			break;
+		}
+	}
+	_idxPlayers.push_back(atoi(_args[2]));
+	Direction dir;
+	dir.setDir(atoi(_args[5]));
+	Point	pos(atoi(_args[3]), atoi(_args[4]));
+	int level = atoi(_args[6]);
+	_players[_idxPlayers.back()] = std::make_shared<Player>(
+		pos,
+		dir,
+		teamName,
+		idxTeam,
+		level);
+	_display->addPlayer(
+		_idxPlayers.back(),
+		pos,
+		dir,
+		level,
+		teamName,
+		IDisplay::PlayerOrigin::EGG
+		);
+	std::string	str("New Player Connected : #");
+	str.append(std::to_string(_idxPlayers.back()));
+	_gui->addListBoxMessage(str, ListBox::SYSTEM);
 	return (true);
 }
 bool	Manager::edi()// e\n death of an hatched egg
 {
+	if (!_args[1]) {
+		return (false);
+	}
+	int idxEgg = atoi(_args[1]);
+	if (_eggs.find(idxEgg) != _eggs.end()) {
+		for(auto it = _idxEggs.begin(); it != _idxEggs.end(); ++it) {
+			if (*it == idxEgg) {
+				_display->removeEgg(idxEgg);
+				_idxEggs.erase(it);
+				break;
+			}
+		}
+	}
 	return (true);
 }
 bool	Manager::sgt()//! T\n || sgt\n time unit request
@@ -453,6 +563,7 @@ bool	Manager::sgt()//! T\n || sgt\n time unit request
 		return (false);
 	}
 	_freq = atoi(_args[1]);
+	_display->setTimeUnit(_freq);
 	return (true);
 }
 bool	Manager::sst()//! T\n || sst T\n time unit modification
@@ -461,6 +572,7 @@ bool	Manager::sst()//! T\n || sst T\n time unit modification
 		return (false);
 	}
 	_freq = atoi(_args[1]);
+	_display->setTimeUnit(_freq);
 	return (true);
 }
 bool	Manager::seg()// N\n end of game

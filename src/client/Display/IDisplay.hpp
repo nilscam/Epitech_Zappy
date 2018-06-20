@@ -53,6 +53,7 @@ public:
 		Point const & to,
 		PlayerMoveStyle const & how
 	) = 0;
+	virtual void	changePlayerDir(size_t id, Direction const & dir) = 0;
 	virtual void	setPlayerLevel(size_t id, size_t level) = 0;
 	virtual void	addEgg(size_t idEgg, size_t idPlayerFrom) = 0;
 	virtual void	removeEgg(size_t id) = 0;
