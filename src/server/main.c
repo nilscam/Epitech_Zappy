@@ -56,7 +56,8 @@ static int	start_server_loop(t_server *server)
 
 int	main(int ac, char **av)
 {
-	// return tests(ac, av);
+	srand((unsigned int)time(NULL));
+	return tests(ac, av);
 	t_infos		infos = parse_args(ac, av);
 	t_server	*server;
 

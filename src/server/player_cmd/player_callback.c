@@ -204,8 +204,8 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 	},
 	{
 		CB_PLAYER_CONNECTION_EGG, player_callback_send_format,
-		"ebo %d\n",
-		"<egg_nb>",
+		"ebo %d %d %d %d %d %d %s\n",
+		"<egg_nb> <player_nb> <X> <Y> <dir> <lvl> <team>",
 		"player connection for an egg"
 	},
 	{

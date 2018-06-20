@@ -41,7 +41,13 @@ static void	add_player_from_egg(t_server *server,
 	player->client->type = CLIENT_PLAYER;
 	list_push_back(server->players_clients, player->client);
 	clients_callback(CB_PLAYER_CONNECTION_EGG,
-		server->spectators_clients, egg_id);
+		server->spectators_clients,
+		egg_id, player->id,
+		player->pos->pos.x,
+		player->pos->pos.y,
+		direction_to_int_spec(player->dir),
+		player->level,
+		team->name);
 }
 
 static player_t	*try_add_player_from_egg(t_server *server,
