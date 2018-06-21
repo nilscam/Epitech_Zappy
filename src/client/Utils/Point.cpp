@@ -182,3 +182,39 @@ size_t	Point::getLength() const noexcept
 {
 	return std::sqrt(_x * _x + _y * _y);
 }
+
+Point Point::operator+(int const &rhs) const noexcept {
+	return *this + Point(rhs, rhs);
+}
+
+Point Point::operator-(int const &rhs) const noexcept {
+	return *this - Point(rhs, rhs);
+}
+
+Point Point::operator*(int const &rhs) const noexcept {
+	return *this * Point(rhs, rhs);
+}
+
+Point Point::operator/(int const &rhs) const noexcept {
+	return *this / Point(rhs, rhs);
+}
+
+Point &Point::operator+=(int const &rhs) noexcept {
+	*this += Point(rhs, rhs);
+	return *this;
+}
+
+Point &Point::operator-=(int const &rhs) noexcept {
+	*this -= Point(rhs, rhs);
+	return *this;
+}
+
+Point &Point::operator*=(int const &rhs) noexcept {
+	*this *= Point(rhs, rhs);
+	return *this;
+}
+
+Point &Point::operator/=(int const &rhs) noexcept {
+	*this /= Point(rhs, rhs);
+	return *this;
+}

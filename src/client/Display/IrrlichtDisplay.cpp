@@ -3,6 +3,7 @@
 //
 
 #include "IrrlichtDisplay.hpp"
+#include <algorithm>
 
 IrrlichtDisplay::IrrlichtDisplay()
 	:	_timeUnit(1)
@@ -142,23 +143,23 @@ void	IrrlichtDisplay::setFoodTile(
 )
 {
 	int before = m->foods().size();
-	int after = content.food;
+	int after = content._food;
 	while (before < after)
 	{
 		m->foods().push_back(
 			std::make_shared<Food>(
 				create_food(
 					FOOD_BASE_IDX,
-					getRandomPos(pos),
+					getRandomPos(pos, IrrlichtDisplayConst::FOOD_Z),
 					IrrlichtDisplayConst::FOOD_SCALE
 				)
 			)
 		);
 		++before;
 	}
-	while (before > after && !m->_food.empty())
+	while (before > after && !m->foods().empty())
 	{
-		m->foods().pop_front();
+		m->foods().erase(m->foods().begin());
 		--before;
 	}
 }
@@ -167,7 +168,7 @@ void	IrrlichtDisplay::setStoneTile(
 	std::shared_ptr<MapContent> & m,
 	Point const &pos,
 	int textureIdx,
-	Astone::Type type,
+	AStone::Type type,
 	int nbAfter
 )
 {
@@ -182,21 +183,23 @@ void	IrrlichtDisplay::setStoneTile(
 			std::make_shared<AStone>(
 				create_gem(
 					textureIdx,
-					getRandomPos(pos),
+					getRandomPos(pos, IrrlichtDisplayConst::STONE_Z),
 					IrrlichtDisplayConst::STONE_SCALE
 				),
 				type
 			)
 		);
+		++before;
 	}
 	while (before > nbAfter)
 	{
-		auto it = std::find(m->stones().begin(), m->stones().end(),
-			[type](auto const & stone)
+		/*auto it = std::find(m->stones().begin(), m->stones().end(),
+			[type](std::shared_ptr<AStone> const & stone)
 			{
 				return *stone == type;
 			}
-		);
+		);*/
+		auto it = m->stones().end(); //! tmp
 		if (it == m->stones().end())
 			break;
 		m->stones().erase(it);
@@ -210,25 +213,25 @@ void	IrrlichtDisplay::setStonesTile(
 	Map::MapCase const & content
 )
 {
-	setStoneTile(m, pos, PURPLE_GEM_IDX, AStone::Type::S1, content.stone1);
-	setStoneTile(m, pos, RED_GEM_IDX, AStone::Type::S2, content.stone2);
-	setStoneTile(m, pos, YELLOW_GEM_IDX, AStone::Type::S3, content.stone3);
-	setStoneTile(m, pos, PINK_GEM_IDX, AStone::Type::S4, content.stone4);
-	setStoneTile(m, pos, GREEN_GEM_IDX, AStone::Type::S5, content.stone5);
-	setStoneTile(m, pos, BLUE_GEM_IDX, AStone::Type::S6, content.stone6);
+	setStoneTile(m, pos, PURPLE_GEM_IDX, AStone::Type::S1, content._stone1);
+	setStoneTile(m, pos, RED_GEM_IDX, AStone::Type::S2, content._stone2);
+	setStoneTile(m, pos, YELLOW_GEM_IDX, AStone::Type::S3, content._stone3);
+	setStoneTile(m, pos, PINK_GEM_IDX, AStone::Type::S4, content._stone4);
+	setStoneTile(m, pos, GREEN_GEM_IDX, AStone::Type::S5, content._stone5);
+	setStoneTile(m, pos, BLUE_GEM_IDX, AStone::Type::S6, content._stone6);
 }
 
 void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content)
 {
 	if (doesMapContentExist(pos))
 	{
-		auto & tile = getMapContent(pos);
+		auto tile = getMapContent(pos);
 		setFoodTile(tile, pos, content);
 		setStonesTile(tile, pos, content);
 	}
 }
 
-int	IrrlichtDisplay::random_pos()
+int	IrrlichtDisplay::random_pos() const
 {
 	int pos = rand() % 20;
 	if (rand() & 1) {
@@ -269,8 +272,8 @@ void IrrlichtDisplay::movePlayer(
 {
 	if (doesPlayerExist(id))
 	{
-		auto & player = _players[id];
-		player->pos = to;
+		auto player = getPlayer(id);
+		player->setPos(to);
 		// todo player move_node
 	}
 }
@@ -279,7 +282,8 @@ void IrrlichtDisplay::setPlayerLevel(size_t id, size_t level)
 {
 	if (doesPlayerExist(id))
 	{
-		_players[id]->level = level;
+		auto player = getPlayer(id);
+		player->setLevel(level);
 		// todo player change mesh?
 	}
 }
@@ -288,7 +292,8 @@ void	IrrlichtDisplay::changePlayerDir(size_t id, Direction const & dir)
 {
 	if (doesPlayerExist(id))
 	{
-		_players[id]->dir = dir;
+		auto player = getPlayer(id);
+		player->setDir(dir);
 		// todo player change_dir
 	}
 }
@@ -304,10 +309,10 @@ void IrrlichtDisplay::addEgg(size_t idEgg, size_t idPlayerFrom)
 			idEgg,
 			player->getPos(),
 			create_egg(
-				YOSHI_EGG_IDX,
-				getRandomPos(pos, IrrlichtDisplayConst::EGG_Z),
-				IrrlichtDisplayConst::EGG_SCALE
-			);
+					YOSHI_EGG_IDX,
+					getRandomPos(pos, IrrlichtDisplayConst::EGG_Z),
+					IrrlichtDisplayConst::EGG_SCALE
+			)
 		);
 	}
 }
@@ -341,6 +346,15 @@ irr::scene::IMeshSceneNode *IrrlichtDisplay::create_gem(
 	return (create_mesh(texture, pos, scale, GEM_MESH));
 }
 
+irr::scene::IMeshSceneNode *	IrrlichtDisplay::create_egg(
+		int texture,
+		irr::core::vector3df pos,
+		irr::core::vector3df scale
+)
+{
+	return (create_mesh(texture, pos, scale, EGG_MESH));
+}
+
 irr::scene::IMeshSceneNode *IrrlichtDisplay::create_food(
 	int texture,
 	irr::core::vector3df pos,
@@ -358,6 +372,8 @@ irr::scene::IMeshSceneNode *IrrlichtDisplay::create_mesh(
 )
 {
 	irr::scene::IAnimatedMesh * mesh =_sceneManager->getMesh(filename);
+	if (mesh == nullptr)
+		return nullptr;
 	auto my_mesh = _sceneManager->addMeshSceneNode(mesh->getMesh(0));
 	my_mesh->setPosition(pos);
 	my_mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
@@ -425,30 +441,30 @@ bool	IrrlichtDisplay::doesEggExist(size_t id) const noexcept
 	return _eggs.find(id) != _eggs.end();
 }
 
-std::shared_ptr<Player>	IrrlichtDisplay::getPlayer(size_t id) const noexcept
+std::shared_ptr<IrrlichtDisplay::Player>	IrrlichtDisplay::getPlayer(size_t id) noexcept
 {
 	return _players[id];
 }
 
-std::shared_ptr<Egg>	IrrlichtDisplay::getEgg(size_t id) const noexcept
+std::shared_ptr<IrrlichtDisplay::Egg>	IrrlichtDisplay::getEgg(size_t id) noexcept
 {
 	return _eggs[id];
 }
 
-irr::core::vector3df	IrrlichtDisplay::getRandomPos(Point const & mapPos, float z) const noexcept
+irr::core::vector3df	IrrlichtDisplay::getRandomPos(Point mapPos, float z) const noexcept
 {
-	mapPos = (mapPos + 1) * 50;
-	return { mapPos.getX(), z, mapPos.getY() };
+	mapPos = (mapPos + 1) * 50 + Point(random_pos(), random_pos());
+	return { (float)mapPos.getX(), z, (float)mapPos.getY() };
 }
 
 bool	IrrlichtDisplay::doesMapContentExist(Point const & pos) const noexcept
 {
 	int x = pos.getX();
 	int y = pos.getY();
-	return !(y < 0 || y >= _map.size() || x < 0 || x > _map[y].size());
+	return !(y < 0 || y >= (int)_map.size() || x < 0 || x > (int)_map[y].size());
 }
 
-std::shared_ptr<MapContent>	IrrlichtDisplay::getMapContent(Point const & pos) const noexcept
+std::shared_ptr<IrrlichtDisplay::MapContent>	IrrlichtDisplay::getMapContent(Point const & pos) noexcept
 {
 	return _map[pos.getY()][pos.getX()];
 }

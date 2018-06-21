@@ -217,7 +217,7 @@ bool	Manager::msz()//! X Y\n || msz\n map size
 		return (false);
 	_map.createMap(atoi(_args[1]), atoi(_args[2]));
 	_display->setMapSize({atoi(_args[1]), atoi(_args[2])});
-	std::cout << _map;
+	//std::cout << _map;
 	return (true);
 }
 

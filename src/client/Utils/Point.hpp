@@ -39,6 +39,14 @@ public:
 	Point &	operator-=(Point const & rhs) noexcept;
 	Point &	operator*=(Point const & rhs) noexcept;
 	Point &	operator/=(Point const & rhs) noexcept;
+	Point	operator+(int const & rhs) const noexcept;
+	Point	operator-(int const & rhs) const noexcept;
+	Point	operator*(int const & rhs) const noexcept;
+	Point	operator/(int const & rhs) const noexcept;
+	Point &	operator+=(int const & rhs) noexcept;
+	Point &	operator-=(int const & rhs) noexcept;
+	Point &	operator*=(int const & rhs) noexcept;
+	Point &	operator/=(int const & rhs) noexcept;
 
 	std::array<int, 2>	operator*() const noexcept;
 

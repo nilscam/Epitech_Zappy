@@ -20,22 +20,24 @@ namespace IrrlichtDisplayConst
 	const int SCREEN_Y = 1080;
 	const int FPS = 32;
 	const float EGG_Z = 27.5;
-
+	const float FOOD_Z = 30;
+	const float STONE_Z = 28;
 }
 
-#define TEXTURE_BASE			"../../Ress/model/wood.jpg"
-#define IRON_BOX				"../../Ress/model/iron_box.png"
-#define GRASS				"../../Ress/model/grass.jpg"
-#define PURPLE_GEM			"../../Ress/model/PowerGem/purplegem.png"
-#define PINK_GEM				"../../Ress/model/PowerGem/pinkgem.png"
-#define RED_GEM				"../../Ress/model/Gem1/Red.png"
-#define GREEN_GEM			"../../Ress/model/Gem1/Green.png"
-#define	YELLOW_GEM			"../../Ress/model/Gem1/Yellow.png"
-#define BLUE_GEM				"../../Ress/model/Gem1/Blue.png"
-#define YOSHI_EGG			"../../Ress/model/Egg/YoshSS00.png"
-#define FOOD_BASE			"../../Ress/model/Food/Watermelon/Texture/WatermelonTexture.png"
-#define GEM_MESH			"../../Ress/model/PowerGem/gem.dae"
-#define FOOD_MESH			"../../Ress/model/Food/Watermelon/Watermelon.obj"
+#define TEXTURE_BASE			"./Ress/model/wood.jpg"
+#define IRON_BOX				"./Ress/model/iron_box.png"
+#define GRASS				"./Ress/model/grass.jpg"
+#define PURPLE_GEM			"./Ress/model/PowerGem/purplegem.png"
+#define PINK_GEM				"./Ress/model/PowerGem/pinkgem.png"
+#define RED_GEM				"./Ress/model/Gem1/Red.png"
+#define GREEN_GEM			"./Ress/model/Gem1/Green.png"
+#define	YELLOW_GEM			"./Ress/model/Gem1/Yellow.png"
+#define BLUE_GEM				"./Ress/model/Gem1/Blue.png"
+#define YOSHI_EGG			"./Ress/model/Egg/YoshSS00.png"
+#define FOOD_BASE			"./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png"
+#define GEM_MESH				"./Ress/model/PowerGem/gem.dae"
+#define FOOD_MESH			"./Ress/model/Food/Watermelon/Watermelon.obj"
+#define EGG_MESH				"./Ress/model/Egg/YoshiEgg.obj"
 
 #define TEXTURE_BASE_IDX		0
 #define IRON_BOX_IDX			1
@@ -89,6 +91,9 @@ public:
 		PlayerAnimationStyle const & what
 	) override;
 
+
+	void display(std::shared_ptr<GUI> gui);
+
 	/* Init */
 	bool							initTexture();
 	irr::scene::ICameraSceneNode	*create_camera();
@@ -114,41 +119,15 @@ public:
 		irr::core::vector3df pos,
 		irr::core::vector3df scale
 	);
-
-	/* Deinit */
-	void							remove_block(irr::scene::ISceneNode * node);
-	void							remove_mesh(irr::scene::IMeshSceneNode * mesh);
-
-	/* Refresh */
-	void	setFoodTile(
-		std::shared_ptr<MapContent> & m,
-		Point const &pos,
-		Map::MapCase const & content
-	);
-	void	setStoneTile(
-		std::shared_ptr<MapContent> & m,
-		Point const &pos,
-		int textureIdx,
-		Astone::Type type,
-		int nbAfter
-	);
-	void	setStonesTile(
-		std::shared_ptr<MapContent> & m,
-		Point const &pos,
-		Map::MapCase const & content
+	irr::scene::IMeshSceneNode		*create_egg(
+			int texture,
+			irr::core::vector3df pos,
+			irr::core::vector3df scale
 	);
 
 	/* Utils */
-	int							random_pos();
-	bool						isDeviceRunning(void);
+	bool							isDeviceRunning(void);
 	irr::IrrlichtDevice			*getDevice(void) const;
-	bool						doesPlayerExist(size_t id) const noexcept;
-	bool						doesEggExist(size_t id) const noexcept;
-	bool						doesMapContentExist(Point const & pos) const noexcept;
-	std::shared_ptr<Player>		getPlayer(size_t id) const noexcept;
-	std::shared_ptr<Egg>		getEgg(size_t id) const noexcept;
-	std::shared_ptr<MapContent>	getMapContent(Point const & pos) const noexcept;
-	irr::core::vector3df		getRandomPos(Point const & mapPos, float z) const noexcept;
 
 private:
 
@@ -157,7 +136,7 @@ private:
 	public:
 
 		Team(std::string const & name)
-			:	_name(name)
+				:	_name(name)
 		{}
 		virtual ~Team() = default;
 
@@ -173,9 +152,9 @@ private:
 
 		enum Type { S1, S2, S3, S4, S5, S6 };
 
-		AStone(ir::scene::IMeshSceneNode * node, Type const & type)
-			:	_node(node)
-			,	_type(type)
+		AStone(irr::scene::IMeshSceneNode * node, Type const & type)
+				:	_node(node)
+				,	_type(type)
 		{}
 		virtual ~AStone()
 		{
@@ -186,7 +165,7 @@ private:
 		}
 
 		bool	operator==(AStone::Type const & rhs) const noexcept
-		{ return _type == rhs }
+		{ return _type == rhs; }
 
 		bool	operator!=(AStone::Type const & rhs) const noexcept
 		{ return !(*this == rhs); }
@@ -203,7 +182,7 @@ private:
 	public:
 
 		Food(irr::scene::IMeshSceneNode * node)
-			:	_node(node)
+				:	_node(node)
 		{}
 		virtual ~Food()
 		{
@@ -224,17 +203,17 @@ private:
 	public:
 
 		Player(
-			size_t id,
-			Point const & pos,
-			Direction const & dir,
-			size_t level,
-			irr::scene::IMeshSceneNode * node
+				size_t id,
+				Point const & pos,
+				Direction const & dir,
+				size_t level,
+				irr::scene::IMeshSceneNode * node
 		)
-			:	_id(id)
-			,	_pos(pos)
-			,	_dir(dir)
-			,	_level(level)
-			,	_node(node)
+				:	_id(id)
+				,	_pos(pos)
+				,	_dir(dir)
+				,	_level(level)
+				,	_node(node)
 		{}
 		virtual ~Player()
 		{
@@ -250,6 +229,12 @@ private:
 		{ return _dir; }
 		size_t	getLevel(void) const noexcept
 		{ return _level; }
+		void setPos(Point const & pos) noexcept
+		{ _pos = pos; }
+		void setLevel(size_t level) noexcept
+		{ _level = level; }
+		void setDir(Direction const & dir) noexcept
+		{ _dir = dir; }
 
 	private:
 
@@ -257,7 +242,7 @@ private:
 		Point							_pos;
 		Direction						_dir;
 		size_t							_level;
-		irr::scene::IMeshSceneNode *	_node;
+		irr::scene::IMeshSceneNode *		_node;
 
 	};
 
@@ -266,13 +251,16 @@ private:
 	public:
 
 		Egg(size_t id, Point const & pos, irr::scene::IMeshSceneNode * node)
-			:	_id(id)
-			,	_pos(pos)
-			,	_node(node)
+				:	_id(id)
+				,	_pos(pos)
+				,	_node(node)
 		{}
 		virtual ~Egg()
 		{
-			node->remove();
+			if (_node != nullptr)
+			{
+				_node->remove();
+			}
 		}
 
 	private:
@@ -287,9 +275,9 @@ private:
 	public:
 
 		MapContent(irr::scene::ISceneNode * node)
-			:	_node(node)
+				:	_node(node)
 		{}
-		virutal ~MapContent()
+		virtual ~MapContent()
 		{
 			_node->remove();
 		}
@@ -313,6 +301,40 @@ private:
 		irr::scene::ISceneNode					*_node;
 
 	};
+
+	/* Utils */
+	int		random_pos() const;
+
+	/* Deinit */
+	void							remove_block(irr::scene::ISceneNode * node);
+	void							remove_mesh(irr::scene::IMeshSceneNode * mesh);
+
+	/* Refresh */
+	void	setFoodTile(
+		std::shared_ptr<MapContent> & m,
+		Point const &pos,
+		Map::MapCase const & content
+	);
+	void	setStoneTile(
+		std::shared_ptr<MapContent> & m,
+		Point const &pos,
+		int textureIdx,
+		AStone::Type type,
+		int nbAfter
+	);
+	void	setStonesTile(
+		std::shared_ptr<MapContent> & m,
+		Point const &pos,
+		Map::MapCase const & content
+	);
+
+	bool							doesPlayerExist(size_t id) const noexcept;
+	bool							doesEggExist(size_t id) const noexcept;
+	bool							doesMapContentExist(Point const & pos) const noexcept;
+	std::shared_ptr<Player>		getPlayer(size_t id) noexcept;
+	std::shared_ptr<Egg>			getEgg(size_t id) noexcept;
+	std::shared_ptr<MapContent>	getMapContent(Point const & pos) noexcept;
+	irr::core::vector3df			getRandomPos(Point mapPos, float z) const noexcept;
 
 	std::vector<std::vector<std::shared_ptr<MapContent>>>	_map;
 	std::map<size_t, std::shared_ptr<Player>>				_players;
