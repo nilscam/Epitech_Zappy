@@ -240,7 +240,9 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content)
 
 irr::scene::IAnimatedMeshSceneNode *IrrlichtDisplay::create_player(
 		irr::core::vector3df pos, irr::core::vector3df scale, int idxtexture) {
-	irr::scene::IAnimatedMeshSceneNode* Daxter = _sceneManager->addAnimatedMeshSceneNode(_sceneManager->getMesh("./Ress/model/perso.DAE"));
+	irr::scene::IAnimatedMeshSceneNode* Daxter = _sceneManager->addAnimatedMeshSceneNode(
+			_sceneManager->getMesh(IrrlichtDisplayConst::PERSO)
+	);
 	Daxter->setPosition(pos);
 	Daxter->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 	Daxter->setScale(scale);

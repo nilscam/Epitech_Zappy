@@ -41,8 +41,8 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	SKY_RIGHT = "./Ress/model/irrlicht2_rt.jpg";
 	const irr::io::path	SKY_FORWARD = "./Ress/model/irrlicht2_ft.jpg";
 	const irr::io::path	SKY_BACKWARD = "./Ress/model/irrlicht2_bk.jpg";
-	const irr::io::path 	PERSO = "./Ress/model/perso.DAE";
-	const irr::io::path	TEXTURE_PERSO = "./Ress/model/texture_perso.png";
+	const irr::io::path 	PERSO = "./Ress/model/perso/perso.DAE";
+	const irr::io::path	TEXTURE_PERSO = "./Ress/model/perso/texture_perso.png";
 
 	enum TexIdx {
 		TEXTURE_BASE_IDX,
