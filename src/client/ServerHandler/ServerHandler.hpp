@@ -12,6 +12,7 @@
 #include "ChildHandler.hpp"
 
 #include <unistd.h>
+#include <string.h>
 
 class ServerHandler : public IServerHandler
 {
@@ -39,7 +40,7 @@ public:
 	) override;
 	void	stopServer(void) noexcept override;
 	void	addAi(std::string const & team, int nb) override;
-	void	addAi(std::string const & team) noexcept override;
+	void	addAi(std::string const & team) override;
 	void	addAiAllTeams(int nb) noexcept override;
 
 private:

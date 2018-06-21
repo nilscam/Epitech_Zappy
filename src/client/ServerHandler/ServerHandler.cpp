@@ -74,18 +74,14 @@ void	ServerHandler::stopServer(void) noexcept
 
 void	ServerHandler::addAi(std::string const & team, int nb)
 {
-	for (size_t i = 0; i < nb; ++i)
+	for (int i = 0; i < nb; ++i)
 	{
 		addAi(team);
 	}
 }
 
-void	ServerHandler::addAi(std::string const & team) noexcept
+void	ServerHandler::addAi(std::string const & team)
 {
-	if (_port < 0)
-	{
-		return;
-	}
 	int pid = fork();
 	if (pid == -1)
 	{
@@ -104,12 +100,16 @@ void	ServerHandler::addAi(std::string const & team) noexcept
 		}
 		size_t i = 0;
 		argv[i++] = std::string("./zappy_ai").c_str();
-		argv[i++] = std::string("-p").c_str();
-		argv[i++] = std::to_string(_port).c_str();
-		argv[i++] = std::string("-n").c_str();
+		argv[i++] = std::string("127.0.0.1").c_str();
+		argv[i++] = std::string("4242").c_str();
 		argv[i++] = team.c_str();
-		argv[i++] = std::string("-h").c_str();
-		argv[i++] = std::string("localhost").c_str();
+		// ! A CHANGER
+		// argv[i++] = std::string("-p").c_str();
+		// argv[i++] = std::to_string(_port).c_str();
+		// argv[i++] = std::string("-n").c_str();
+		// argv[i++] = team.c_str();
+		// argv[i++] = std::string("-h").c_str();
+		// argv[i++] = std::string("localhost").c_str();
 		argv[i++] = NULL;
 		execvp(argv[0], (char * const *)argv);
 		free(argv);

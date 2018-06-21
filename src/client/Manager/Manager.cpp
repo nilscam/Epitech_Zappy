@@ -7,6 +7,23 @@
 
 #include "Manager.hpp"
 
+Manager::Manager()
+{
+	_serverHandler = std::make_unique<ServerHandler>();
+	_serverHandler->startServer(3, 3, 4242, { "red", "blue" }, 12, 100);
+	usleep(100000);
+	_client = std::make_unique<Client>();
+	_readBuffer = std::make_unique<Buffer>(LIMIT_READ);
+	_sendBuffer = std::make_unique<Buffer>(LIMIT_SEND);
+	_char_read = 0;
+	_args = NULL;
+	this->initReadCmd();
+	if (!this->connectClient(std::string("127.0.0.1").c_str(), 4242)) {
+		throw std::runtime_error("Error: Failed to connect");
+	}
+	_serverHandler->addAiAllTeams(2);
+}
+
 Manager::Manager(char *ip, int port)
 {
 	_client = std::make_unique<Client>();
@@ -22,7 +39,7 @@ Manager::Manager(char *ip, int port)
 Manager::~Manager()
 {
 }
-int		Manager::connectClient(char *ip, int port)
+int		Manager::connectClient(const char *ip, int port)
 {
 	if (_client->connectServer(ip, port) == -1) {
 		return (0);
@@ -63,7 +80,9 @@ void	Manager::spectateGame()
 	// * baptiste
 	// _display = std::make_unique<IrrlichtDisplay>();
 	_display = std::make_unique<IrrlichtDisplay>();
-	_display->init();
+	if (!_display->init()) {
+		return;
+	}
 	_gui = std::make_shared<GUI>(_display->getDevice());
 
 	refresh.mark();

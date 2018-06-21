@@ -19,12 +19,12 @@ public:
 	Client() = default;
 	virtual ~Client() = default;
 
-	int			connectServer(char *ip, int port);
+	int			connectServer(const char *ip, int port);
 	void		disconnect(void);
 	bool		isConnected(void) const;
 	int			getFdServer(void) const;
 private:
-	int			connect_socket(char *ip, int port, int fd);
+	int			connect_socket(const char *ip, int port, int fd);
 	int			create_socket(void);
 	int			_fd_server;
 };
