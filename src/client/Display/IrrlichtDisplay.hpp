@@ -15,12 +15,14 @@ namespace IrrlichtDisplayConst
 	const irr::core::vector3df	FOOD_SCALE = { 1.5, 1.5, 1.5 };
 	const irr::core::vector3df	STONE_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	EGG_SCALE = { 0.1, 0.1, 0.1 };
+	const irr::core::vector3df	PLAYER_SCALE = { 2.2, 2.2, 2.2 };
 	const int SCREEN_X = 800;//1920;
 	const int SCREEN_Y = 800;//1080;
 	const int FPS = 32;
 	const float EGG_Z = 27.5;
 	const float FOOD_Z = 30;
 	const float STONE_Z = 28;
+	const float PLAYER_Z = 27.5;
 	const irr::io::path	TEXTURE_BASE = "./Ress/model/wood.jpg";
 	const irr::io::path	IRON_BOX = "./Ress/model/iron_box.png";
 	const irr::io::path	GRASS = "./Ress/model/grass.jpg";
@@ -140,8 +142,13 @@ public:
 			int idxtexture
 	);
 	/* Utils */
-	bool							isDeviceRunning(void);
+	bool						isDeviceRunning(void);
 	irr::IrrlichtDevice			*getDevice(void) const;
+
+	static int							random_pos();
+	static int							getRotationDegrees(Direction const & dir);
+	static irr::core::vector3df			getRandomPos(Point mapPos, float z);
+	static irr::core::vector3df			getCenterPos(Point mapPos, float z);
 
 private:
 
@@ -228,7 +235,11 @@ private:
 				,	_dir(dir)
 				,	_level(level)
 				,	_node(node)
-		{}
+		{
+			positionNode(pos);
+			rotateNode(dir);
+		}
+
 		virtual ~Player()
 		{
 			if (_node != nullptr)
@@ -237,28 +248,53 @@ private:
 			}
 		}
 
-		Point const &	getPos(void) const noexcept
-		{ return _pos; }
-		Direction const &	getDir(void) const noexcept
-		{ return _dir; }
-		size_t	getLevel(void) const noexcept
-		{ return _level; }
-		void setPos(Point const & pos) noexcept
-		{ _pos = pos; }
-		void setLevel(size_t level) noexcept
-		{ _level = level; }
-		void setDir(Direction const & dir) noexcept
-		{ _dir = dir; }
-		irr::scene::IAnimatedMeshSceneNode * node(void) noexcept
-		{ return _node; }
+		void	setPos(Point const & pos)
+		{
+			_pos = pos;
+			positionNode(pos);
+		}
+
+		void	setLevel(size_t level)
+		{
+			_level = level;
+		}
+
+		void	setDir(Direction const & dir)
+		{
+			_dir = dir;
+			rotateNode(dir);
+		}
+
+		Point	getPos(void) const noexcept
+		{
+			return _pos;
+		}
 
 	private:
 
-		size_t							_id;
-		Point							_pos;
-		Direction						_dir;
-		size_t							_level;
-		irr::scene::IAnimatedMeshSceneNode *		_node;
+		void	rotateNode(Direction const & dir)
+		{
+			if (_node)
+			{
+				_node->setRotation({ 0, (float)IrrlichtDisplay::getRotationDegrees(dir), 0 });
+			}
+		}
+
+		void	positionNode(Point const & pos)
+		{
+			if (_node)
+			{
+				_node->setPosition(IrrlichtDisplay::getCenterPos(pos, IrrlichtDisplayConst::PLAYER_Z));
+			}
+		}
+
+	private:
+
+		size_t									_id;
+		Point									_pos;
+		Direction								_dir;
+		size_t									_level;
+		irr::scene::IAnimatedMeshSceneNode *	_node;
 
 	};
 
@@ -318,10 +354,6 @@ private:
 
 	};
 
-	/* Utils */
-	int		random_pos() const;
-	int		getRotationDegrees(Direction const & dir);
-
 	/* Deinit */
 	void							remove_block(irr::scene::ISceneNode * node);
 	void							remove_mesh(irr::scene::IMeshSceneNode * mesh);
@@ -351,8 +383,6 @@ private:
 	std::shared_ptr<Player>		getPlayer(size_t id) noexcept;
 	std::shared_ptr<Egg>			getEgg(size_t id) noexcept;
 	std::shared_ptr<MapContent>	getMapContent(Point const & pos) noexcept;
-	irr::core::vector3df			getRandomPos(Point mapPos, float z) const noexcept;
-	irr::core::vector3df			getCenterPos(Point mapPos, float z) const noexcept;
 
 	std::vector<std::vector<std::shared_ptr<MapContent>>>	_map;
 	std::map<size_t, std::shared_ptr<Player>>				_players;

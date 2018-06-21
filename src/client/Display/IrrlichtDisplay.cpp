@@ -250,7 +250,7 @@ irr::scene::IAnimatedMeshSceneNode *IrrlichtDisplay::create_player(
 	return (Daxter);
 }
 
-int	IrrlichtDisplay::random_pos() const
+int	IrrlichtDisplay::random_pos()
 {
 	int pos = rand() % 20;
 	if (rand() & 1) {
@@ -277,12 +277,11 @@ void	IrrlichtDisplay::addPlayer(
 	_players[id] = std::make_shared<Player>(
 		id, pos, dir, level,
 		create_player(
-				getCenterPos(pos, 27.5),
-				{2.2, 2.2, 2.2},
+				getCenterPos(pos, IrrlichtDisplayConst::PLAYER_Z),
+				IrrlichtDisplayConst::PLAYER_SCALE,
 				IrrlichtDisplayConst::TEXTURE_PERSO_IDX
 		)
 	);
-	_players[id]->node()->setRotation({ 0, (float)getRotationDegrees(dir), 0 });
 }
 
 void IrrlichtDisplay::killPlayer(size_t id)
@@ -303,14 +302,7 @@ void IrrlichtDisplay::movePlayer(
 	if (doesPlayerExist(id))
 	{
 		auto player = getPlayer(id);
-		auto from = player->getPos();
-
-		//double		ms_to_wait = 1.0 / _timeUnit * 1E9;
-		//std::cout << "ms to wait: '" << ms_to_wait << "'" << std::endl;
-
 		player->setPos(to);
-		player->node()->setPosition(getCenterPos(to, 27.5));
-		// todo player move_node
 	}
 }
 
@@ -320,7 +312,6 @@ void IrrlichtDisplay::setPlayerLevel(size_t id, size_t level)
 	{
 		auto player = getPlayer(id);
 		player->setLevel(level);
-		// todo player change mesh?
 	}
 }
 
@@ -330,7 +321,6 @@ void	IrrlichtDisplay::changePlayerDir(size_t id, Direction const & dir)
 	{
 		auto player = getPlayer(id);
 		player->setDir(dir);
-		player->node()->setRotation({ 0, (float)getRotationDegrees(dir), 0 });
 	}
 }
 
@@ -488,13 +478,13 @@ std::shared_ptr<IrrlichtDisplay::Egg>	IrrlichtDisplay::getEgg(size_t id) noexcep
 	return _eggs[id];
 }
 
-irr::core::vector3df	IrrlichtDisplay::getRandomPos(Point mapPos, float z) const noexcept
+irr::core::vector3df	IrrlichtDisplay::getRandomPos(Point mapPos, float z)
 {
 	mapPos = (mapPos + 1) * 50 + Point(random_pos(), random_pos());
 	return { (float)mapPos.getX(), z, (float)mapPos.getY() };
 }
 
-irr::core::vector3df	IrrlichtDisplay::getCenterPos(Point mapPos, float z) const noexcept
+irr::core::vector3df	IrrlichtDisplay::getCenterPos(Point mapPos, float z)
 {
 	mapPos = (mapPos + 1) * 50;
 	return { (float)mapPos.getX(), z, (float)mapPos.getY() };
