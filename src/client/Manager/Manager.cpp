@@ -98,7 +98,8 @@ void	Manager::spectateGame()
 		if (refresh.timeSinceMark() > 20) {
 			if (_display->isDeviceRunning()) {
 				//_display->Display(_map, _players, _idxPlayers, _eggs, _idxEggs, _gui);
-				_display->display();
+				_display->display(_gui);
+				this->updateGUILevelPlayer();
 			} else {
 				_stop = true;
 			}
@@ -133,28 +134,28 @@ void	Manager::initReadCmd()
 	_cmd["msz"] = std::bind(&Manager::msz, this);
 	_cmd["bct"] = std::bind(&Manager::bct, this);
 	_cmd["tna"] = std::bind(&Manager::tna, this);
-	_cmd["pnw"] = std::bind(&Manager::tna, this);
-	_cmd["ppo"] = std::bind(&Manager::pnw, this);
-	_cmd["plv"] = std::bind(&Manager::ppo, this);
-	_cmd["pin"] = std::bind(&Manager::plv, this);
-	_cmd["pex"] = std::bind(&Manager::pin, this);
-	_cmd["pbc"] = std::bind(&Manager::pex, this);
-	_cmd["pic"] = std::bind(&Manager::pbc, this);
-	_cmd["pie"] = std::bind(&Manager::pic, this);
-	_cmd["pfk"] = std::bind(&Manager::pie, this);
-	_cmd["pdr"] = std::bind(&Manager::pfk, this);
-	_cmd["pgt"] = std::bind(&Manager::pdr, this);
-	_cmd["pdi"] = std::bind(&Manager::pgt, this);
-	_cmd["enw"] = std::bind(&Manager::pdi, this);
-	_cmd["eht"] = std::bind(&Manager::enw, this);
-	_cmd["ebo"] = std::bind(&Manager::eht, this);
-	_cmd["edi"] = std::bind(&Manager::ebo, this);
-	_cmd["sgt"] = std::bind(&Manager::edi, this);
-	_cmd["sst"] = std::bind(&Manager::sgt, this);
-	_cmd["seg"] = std::bind(&Manager::sst, this);
-	_cmd["smg"] = std::bind(&Manager::seg, this);
-	_cmd["suc"] = std::bind(&Manager::smg, this);
-	_cmd["sbp"] = std::bind(&Manager::suc, this);
+	_cmd["pnw"] = std::bind(&Manager::pnw, this);
+	_cmd["ppo"] = std::bind(&Manager::ppo, this);
+	_cmd["plv"] = std::bind(&Manager::plv, this);
+	_cmd["pin"] = std::bind(&Manager::pin, this);
+	_cmd["pex"] = std::bind(&Manager::pex, this);
+	_cmd["pbc"] = std::bind(&Manager::pbc, this);
+	_cmd["pic"] = std::bind(&Manager::pic, this);
+	_cmd["pie"] = std::bind(&Manager::pie, this);
+	_cmd["pfk"] = std::bind(&Manager::pfk, this);
+	_cmd["pdr"] = std::bind(&Manager::pdr, this);
+	_cmd["pgt"] = std::bind(&Manager::pgt, this);
+	_cmd["pdi"] = std::bind(&Manager::pdi, this);
+	_cmd["enw"] = std::bind(&Manager::enw, this);
+	_cmd["eht"] = std::bind(&Manager::eht, this);
+	_cmd["ebo"] = std::bind(&Manager::ebo, this);
+	_cmd["edi"] = std::bind(&Manager::edi, this);
+	_cmd["sgt"] = std::bind(&Manager::sgt, this);
+	_cmd["sst"] = std::bind(&Manager::sst, this);
+	_cmd["seg"] = std::bind(&Manager::seg, this);
+	_cmd["smg"] = std::bind(&Manager::smg, this);
+	_cmd["suc"] = std::bind(&Manager::suc, this);
+	_cmd["sbp"] = std::bind(&Manager::sbp, this);
 }
 
 void	Manager::freeArgs()
@@ -183,6 +184,30 @@ void	Manager::parseCmd()
 	if (cmd) {
 		free(cmd[0]);
 		free(cmd);
+	}
+}
+
+void	Manager::updateGUILevelPlayer()
+{
+	std::map<int, std::map<int, int>> teamLevel;
+	for(size_t i = 0; i < _teams.size(); i++)
+	{
+		teamLevel[i][1] = 0;
+		teamLevel[i][2] = 0;
+		teamLevel[i][3] = 0;
+		teamLevel[i][4] = 0;
+		teamLevel[i][5] = 0;
+		teamLevel[i][6] = 0;
+		teamLevel[i][7] = 0;
+		teamLevel[i][8] = 0;
+	}
+	for(auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it) {
+		++teamLevel[_players[*it]->getIdxTeam()][_players[*it]->getLevel()];
+	}
+	for(size_t i = 0; i < _teams.size(); i++) {
+		for(size_t j = 1; j < 9; j++) {
+			_gui->table.setValue(j, i + 1, std::to_string(teamLevel[i][j]));
+		}
 	}
 }
 
@@ -467,6 +492,10 @@ bool	Manager::pdi()// n\n death of a player
 				break;
 			}
 		}
+		std::string	str("Player #");
+		str.append(std::to_string(idxPlayer));
+		str.append(" Died");
+		_gui->addListBoxMessage(str, ListBox::SYSTEM);
 	}
 	return (true);
 }

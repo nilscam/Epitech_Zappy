@@ -6,6 +6,7 @@
 #define IrrlichtDisplay_H_
 
 #include "IDisplay.hpp"
+#include "GUI.hpp"
 #include <irrlicht/irrlicht.h>
 #include <memory>
 
@@ -22,6 +23,7 @@ public:
 	void setTeams(std::vector<std::string> const &teams) override;
 	void setTimeUnit(double unit) override;
 	void display(void) override;
+	void display(std::shared_ptr<GUI> gui);
 	void setMapTile(Point const &pos, Map::MapCase const &content) override;
 	void addPlayer(size_t id, Point const &pos, Direction const &dir, size_t level, std::string const &team,
 				   PlayerOrigin const &origin) override;

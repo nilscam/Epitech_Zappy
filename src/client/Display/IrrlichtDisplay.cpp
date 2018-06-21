@@ -42,7 +42,7 @@ void IrrlichtDisplay::init(void) {
 }
 
 void IrrlichtDisplay::deinit(void) {
-
+	_device->drop();
 }
 void	IrrlichtDisplay::initTexture()
 {
@@ -105,7 +105,15 @@ void IrrlichtDisplay::display(void) {
 	if (_device->run()) {
 		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
 		_sceneManager->drawAll();
-		//gui->draw();
+		_driver->endScene();
+	}
+}
+
+void IrrlichtDisplay::display(std::shared_ptr<GUI> gui) {
+	if (_device->run()) {
+		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
+		_sceneManager->drawAll();
+		gui->draw();
 		_driver->endScene();
 	}
 }

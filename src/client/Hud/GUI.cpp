@@ -19,6 +19,7 @@ GUI::GUI(irr::IrrlichtDevice *device)
 	this->setFont(PATH_TO_RES GLOBAL_FONT);
 	this->createListBox(Rectangle(LISTBOX_X, LISTBOX_Y, LISTBOX_X2, LISTBOX_Y2), PATH_TO_RES RES_PANEL);
 	this->createTable(Rectangle(TABLE_X, TABLE_Y, TABLE_X2, TABLE_Y2), PATH_TO_RES RES_PANEL);
+	device->setResizable(false);
 }
 
 GUI::~GUI()
