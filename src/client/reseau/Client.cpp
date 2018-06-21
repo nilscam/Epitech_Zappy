@@ -7,7 +7,7 @@
 
 #include "Client.hpp"
 
-int			Client::connectServer(char *ip, int port)
+int			Client::connectServer(const char *ip, int port)
 {
 	int			fd;
 
@@ -33,7 +33,7 @@ int			Client::getFdServer(void) const
 	return (_fd_server);
 }
 
-int			Client::connect_socket(char *ip, int port, int fd)
+int			Client::connect_socket(const char *ip, int port, int fd)
 {
 	struct sockaddr_in	s_in;
 

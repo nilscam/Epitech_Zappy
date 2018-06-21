@@ -28,7 +28,7 @@
 
 #define RES_PANEL "panel.png"
 #define GLOBAL_FONT "font.xml"
-#define PATH_TO_RES "../../Ress/hud/"
+#define PATH_TO_RES "./Ress/hud/"
 
 class GUI
 {

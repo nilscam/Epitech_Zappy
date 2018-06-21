@@ -26,6 +26,7 @@
 #include "GUI.hpp"
 #include "IrrlichtDisplay.hpp"
 #include "Egg.hpp"
+#include "ServerHandler.hpp"
 
 #define LIMIT_READ	10000000
 #define LIMIT_SEND	256
@@ -33,9 +34,10 @@
 class Manager
 {
 public:
+	Manager();
 	Manager(char *ip, int port);
 	~Manager();
-	int		connectClient(char *ip, int port);
+	int		connectClient(const char *ip, int port);
 	void	spectateGame();
 
 private:
@@ -77,6 +79,7 @@ private:
 	//! --------- 
 
 	//! Variables
+	std::unique_ptr<ServerHandler>	_serverHandler;
 	std::unique_ptr<Client>		_client;
 	std::unique_ptr<Buffer>		_readBuffer;
 	std::unique_ptr<Buffer>		_sendBuffer;
