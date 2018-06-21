@@ -119,6 +119,14 @@ class ai:
     8: (-1, 1)
     }
 
+    #que dois-je faire pour aller de UP à DOWN ? de LEFT à UP ? de RIGHT à DOWN ?
+    nbTurn = {
+    'UP': { 'LEFT': ['Left'], 'DOWN': ['Left', 'Left'], 'RIGHT': ['Right'], 'UP': [] },
+    'DOWN': { 'LEFT': ['Right'], 'DOWN': [], 'RIGHT': ['Left'], 'UP': ['Left', 'Left'] },
+    'LEFT': { 'LEFT': [], 'DOWN': ['Left'], 'RIGHT': ['Right', 'Right'], 'UP': ['Right'] },
+    'RIGHT': { 'LEFT': ['Left', 'Left'], 'DOWN': ['Right'], 'RIGHT': [], 'UP': ['Left'] }
+    }
+
     incantationsStats = {
     1: { 'player': 1, 'linemate': 1, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0 },
     2: { 'player': 2, 'linemate': 1, 'deraumere': 1, 'sibur': 1, 'mendiane': 0, 'phiras': 0, 'thystame': 0 },
@@ -180,7 +188,7 @@ class ai:
     def addToAlly(self, player):
         self.listIncantationsDir.append(player)
 
-    def joinForIncantation(self, listDir):
+    def orienteRegroupIncantation(self):
         actualDir = [0, 0]
         for id, dir in listIncantationsDir.items():
             actualDir[0] += self.optimizeDir[optimizeDirRelativ[self.orientation][dir]][0]
@@ -188,7 +196,17 @@ class ai:
 
         actualDir[0] = utils.smoothDir(actualDir[0])
         actualDir[1] = utils.smoothDir(actualDir[1])
-        return actualDir
+
+        # technique de la croix
+        dirToChoose = 'UP'
+        if actualDir[0] == 1:
+            dirToChoose = 'DOWN'
+        elif dirToChoose[1] == 1:
+            dirToChoose = 'RIGHT'
+        elif dirToChoose[1] == -1:
+            dirToChoose = 'LEFT'
+
+        return self.nbTurn[self.orientation][dirToChoose]
 
     # return True if i can incante with all others players of my lv, False otherwise
     def canIncante(self):
@@ -205,6 +223,16 @@ class ai:
             else:
                 if full_inventory[prerequisites] < number:
                     return False
+        return True
+
+    # return True if there is enough player on my square to level up with me
+    def canStartIncante(self):
+        nbSameSquare = 0
+        for player in self.listIncantationsDir:
+            if player['direction'] == 0:
+                nbSameSquare += 1
+        if self.incantationsStats[self.level]['player'] < nbSameSquare:
+            return False
         return True
 
     def Forward(self):

@@ -36,11 +36,27 @@ class IAManager(ai.ai):
 
     def exploreStep(self):
         #Broadcast
+        self.broadcastInfos()
         #Look
+        self.castCmd("Look\n")
         #inventory
+        self.castCmd("Inventory\n")
         #takeAllItem
+        self.takeAllItem()
         #Oriente
+        vectorTurn = self.orienteRegroupIncantation()
+        for dir in vectorTurn:
+            self.castCmd(dir + "\n")
         #Move
+        self.castCmd("Forward\n")
+
+    def reGroup(self):
+        if self.canStartIncante():
+            self.dropNecessary()
+            self.castCmd("Incantation\n")
+        else:
+            # remplacer ça par les règles de Paint
+            self.exploreStep()
 
     def play(self):
         while self.level < 8:
@@ -104,6 +120,16 @@ class IAManager(ai.ai):
             for item, number in actualSquare.items():
                 for i in range(number):
                     self.castCmd("Take" + item)
+
+    def dropNumber(self, ressource, nb):
+        i = 0
+        while i < nb and i < getattr(self.inventory, ressource):
+            self.castCmd("Set " + ressource + "\n")
+
+    def dropNecessary(self):
+        for ressource, nb in self.incantationsStats[self.level].items():
+            if ressource != 'player':
+                self.dropNumber(ressource, nb)
 
     def castCmd(self, cmd):
         self.cmdManager.sendCmd(cmd)
