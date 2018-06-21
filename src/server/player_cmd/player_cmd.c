@@ -64,7 +64,11 @@ static const player_cmd_t	SPECTATOR_CMDS[] = {
 	{ "sgt", spectate_cmd_time_unit, NULL, 0, 0,
 		"sgt", "time unit request" },
 	{ "sst", spectate_cmd_time_unit_mod, NULL, 0, 1,
-		"sst T", "time unit modification" }
+		"sst T", "time unit modification" },
+	{ "pnw", spectate_cmd_players_pos, NULL, 0, 0,
+		"pnw", "position of all players" },
+	{ "egg", spectate_cmd_eggs_pos, NULL, 0, 0,
+		"egg", "position of all eggs" }
 };
 static const player_cmd_t	DEFAULT_SPECTATOR_CMD = {
 	"", player_cmd_error, NULL, 0, 0, "ko", "ko"

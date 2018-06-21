@@ -24,7 +24,7 @@ public:
 	) = 0;
 	virtual void	stopServer(void) noexcept = 0;
 	virtual void	addAi(std::string const & team, int nb) = 0;
-	virtual void	addAi(std::string const & team) noexcept = 0;
+	virtual void	addAi(std::string const & team) = 0;
 	virtual void	addAiAllTeams(int nb) noexcept = 0;
 
 };

@@ -25,17 +25,20 @@ SRC	=		Display/IrrlichtDisplay.cpp			\
 			Manager/Egg.cpp						\
 			reseau/Client.cpp					\
 			reseau/Select.cpp					\
+			ServerHandler/ChildHandler.cpp		\
+			ServerHandler/ServerHandler.cpp		\
 			Utils/Clock.cpp						\
 			Utils/Debug.cpp						\
 			Utils/Direction.cpp					\
 			Utils/Math.cpp						\
 			Utils/Point.cpp
 
-INC	=	-I include		\
-		-I Display		\
-		-I Hud			\
-		-I Manager		\
-		-I reseau		\
+INC	=	-I include			\
+		-I Display			\
+		-I Hud				\
+		-I Manager			\
+		-I reseau			\
+		-I ServerHandler	\
 		-I Utils
 F	=	-W -Wall -Werror -Wextra
 

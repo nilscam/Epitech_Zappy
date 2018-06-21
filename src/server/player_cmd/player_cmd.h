@@ -59,6 +59,9 @@ void	player_cmd_connect_nbr(player_cmd_arg_t *args);
 /* player_cmd/content_map.c */
 void	spectate_cmd_content_map(player_cmd_arg_t *args);
 
+/* player_cmd/eggs_pos.c */
+void	spectate_cmd_eggs_pos(player_cmd_arg_t *args);
+
 /* player_cmd/eject.c */
 bool	validate_eject(player_cmd_arg_t *args);
 void	player_cmd_eject(player_cmd_arg_t *args);
@@ -105,6 +108,7 @@ void	spectate_cmd_player_level(player_cmd_arg_t *args);
 
 /* player_cmd/player_pos.c */
 void	spectate_cmd_player_pos(player_cmd_arg_t *args);
+void	spectate_cmd_players_pos(player_cmd_arg_t *args);
 
 /* player_cmd/right.c */
 void	player_cmd_right(player_cmd_arg_t *args);
