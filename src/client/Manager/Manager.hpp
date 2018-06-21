@@ -35,7 +35,7 @@ class Manager
 {
 public:
 	Manager();
-	Manager(char *ip, int port);
+	Manager(const char *ip, int port);
 	~Manager();
 	int		connectClient(const char *ip, int port);
 	void	spectateGame();
@@ -76,6 +76,7 @@ private:
 	bool	smg();// M\n message from the server
 	bool	suc();//\n unknown command
 	bool	sbp();//\n command parameter
+	bool	egg();// e X Y
 	//! --------- 
 
 	//! Variables

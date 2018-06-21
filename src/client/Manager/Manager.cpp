@@ -10,7 +10,7 @@
 Manager::Manager()
 {
 	_serverHandler = std::make_unique<ServerHandler>();
-	_serverHandler->startServer(3, 3, 4242, { "red", "blue" }, 12, 100);
+	_serverHandler->startServer(3, 3, 4242, { "red", "blue" }, 12, 10);
 	usleep(100000);
 	_client = std::make_unique<Client>();
 	_readBuffer = std::make_unique<Buffer>(LIMIT_READ);
@@ -24,7 +24,7 @@ Manager::Manager()
 	_serverHandler->addAiAllTeams(2);
 }
 
-Manager::Manager(char *ip, int port)
+Manager::Manager(const char *ip, int port)
 {
 	_client = std::make_unique<Client>();
 	_readBuffer = std::make_unique<Buffer>(LIMIT_READ);
@@ -61,7 +61,7 @@ int		Manager::connectClient(const char *ip, int port)
 					_sendBuffer->Put("SPECTATOR\n");
 					this->writeInFd(_client->getFdServer());
 				} else if (_args && !strcmp(_args[0], "ok")) {
-					_sendBuffer->Put("msz\nmct\ntna\n");
+					_sendBuffer->Put("msz\nmct\ntna\npnw\negg\n");
 					this->writeInFd(_client->getFdServer());
 					this->freeArgs();
 					return (1);
@@ -175,6 +175,7 @@ void	Manager::initReadCmd()
 	_cmd["smg"] = std::bind(&Manager::smg, this);
 	_cmd["suc"] = std::bind(&Manager::suc, this);
 	_cmd["sbp"] = std::bind(&Manager::sbp, this);
+	_cmd["egg"] = std::bind(&Manager::egg, this);
 }
 
 void	Manager::freeArgs()
@@ -281,6 +282,7 @@ bool	Manager::pnw()// #n X Y O L N\n connection of a new player
 	if (!_args[1] || !_args[2] || !_args[3]
 		|| !_args[4] || !_args[5] || !_args[6])
 		return (false);
+	std::cout << "PLAYER CONNECTED" << std::endl;
 	std::string teamName(_args[6]);
 	int	idxTeam = 0;
 	for(size_t i = 0; i < _teams.size(); i++)
@@ -643,5 +645,22 @@ bool	Manager::suc()//\n unknown command
 }
 bool	Manager::sbp()//\n command parameter
 {
+	return (true);
+}
+
+bool	Manager::egg()// e X Y
+{
+	if (!_args[1] || !_args[2] || !_args[3]) {
+		return (false);
+	}
+	int	eggNumber = atoi(_args[1]);
+	int idxPlayer = 1;
+	Point eggPos(atoi(_args[2]), atoi(_args[3]));
+	_idxEggs.push_back(eggNumber);
+	auto egg = std::make_shared<Egg>(eggPos, idxPlayer);
+	_eggs[eggNumber] = egg;
+	_display->addEgg(eggNumber, idxPlayer);
+	_display->setPlayerAction(
+			idxPlayer, IDisplay::PlayerAnimationStyle::EGG_LAYING);
 	return (true);
 }

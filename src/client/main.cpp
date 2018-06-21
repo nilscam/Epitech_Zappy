@@ -12,8 +12,8 @@ int test_hud();
 int	main(int ac, char **av)
 {
 	try {
-		if (ac == 3) {
-			auto man = std::make_shared<Manager>(av[1], atoi(av[2]));
+		if (ac == 2) {
+			auto man = std::make_shared<Manager>(std::string("127.0.0.1").c_str(), atoi(av[1]));
 			man->spectateGame();
 		} else if (ac == 1) {
 			auto man = std::make_shared<Manager>();
