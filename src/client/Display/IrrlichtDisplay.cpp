@@ -131,13 +131,11 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content) 
 	m->_stones.clear();
 	for (auto i = 0; i < content._stone1 ; i++) {
 		x_pos = (pos.getX() + 1) * 50;
-		y_pos = (pos.getX()+ 1) * 50;
+		y_pos = (pos.getY()+ 1) * 50;
 		auto stone1 = std::make_shared<AStone>();
 		stone1->node= create_gem(PURPLE_GEM_IDX, {x_pos + random_pos(), 28, y_pos + random_pos()}, {0.1, 0.1, 0.1});
 		m->_stones.push_back(stone1);
 	}
-	x_pos = 50;
-	y_pos = 50;
 
 	for (auto i = 0; i < content._stone2 ; i++) {
 		x_pos = (pos.getX() + 1) * 50;
