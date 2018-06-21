@@ -58,6 +58,7 @@ SRC	=	big_buff/big_buff.c					\
 		player_cmd/player_cmd/broadcast.c			\
 		player_cmd/player_cmd/connect_nbr.c			\
 		player_cmd/player_cmd/content_map.c			\
+		player_cmd/player_cmd/eggs_pos.c			\
 		player_cmd/player_cmd/eject.c				\
 		player_cmd/player_cmd/error.c				\
 		player_cmd/player_cmd/fork.c				\

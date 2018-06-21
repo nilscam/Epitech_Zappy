@@ -243,6 +243,12 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 		"sbp\n",
 		"",
 		"command parameter"
+	},
+	{
+		CB_EGG_POSITION, player_callback_send_format,
+		"egg %d %d %d\n",
+		"<egg_nb> <X> <Y>",
+		"position of an egg"
 	}
 };
 
