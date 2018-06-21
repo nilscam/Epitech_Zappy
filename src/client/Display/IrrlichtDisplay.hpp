@@ -12,11 +12,11 @@
 
 namespace IrrlichtDisplayConst
 {
-	const irr::core::vector3df	FOOD_SCALE = { 3, 3, 3 };
+	const irr::core::vector3df	FOOD_SCALE = { 1.5, 1.5, 1.5 };
 	const irr::core::vector3df	STONE_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	EGG_SCALE = { 0.1, 0.1, 0.1 };
-	const int SCREEN_X = 1920;
-	const int SCREEN_Y = 1080;
+	const int SCREEN_X = 800;//1920;
+	const int SCREEN_Y = 800;//1080;
 	const int FPS = 32;
 	const float EGG_Z = 27.5;
 	const float FOOD_Z = 30;
@@ -41,6 +41,8 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	SKY_RIGHT = "./Ress/model/irrlicht2_rt.jpg";
 	const irr::io::path	SKY_FORWARD = "./Ress/model/irrlicht2_ft.jpg";
 	const irr::io::path	SKY_BACKWARD = "./Ress/model/irrlicht2_bk.jpg";
+	const irr::io::path 	PERSO = "./Ress/model/perso.DAE";
+	const irr::io::path	TEXTURE_PERSO = "./Ress/model/texture_perso.png";
 
 	enum TexIdx {
 		TEXTURE_BASE_IDX,
@@ -53,7 +55,8 @@ namespace IrrlichtDisplayConst
 		YELLOW_GEM_IDX,
 		BLUE_GEM_IDX,
 		YOSHI_EGG_IDX,
-		FOOD_BASE_IDX
+		FOOD_BASE_IDX,
+		TEXTURE_PERSO_IDX,
 	};
 
 }
@@ -131,7 +134,11 @@ public:
 			irr::core::vector3df pos,
 			irr::core::vector3df scale
 	);
-
+	irr::scene::IAnimatedMeshSceneNode *create_player(
+			irr::core::vector3df pos,
+			irr::core::vector3df scale,
+			int idxtexture
+	);
 	/* Utils */
 	bool							isDeviceRunning(void);
 	irr::IrrlichtDevice			*getDevice(void) const;
@@ -214,7 +221,7 @@ private:
 				Point const & pos,
 				Direction const & dir,
 				size_t level,
-				irr::scene::IMeshSceneNode * node
+				irr::scene::IAnimatedMeshSceneNode * node
 		)
 				:	_id(id)
 				,	_pos(pos)
@@ -242,6 +249,8 @@ private:
 		{ _level = level; }
 		void setDir(Direction const & dir) noexcept
 		{ _dir = dir; }
+		irr::scene::IAnimatedMeshSceneNode * node(void) noexcept
+		{ return _node; }
 
 	private:
 
@@ -249,7 +258,7 @@ private:
 		Point							_pos;
 		Direction						_dir;
 		size_t							_level;
-		irr::scene::IMeshSceneNode *		_node;
+		irr::scene::IAnimatedMeshSceneNode *		_node;
 
 	};
 
@@ -311,6 +320,7 @@ private:
 
 	/* Utils */
 	int		random_pos() const;
+	int		getRotationDegrees(Direction const & dir);
 
 	/* Deinit */
 	void							remove_block(irr::scene::ISceneNode * node);
@@ -342,6 +352,7 @@ private:
 	std::shared_ptr<Egg>			getEgg(size_t id) noexcept;
 	std::shared_ptr<MapContent>	getMapContent(Point const & pos) noexcept;
 	irr::core::vector3df			getRandomPos(Point mapPos, float z) const noexcept;
+	irr::core::vector3df			getCenterPos(Point mapPos, float z) const noexcept;
 
 	std::vector<std::vector<std::shared_ptr<MapContent>>>	_map;
 	std::map<size_t, std::shared_ptr<Player>>				_players;

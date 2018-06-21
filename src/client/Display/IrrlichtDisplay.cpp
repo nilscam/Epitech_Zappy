@@ -70,6 +70,7 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::BLUE_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::BLUE_GEM);
 	_texture[IrrlichtDisplayConst::YOSHI_EGG_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YOSHI_EGG);
 	_texture[IrrlichtDisplayConst::FOOD_BASE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::FOOD_BASE);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO);
 	for (auto const & pair : _texture)
 	{
 		auto const & texture = pair.second;
@@ -200,13 +201,12 @@ void	IrrlichtDisplay::setStoneTile(
 	}
 	while (before > nbAfter)
 	{
-		/*auto it = std::find(m->stones().begin(), m->stones().end(),
-			[type](std::shared_ptr<AStone> const & stone)
+		auto it = std::find_if(m->stones().begin(), m->stones().end(),
+			[type](auto const & stone)
 			{
 				return *stone == type;
 			}
-		);*/
-		auto it = m->stones().end(); //! tmp
+		);
 		if (it == m->stones().end())
 			break;
 		m->stones().erase(it);
@@ -238,6 +238,16 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content)
 	}
 }
 
+irr::scene::IAnimatedMeshSceneNode *IrrlichtDisplay::create_player(
+		irr::core::vector3df pos, irr::core::vector3df scale, int idxtexture) {
+	irr::scene::IAnimatedMeshSceneNode* Daxter = _sceneManager->addAnimatedMeshSceneNode(_sceneManager->getMesh("./Ress/model/perso.DAE"));
+	Daxter->setPosition(pos);
+	Daxter->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	Daxter->setScale(scale);
+	Daxter->setMaterialTexture(0, _texture[idxtexture]);
+	return (Daxter);
+}
+
 int	IrrlichtDisplay::random_pos() const
 {
 	int pos = rand() % 20;
@@ -245,6 +255,11 @@ int	IrrlichtDisplay::random_pos() const
 		return -pos;
 	}
 	return (pos);
+}
+
+int IrrlichtDisplay::getRotationDegrees(Direction const & dir)
+{
+	return dir == Direction::Up ? 0 : dir == Direction::Left ? 90 : dir == Direction::Right ? 270 : 180;
 }
 
 void	IrrlichtDisplay::addPlayer(
@@ -258,8 +273,14 @@ void	IrrlichtDisplay::addPlayer(
 {
 	killPlayer(id);
 	_players[id] = std::make_shared<Player>(
-		id, pos, dir, level, nullptr // todo player create_node
+		id, pos, dir, level,
+		create_player(
+				getCenterPos(pos, 27.5),
+				{2.2, 2.2, 2.2},
+				IrrlichtDisplayConst::TEXTURE_PERSO_IDX
+		)
 	);
+	_players[id]->node()->setRotation({ 0, (float)getRotationDegrees(dir), 0 });
 }
 
 void IrrlichtDisplay::killPlayer(size_t id)
@@ -280,7 +301,13 @@ void IrrlichtDisplay::movePlayer(
 	if (doesPlayerExist(id))
 	{
 		auto player = getPlayer(id);
+		auto from = player->getPos();
+
+		//double		ms_to_wait = 1.0 / _timeUnit * 1E9;
+		//std::cout << "ms to wait: '" << ms_to_wait << "'" << std::endl;
+
 		player->setPos(to);
+		player->node()->setPosition(getCenterPos(to, 27.5));
 		// todo player move_node
 	}
 }
@@ -301,7 +328,7 @@ void	IrrlichtDisplay::changePlayerDir(size_t id, Direction const & dir)
 	{
 		auto player = getPlayer(id);
 		player->setDir(dir);
-		// todo player change_dir
+		player->node()->setRotation({ 0, (float)getRotationDegrees(dir), 0 });
 	}
 }
 
@@ -465,6 +492,11 @@ irr::core::vector3df	IrrlichtDisplay::getRandomPos(Point mapPos, float z) const 
 	return { (float)mapPos.getX(), z, (float)mapPos.getY() };
 }
 
+irr::core::vector3df	IrrlichtDisplay::getCenterPos(Point mapPos, float z) const noexcept
+{
+	mapPos = (mapPos + 1) * 50;
+	return { (float)mapPos.getX(), z, (float)mapPos.getY() };
+}
 bool	IrrlichtDisplay::doesMapContentExist(Point const & pos) const noexcept
 {
 	int x = pos.getX();
@@ -476,3 +508,4 @@ std::shared_ptr<IrrlichtDisplay::MapContent>	IrrlichtDisplay::getMapContent(Poin
 {
 	return _map[pos.getY()][pos.getX()];
 }
+
