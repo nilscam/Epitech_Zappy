@@ -22,34 +22,36 @@ namespace IrrlichtDisplayConst
 	const float EGG_Z = 27.5;
 	const float FOOD_Z = 30;
 	const float STONE_Z = 28;
+	const std::string	TEXTURE_BASE = "./Ress/model/wood.jpg";
+	const std::string	IRON_BOX = "./Ress/model/iron_box.png";
+	const std::string	GRASS = "./Ress/model/grass.jpg";
+	const std::string	PURPLE_GEM = "./Ress/model/PowerGem/purplegem.png";
+	const std::string	PINK_GEM = "./Ress/model/PowerGem/pinkgem.png";
+	const std::string	RED_GEM = "./Ress/model/Gem1/Red.png";
+	const std::string	GREEN_GEM = "./Ress/model/Gem1/Green.png";
+	const std::string	YELLOW_GEM = "./Ress/model/Gem1/Yellow.png";
+	const std::string	BLUE_GEM = "./Ress/model/Gem1/Blue.png";
+	const std::string	YOSHI_EGG = "./Ress/model/Egg/YoshSS00.png";
+	const std::string	FOOD_BASE = "./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png";
+	const std::string	GEM_MESH = "./Ress/model/PowerGem/gem.dae";
+	const std::string	FOOD_MESH = "./Ress/model/Food/Watermelon/Watermelon.obj";
+	const std::string	EGG_MESH = "./Ress/model/Egg/YoshiEgg.obj";
+
+	enum TexIdx {
+		TEXTURE_BASE_IDX,
+		IRON_BOX_IDX,
+		GRASS_IDX,
+		PURPLE_GEM_IDX,
+		PINK_GEM_IDX,
+		RED_GEM_IDX,
+		GREEN_GEM_IDX,
+		YELLOW_GEM_IDX,
+		BLUE_GEM_IDX,
+		YOSHI_EGG_IDX,
+		FOOD_BASE_IDX
+	};
+
 }
-
-#define TEXTURE_BASE			"./Ress/model/wood.jpg"
-#define IRON_BOX				"./Ress/model/iron_box.png"
-#define GRASS				"./Ress/model/grass.jpg"
-#define PURPLE_GEM			"./Ress/model/PowerGem/purplegem.png"
-#define PINK_GEM				"./Ress/model/PowerGem/pinkgem.png"
-#define RED_GEM				"./Ress/model/Gem1/Red.png"
-#define GREEN_GEM			"./Ress/model/Gem1/Green.png"
-#define	YELLOW_GEM			"./Ress/model/Gem1/Yellow.png"
-#define BLUE_GEM				"./Ress/model/Gem1/Blue.png"
-#define YOSHI_EGG			"./Ress/model/Egg/YoshSS00.png"
-#define FOOD_BASE			"./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png"
-#define GEM_MESH				"./Ress/model/PowerGem/gem.dae"
-#define FOOD_MESH			"./Ress/model/Food/Watermelon/Watermelon.obj"
-#define EGG_MESH				"./Ress/model/Egg/YoshiEgg.obj"
-
-#define TEXTURE_BASE_IDX		0
-#define IRON_BOX_IDX			1
-#define	GRASS_IDX			2
-#define PURPLE_GEM_IDX		3
-#define PINK_GEM_IDX			4
-#define RED_GEM_IDX			5
-#define GREEN_GEM_IDX			6
-#define	YELLOW_GEM_IDX		7
-#define BLUE_GEM_IDX			8
-#define YOSHI_EGG_IDX			9
-#define FOOD_BASE_IDX			10
 
 class IrrlichtDisplay: private IDisplay {
 public:

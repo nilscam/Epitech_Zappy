@@ -53,17 +53,17 @@ void IrrlichtDisplay::deinit(void)
 
 bool	IrrlichtDisplay::initTexture()
 {
-	_texture[TEXTURE_BASE_IDX] = this->_driver->getTexture(TEXTURE_BASE);
-	_texture[IRON_BOX_IDX] = this->_driver->getTexture(IRON_BOX);
-	_texture[GRASS_IDX] = this->_driver->getTexture(GRASS);
-	_texture[PURPLE_GEM_IDX] = this->_driver->getTexture(PURPLE_GEM);
-	_texture[PINK_GEM_IDX] = this->_driver->getTexture(PINK_GEM);
-	_texture[RED_GEM_IDX] = this->_driver->getTexture(RED_GEM);
-	_texture[GREEN_GEM_IDX] = this->_driver->getTexture(GREEN_GEM);
-	_texture[YELLOW_GEM_IDX] = this->_driver->getTexture(YELLOW_GEM);
-	_texture[BLUE_GEM_IDX] = this->_driver->getTexture(BLUE_GEM);
-	_texture[YOSHI_EGG_IDX] = this->_driver->getTexture(YOSHI_EGG);
-	_texture[FOOD_BASE_IDX] = this->_driver->getTexture(FOOD_BASE);
+	_texture[IrrlichtDisplayConst::TEXTURE_BASE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_BASE);
+	_texture[IrrlichtDisplayConst::IRON_BOX_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::IRON_BOX);
+	_texture[IrrlichtDisplayConst::GRASS_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::GRASS);
+	_texture[IrrlichtDisplayConst::PURPLE_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::PURPLE_GEM);
+	_texture[IrrlichtDisplayConst::PINK_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::PINK_GEM);
+	_texture[IrrlichtDisplayConst::RED_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::RED_GEM);
+	_texture[IrrlichtDisplayConst::GREEN_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::GREEN_GEM);
+	_texture[IrrlichtDisplayConst::YELLOW_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YELLOW_GEM);
+	_texture[IrrlichtDisplayConst::BLUE_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::BLUE_GEM);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YOSHI_EGG);
+	_texture[IrrlichtDisplayConst::FOOD_BASE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::FOOD_BASE);
 	for (auto const & pair : _texture)
 	{
 		auto const & texture = pair.second;
@@ -82,7 +82,7 @@ void IrrlichtDisplay::setMapSize(Point const &size)
 		for (int x = 0; x < size.getX(); ++x) {
 			float x_pos = (x + 1) * 50;
 			float y_pos = (y + 1) * 50;
-			auto node = create_block(IRON_BOX_IDX, { x_pos, 0, y_pos }, { 5, 5, 5 });
+			auto node = create_block(IrrlichtDisplayConst::IRON_BOX_IDX, { x_pos, 0, y_pos }, { 5, 5, 5 });
 			auto content = std::make_shared<MapContent>(node);
 			_map[y].push_back(content);
 		}
@@ -213,12 +213,12 @@ void	IrrlichtDisplay::setStonesTile(
 	Map::MapCase const & content
 )
 {
-	setStoneTile(m, pos, PURPLE_GEM_IDX, AStone::Type::S1, content._stone1);
-	setStoneTile(m, pos, RED_GEM_IDX, AStone::Type::S2, content._stone2);
-	setStoneTile(m, pos, YELLOW_GEM_IDX, AStone::Type::S3, content._stone3);
-	setStoneTile(m, pos, PINK_GEM_IDX, AStone::Type::S4, content._stone4);
-	setStoneTile(m, pos, GREEN_GEM_IDX, AStone::Type::S5, content._stone5);
-	setStoneTile(m, pos, BLUE_GEM_IDX, AStone::Type::S6, content._stone6);
+	setStoneTile(m, pos, IrrlichtDisplayConst::PURPLE_GEM_IDX, AStone::Type::S1, content._stone1);
+	setStoneTile(m, pos, IrrlichtDisplayConst::RED_GEM_IDX, AStone::Type::S2, content._stone2);
+	setStoneTile(m, pos, IrrlichtDisplayConst::YELLOW_GEM_IDX, AStone::Type::S3, content._stone3);
+	setStoneTile(m, pos, IrrlichtDisplayConst::PINK_GEM_IDX, AStone::Type::S4, content._stone4);
+	setStoneTile(m, pos, IrrlichtDisplayConst::GREEN_GEM_IDX, AStone::Type::S5, content._stone5);
+	setStoneTile(m, pos, IrrlichtDisplayConst::BLUE_GEM_IDX, AStone::Type::S6, content._stone6);
 }
 
 void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content)
@@ -309,7 +309,7 @@ void IrrlichtDisplay::addEgg(size_t idEgg, size_t idPlayerFrom)
 			idEgg,
 			player->getPos(),
 			create_egg(
-					YOSHI_EGG_IDX,
+					IrrlichtDisplayConst::YOSHI_EGG_IDX,
 					getRandomPos(pos, IrrlichtDisplayConst::EGG_Z),
 					IrrlichtDisplayConst::EGG_SCALE
 			)
