@@ -6,25 +6,28 @@
 
 #define TEXTURE_BASE			"../../Ress/model/wood.jpg"
 #define IRON_BOX				"../../Ress/model/iron_box.png"
-#define GRASS					"../../Ress/model/grass.jpg"
-#define PURPLE_GEM				"../../Ress/model/PowerGem/purplegem.png"
+#define GRASS				"../../Ress/model/grass.jpg"
+#define PURPLE_GEM			"../../Ress/model/PowerGem/purplegem.png"
 #define PINK_GEM				"../../Ress/model/PowerGem/pinkgem.png"
-#define RED_GEM					"../../Ress/model/Gem1/Red.png"
-#define GREEN_GEM				"../../Ress/model/Gem1/Green.png"
-#define	YELLOW_GEM				"../../Ress/model/Gem1/Yellow.png"
+#define RED_GEM				"../../Ress/model/Gem1/Red.png"
+#define GREEN_GEM			"../../Ress/model/Gem1/Green.png"
+#define	YELLOW_GEM			"../../Ress/model/Gem1/Yellow.png"
 #define BLUE_GEM				"../../Ress/model/Gem1/Blue.png"
-#define YOSHI_EGG				"../../Ress/model/Egg/YoshSS00.png"
+#define YOSHI_EGG			"../../Ress/model/Egg/YoshSS00.png"
+#define FOOD_BASE			"../../Ress/model/Food/Watermelon/Texture/WatermelonTexture.png"
+
 
 #define TEXTURE_BASE_IDX		0
 #define IRON_BOX_IDX			1
-#define	GRASS_IDX				2
-#define PURPLE_GEM_IDX			3
+#define	GRASS_IDX			2
+#define PURPLE_GEM_IDX		3
 #define PINK_GEM_IDX			4
-#define RED_GEM_IDX				5
+#define RED_GEM_IDX			5
 #define GREEN_GEM_IDX			6
-#define	YELLOW_GEM_IDX			7
+#define	YELLOW_GEM_IDX		7
 #define BLUE_GEM_IDX			8
 #define YOSHI_EGG_IDX			9
+#define FOOD_BASE_IDX			10
 
 IrrlichtDisplay::IrrlichtDisplay() = default;
 
@@ -56,6 +59,7 @@ void	IrrlichtDisplay::initTexture()
 	_texture[YELLOW_GEM_IDX] = this->_driver->getTexture(YELLOW_GEM);
 	_texture[BLUE_GEM_IDX] = this->_driver->getTexture(BLUE_GEM);
 	_texture[YOSHI_EGG_IDX] = this->_driver->getTexture(YOSHI_EGG);
+	_texture[FOOD_BASE_IDX] = this->_driver->getTexture(FOOD_BASE);
 }
 
 void IrrlichtDisplay::setMapSize(Point const &size) {
@@ -121,13 +125,16 @@ void IrrlichtDisplay::display(std::shared_ptr<GUI> gui) {
 void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content) {
 	auto & m = _map[pos.getY()][pos.getX()];
 	m->_foods.clear();
-	/*for (auto i = 0; i < content._food ; i++) {
-		auto food = std::make_shared<Food>();
-		//food->mesh = create_food();
-		m->_foods.push_back(food);
-	 */
 	float x_pos = 50;
 	float y_pos = 50;
+	for (auto i = 0; i < content._food ; i++) {
+		x_pos = (pos.getX() + 1) * 50;
+		y_pos = (pos.getY()+ 1) * 50;
+		auto food = std::make_shared<Food>();
+		food->node = create_food(FOOD_BASE_IDX, {x_pos + random_pos(), 30, y_pos + random_pos()}, {3, 3, 3});
+		std::cout << "fooooooodddd: '"<< std::endl;
+		m->_foods.push_back(food);
+	}
 	m->_stones.clear();
 	for (auto i = 0; i < content._stone1 ; i++) {
 		x_pos = (pos.getX() + 1) * 50;
@@ -254,6 +261,13 @@ irr::scene::IMeshSceneNode *IrrlichtDisplay::create_gem(int texture,
 	return (gem);
 }
 
+irr::scene::IMeshSceneNode *IrrlichtDisplay::create_food(int texture,
+														 irr::core::vector3df pos,
+														 irr::core::vector3df scale) {
+	auto *food = create_mesh(texture, pos, scale, "../../Ress/model/Food/Watermelon/Watermelon.obj");
+	return (food);
+}
+
 irr::scene::IMeshSceneNode *IrrlichtDisplay::create_mesh(int texture, irr::core::vector3df pos, irr::core::vector3df scale,
 														   const irr::io::path &filename) {
 	irr::scene::IAnimatedMesh* mesh =_sceneManager->getMesh(filename);
@@ -263,11 +277,6 @@ irr::scene::IMeshSceneNode *IrrlichtDisplay::create_mesh(int texture, irr::core:
 	my_mesh->setScale(scale);
 	my_mesh->setMaterialTexture(0, _texture[texture]);
 	return (my_mesh);
-}
-
-irr::scene::IMeshSceneNode *IrrlichtDisplay::create_food(int texture, irr::core::vector3df pos, irr::core::vector3df scale) {
-	irr::scene::IMeshSceneNode* food = create_mesh(texture, pos, scale, "../../Ress/model/PowerGem/gem.dae");
-	return (food);
 }
 
 irr::scene::ICameraSceneNode *IrrlichtDisplay::create_camera() {
