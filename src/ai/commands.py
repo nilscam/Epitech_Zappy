@@ -21,8 +21,12 @@ class commands:
         for r in responses:
             # rajouter le fait que si c'est un message d'un joueur on ne l'associe pas à une commande
             if r.split()[0] != 'message':
-                cmdResponses.append({ 'type': 'cmd', 'cmd': self.cmdBuffer[0], 'response': r })
-                self.cmdBuffer.pop(0)
+                if len(self.cmdBuffer) == 0:
+                    #eject, incantation ...
+                    cmdResponses.append({ 'type': 'server', 'response': r })
+                else:
+                    cmdResponses.append({ 'type': 'cmd', 'cmd': self.cmdBuffer[0], 'response': r })
+                    self.cmdBuffer.pop(0)
             else:
                 cmdResponses.append({ 'type': 'message', 'message': r })
         return cmdResponses

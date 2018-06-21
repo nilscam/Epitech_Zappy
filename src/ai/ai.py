@@ -18,7 +18,13 @@ class inventory:
         str = "{'linemate':%d,'deraumere':%d,'sibur':%d,'mendiane':%d,'phiras':%d,'thystame':%d}"
         return str % (self.linemate, self.deraumere, self.sibur, self.mendiane, self.phiras, self.thystame)
 
-    def update(self, list_infos):
+    def update(self, response):
+        splitted = response.strip("[]\n").split(',')
+        list_infos = dict()
+        for comb in splitted:
+            comb = comb.split()
+            list_infos[comb[0]] = int(comb[1])
+
         for key, value in list_infos.items():
             setattr(self, key, value)
 
@@ -93,16 +99,24 @@ class ai:
     'RIGHT': {'UP': 'RIGHT', 'DOWN': 'LEFT', 'LEFT': 'UP', 'RIGHT': 'DOWN'}
     }
 
+    optimizeDirRelativ = {
+    'UP': {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
+    'LEFT': {0: 0, 1: 7, 2: 6, 3: 5, 4: 4, 5: 3, 6: 2, 7: 1, 8: 8},
+    'RIGHT': {0: 0, 1: 3, 2: 4, 3: 5, 4: 6, 5: 7, 6: 8, 7: 1, 8: 2},
+    'DOWN': {0: 0, 1: 5, 2: 6, 3: 7, 4: 8, 5: 1, 6: 2, 7: 3, 8: 4}
+    }
+
+    # pour up
     optimizeDir = {
     0: (0, 0)
     1: (-1, 0)
-    2: (-1, 1)
-    3: (0, 1)
-    4: (1, 1)
+    2: (-1, -1)
+    3: (0, -1)
+    4: (1, -1)
     5: (1, 0)
-    6: (1, -1)
-    7: (0, -1)
-    8: (-1, -1)
+    6: (1, 1)
+    7: (0, 1)
+    8: (-1, 1)
     }
 
     incantationsStats = {
@@ -120,6 +134,7 @@ class ai:
         self.x = 0
         self.y = 0
         self.level = 1
+        self.incanting = False
         self.randomNumber = random.randint(0, 999999999)
         self.orientation = 'DOWN'
         self.listIncantationsDir = []
@@ -155,15 +170,9 @@ class ai:
                 elif player['direction'] < 0:
                     player['direction'] += 8
 
-
-    def drop(self, ressource, nb):
-        setattr(self.inventory, ressource, getattr(self.inventory, ressource) - nb)
-
-    def take(self, ressource, nb):
-        setattr(self.inventory, ressource, getattr(self.inventory, ressource) + nb)
-
-    def inventory(self, newInventory):
-        self.inventory.update(newInventory)
+    def ejected(self, dir):
+        self.y -= self.optimizeDir[optimizeDirRelativ[self.orientation][dir]][0]
+        self.x -= self.optimizeDir[optimizeDirRelativ[self.orientation][dir]][1]
 
     def removeFromAlly(self, id):
         self.listIncantationsDir = [x for x in self.listIncantationsDir if x['id'] != id]
@@ -174,8 +183,8 @@ class ai:
     def joinForIncantation(self, listDir):
         actualDir = [0, 0]
         for id, dir in listIncantationsDir.items():
-            actualDir[0] += self.optimizeDir[dir][0]
-            actualDir[1] += self.optimizeDir[dir][1]
+            actualDir[0] += self.optimizeDir[optimizeDirRelativ[self.orientation][dir]][0]
+            actualDir[1] += self.optimizeDir[optimizeDirRelativ[self.orientation][dir]][1]
 
         actualDir[0] = utils.smoothDir(actualDir[0])
         actualDir[1] = utils.smoothDir(actualDir[1])
@@ -197,3 +206,43 @@ class ai:
                 if full_inventory[prerequisites] < number:
                     return False
         return True
+
+    def Forward(self):
+        self.move()
+
+    def Left(self):
+        self.turn('LEFT')
+
+    def Right(self):
+        self.turn('RIGHT')
+
+    def Look(self, response):
+        self.map.setLook(response, self.orientation, self.x, self.y, self.level)
+
+    def Inventory(self, response):
+        self.inventory.update(response)
+
+    def Connect_nbr(self, response):
+        if int(response) > 0 and randint(0, 30) == 1:
+            return True
+        return False
+
+    def Fork(self):
+        #rien à faire, on a fork on est content
+        pass
+
+    def Eject(self):
+        # on a poussé on est content
+        pass
+
+    def Set(self, response, ressource):
+        if response == 'ok':
+            setattr(self.inventory, ressource, getattr(self.inventory, ressource) - 1)
+
+    def Take(self, response, ressource):
+        if response == 'ok':
+            setattr(self.inventory, ressource, getattr(self.inventory, ressource) + 1)
+
+    def Incantation(self, response):
+        if response == 'Elevation underway':
+            self.incanting == True

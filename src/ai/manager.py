@@ -37,6 +37,7 @@ class IAManager(ai.ai):
     def exploreStep(self):
         #Broadcast
         #Look
+        #inventory
         #takeAllItem
         #Oriente
         #Move
@@ -68,8 +69,34 @@ class IAManager(ai.ai):
             elif self.level < info['level']:
                 self.removeFromAlly(info['id'])
 
+    def interpreteServerEvent(self, response):
+        # eject, dead, (ko, currentLevel)
+        splitted = response.split()
+
+        if response == 'ko':
+            self.incanting = False
+        elif splitted[0] == 'Current':
+            self.level = response.split()[2]
+            self.incanting = False
+        elif response == 'dead':
+            print ('fuck im dead :(')
+            exit(0)
+        elif splitted[0] == 'eject:':
+            print ('je me suis fait pousser')
+            self.ejected(int(splitted[1]))
+
     def interpreteCmd(self, cmdResponse):
         # modifier les variables de l'ia en fonction du message
+        command = cmdResponse['cmd'].split()[0]
+        response = cmdResponse['response']
+        if command == 'Connect_nbr' and self.Connect_nbr():
+            self.castCmd("Fork\n")
+        elif command in ['Forward', 'Left', 'Right', 'Eject', 'Fork']:
+            getattr(self, command)()
+        elif command in ['Look', 'Inventory', 'Incantation', 'Connect_nbr']:
+            getattr(self, command)(response)
+        elif command in ['Set', 'Take']:
+            getattr(self, command)(response, cmdResponse['cmd'].split()[1])
 
     def takeAllItem(self):
         actualSquare = self.map.getSquare(self.x, self.y)
@@ -87,5 +114,7 @@ class IAManager(ai.ai):
             for r in responses:
                 if r['type'] == 'message':
                     self.interpreteMsg(r['message'])
+                elif r['type'] == 'server':
+                    self.interpreteServerEvent(r['response'])
                 else:
                     self.interpreteCmd(r)
