@@ -229,66 +229,18 @@ private:
 				Direction const & dir,
 				size_t level,
 				irr::scene::IAnimatedMeshSceneNode * node
-		)
-				:	_id(id)
-				,	_pos(pos)
-				,	_dir(dir)
-				,	_level(level)
-				,	_node(node)
-		{
-			positionNode(pos);
-			rotateNode(dir);
-		}
+		);
+		virtual ~Player();
 
-		virtual ~Player()
-		{
-			if (_node != nullptr)
-			{
-				_node->remove();
-			}
-		}
-
-		void	setPos(Point const & pos)
-		{
-			_pos = pos;
-			positionNode(pos);
-		}
-
-		void	setLevel(size_t level)
-		{
-			_level = level;
-		}
-
-		void	setDir(Direction const & dir)
-		{
-			_dir = dir;
-			rotateNode(dir);
-		}
-
-		Point	getPos(void) const noexcept
-		{
-			return _pos;
-		}
+		void	setPos(Point const & pos);
+		void	setLevel(size_t level);
+		void	setDir(Direction const & dir);
+		Point	getPos(void) const noexcept;
 
 	private:
 
-		void	rotateNode(Direction const & dir)
-		{
-			if (_node)
-			{
-				_node->setRotation({ 0, (float)IrrlichtDisplay::getRotationDegrees(dir), 0 });
-			}
-		}
-
-		void	positionNode(Point const & pos)
-		{
-			if (_node)
-			{
-				_node->setPosition(IrrlichtDisplay::getCenterPos(pos, IrrlichtDisplayConst::PLAYER_Z));
-			}
-		}
-
-	private:
+		void	rotateNode(Direction const & dir);
+		void	positionNode(Point const & pos);
 
 		size_t									_id;
 		Point									_pos;

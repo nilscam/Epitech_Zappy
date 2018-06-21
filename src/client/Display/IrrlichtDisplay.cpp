@@ -501,3 +501,65 @@ std::shared_ptr<IrrlichtDisplay::MapContent>	IrrlichtDisplay::getMapContent(Poin
 	return _map[pos.getY()][pos.getX()];
 }
 
+IrrlichtDisplay::Player::Player(
+		size_t id,
+		Point const & pos,
+		Direction const & dir,
+		size_t level,
+		irr::scene::IAnimatedMeshSceneNode * node
+)
+	:	_id(id)
+	,	_pos(pos)
+	,	_dir(dir)
+	,	_level(level)
+	,	_node(node)
+{
+	positionNode(pos);
+	rotateNode(dir);
+}
+
+virtual IrrlichtDisplay::Player::~Player()
+{
+	if (_node != nullptr)
+	{
+		_node->remove();
+	}
+}
+
+void	IrrlichtDisplay::Player::setPos(Point const & pos)
+{
+	_pos = pos;
+	positionNode(pos);
+}
+
+void	IrrlichtDisplay::Player::setLevel(size_t level)
+{
+	_level = level;
+}
+
+void	IrrlichtDisplay::Player::setDir(Direction const & dir)
+{
+	_dir = dir;
+	rotateNode(dir);
+}
+
+Point	IrrlichtDisplay::Player::getPos(void) const noexcept
+{
+	return _pos;
+}
+
+void	IrrlichtDisplay::Player::rotateNode(Direction const & dir)
+{
+	if (_node)
+	{
+		_node->setRotation({ 0, (float)IrrlichtDisplay::getRotationDegrees(dir), 0 });
+	}
+}
+
+void	IrrlichtDisplay::Player::positionNode(Point const & pos)
+{
+	if (_node)
+	{
+		_node->setPosition(IrrlichtDisplay::getCenterPos(pos, IrrlichtDisplayConst::PLAYER_Z));
+	}
+}
