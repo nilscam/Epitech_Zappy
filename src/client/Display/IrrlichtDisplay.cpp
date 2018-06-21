@@ -34,8 +34,10 @@ bool IrrlichtDisplay::init(void)
 	if (!_driver)
 		return false;
 	_sceneManager = _device->getSceneManager();
-	if (!_sceneManager || !this->initTexture()
-		|| !this->create_sky() || !this->create_camera())
+	if (!_sceneManager
+		|| !this->create_sky()
+		|| !this->create_camera()
+		|| !this->initTexture())
 		return false;
 	_device->getCursorControl()->setVisible(true);
 	_isInit = true;
@@ -44,6 +46,10 @@ bool IrrlichtDisplay::init(void)
 
 void IrrlichtDisplay::deinit(void)
 {
+	_map.clear();
+	_players.clear();
+	_eggs.clear();
+	_teams.clear();
 	if (_device)
 	{
 		_device->drop();
@@ -68,6 +74,7 @@ bool	IrrlichtDisplay::initTexture()
 	{
 		auto const & texture = pair.second;
 		if (texture == nullptr) {
+			std::cerr << "Error loading texture : " << pair.first << std::endl;
 			return false;
 		}
 	}
@@ -149,7 +156,7 @@ void	IrrlichtDisplay::setFoodTile(
 		m->foods().push_back(
 			std::make_shared<Food>(
 				create_food(
-					FOOD_BASE_IDX,
+						IrrlichtDisplayConst::FOOD_BASE_IDX,
 					getRandomPos(pos, IrrlichtDisplayConst::FOOD_Z),
 					IrrlichtDisplayConst::FOOD_SCALE
 				)
@@ -343,7 +350,7 @@ irr::scene::IMeshSceneNode *IrrlichtDisplay::create_gem(
 	irr::core::vector3df scale
 )
 {
-	return (create_mesh(texture, pos, scale, GEM_MESH));
+	return (create_mesh(texture, pos, scale, IrrlichtDisplayConst::GEM_MESH));
 }
 
 irr::scene::IMeshSceneNode *	IrrlichtDisplay::create_egg(
@@ -352,7 +359,7 @@ irr::scene::IMeshSceneNode *	IrrlichtDisplay::create_egg(
 		irr::core::vector3df scale
 )
 {
-	return (create_mesh(texture, pos, scale, EGG_MESH));
+	return (create_mesh(texture, pos, scale, IrrlichtDisplayConst::EGG_MESH));
 }
 
 irr::scene::IMeshSceneNode *IrrlichtDisplay::create_food(
@@ -361,7 +368,7 @@ irr::scene::IMeshSceneNode *IrrlichtDisplay::create_food(
 	irr::core::vector3df scale
 )
 {
-	return (create_mesh(texture, pos, scale, FOOD_MESH));
+	return (create_mesh(texture, pos, scale, IrrlichtDisplayConst::FOOD_MESH));
 }
 
 irr::scene::IMeshSceneNode *IrrlichtDisplay::create_mesh(
@@ -402,12 +409,13 @@ bool IrrlichtDisplay::create_sky()
 {
 	_driver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, false);
 	_sceneManager->addSkyBoxSceneNode(
-			_driver->getTexture("../../Ress/model/irrlicht2_up.jpg"),
-			_driver->getTexture("../../Ress/model/irrlicht2_dn.jpg"),
-			_driver->getTexture("../../Ress/model/irrlicht2_lf.jpg"),
-			_driver->getTexture("../../Ress/model/irrlicht2_rt.jpg"),
-			_driver->getTexture("../../Ress/model/irrlicht2_ft.jpg"),
-			_driver->getTexture("../../Ress/model/irrlicht2_bk.jpg"));
+			_driver->getTexture(IrrlichtDisplayConst::SKY_UP),
+			_driver->getTexture(IrrlichtDisplayConst::SKY_DOWN),
+			_driver->getTexture(IrrlichtDisplayConst::SKY_LEFT),
+			_driver->getTexture(IrrlichtDisplayConst::SKY_RIGHT),
+			_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD),
+			_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD)
+	);
 	_driver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, true);
 	return true;
 }

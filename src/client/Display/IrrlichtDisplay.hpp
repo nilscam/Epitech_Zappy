@@ -12,7 +12,6 @@
 
 namespace IrrlichtDisplayConst
 {
-	const auto TEST = "../../Ress/model/wood.jpg";
 	const irr::core::vector3df	FOOD_SCALE = { 3, 3, 3 };
 	const irr::core::vector3df	STONE_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	EGG_SCALE = { 0.1, 0.1, 0.1 };
@@ -22,20 +21,26 @@ namespace IrrlichtDisplayConst
 	const float EGG_Z = 27.5;
 	const float FOOD_Z = 30;
 	const float STONE_Z = 28;
-	const std::string	TEXTURE_BASE = "./Ress/model/wood.jpg";
-	const std::string	IRON_BOX = "./Ress/model/iron_box.png";
-	const std::string	GRASS = "./Ress/model/grass.jpg";
-	const std::string	PURPLE_GEM = "./Ress/model/PowerGem/purplegem.png";
-	const std::string	PINK_GEM = "./Ress/model/PowerGem/pinkgem.png";
-	const std::string	RED_GEM = "./Ress/model/Gem1/Red.png";
-	const std::string	GREEN_GEM = "./Ress/model/Gem1/Green.png";
-	const std::string	YELLOW_GEM = "./Ress/model/Gem1/Yellow.png";
-	const std::string	BLUE_GEM = "./Ress/model/Gem1/Blue.png";
-	const std::string	YOSHI_EGG = "./Ress/model/Egg/YoshSS00.png";
-	const std::string	FOOD_BASE = "./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png";
-	const std::string	GEM_MESH = "./Ress/model/PowerGem/gem.dae";
-	const std::string	FOOD_MESH = "./Ress/model/Food/Watermelon/Watermelon.obj";
-	const std::string	EGG_MESH = "./Ress/model/Egg/YoshiEgg.obj";
+	const irr::io::path	TEXTURE_BASE = "./Ress/model/wood.jpg";
+	const irr::io::path	IRON_BOX = "./Ress/model/iron_box.png";
+	const irr::io::path	GRASS = "./Ress/model/grass.jpg";
+	const irr::io::path	PURPLE_GEM = "./Ress/model/PowerGem/purplegem.png";
+	const irr::io::path	PINK_GEM = "./Ress/model/PowerGem/pinkgem.png";
+	const irr::io::path	RED_GEM = "./Ress/model/Gem1/Red.png";
+	const irr::io::path	GREEN_GEM = "./Ress/model/Gem1/Green.png";
+	const irr::io::path	YELLOW_GEM = "./Ress/model/Gem1/Yellow.png";
+	const irr::io::path	BLUE_GEM = "./Ress/model/Gem1/Blue.png";
+	const irr::io::path	YOSHI_EGG = "./Ress/model/Egg/YoshSS00.png";
+	const irr::io::path	FOOD_BASE = "./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png";
+	const irr::io::path	GEM_MESH = "./Ress/model/PowerGem/gem.dae";
+	const irr::io::path	FOOD_MESH = "./Ress/model/Food/Watermelon/Watermelon.obj";
+	const irr::io::path	EGG_MESH = "./Ress/model/Egg/YoshiEgg.obj";
+	const irr::io::path	SKY_UP = "./Ress/model/irrlicht2_up.jpg";
+	const irr::io::path	SKY_DOWN = "./Ress/model/irrlicht2_dn.jpg";
+	const irr::io::path	SKY_LEFT = "./Ress/model/irrlicht2_lf.jpg";
+	const irr::io::path	SKY_RIGHT = "./Ress/model/irrlicht2_rt.jpg";
+	const irr::io::path	SKY_FORWARD = "./Ress/model/irrlicht2_ft.jpg";
+	const irr::io::path	SKY_BACKWARD = "./Ress/model/irrlicht2_bk.jpg";
 
 	enum TexIdx {
 		TEXTURE_BASE_IDX,
