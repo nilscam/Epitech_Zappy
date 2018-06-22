@@ -7,6 +7,8 @@
 
 #include "IDisplay.hpp"
 #include "GUI.hpp"
+#include "Clock.hpp"
+#include "Math.hpp"
 #include <irrlicht/irrlicht.h>
 #include <memory>
 
@@ -16,6 +18,8 @@ namespace IrrlichtDisplayConst
 	const irr::core::vector3df	STONE_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	EGG_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	PLAYER_SCALE = { 2.2, 2.2, 2.2 };
+	const irr::core::vector3df	BLOCK_SCALE = { 5, 5, 5 };
+	const int SIZE_MAP_TILE = 50;
 	const int SCREEN_X = 1920;//800;//1920;
 	const int SCREEN_Y = 1080;//800;//1080;
 	const int FPS = 32;
@@ -23,6 +27,7 @@ namespace IrrlichtDisplayConst
 	const float FOOD_Z = 30;
 	const float STONE_Z = 28;
 	const float PLAYER_Z = 27.5;
+	const float BLOCK_Z = 0;
 	const irr::io::path	TEXTURE_BASE = "./Ress/model/wood.jpg";
 	const irr::io::path	IRON_BOX = "./Ress/model/iron_box.png";
 	const irr::io::path	GRASS = "./Ress/model/grass.jpg";
@@ -71,6 +76,7 @@ public:
 
 	/* IDisplay */
 	bool	init(void) override;
+	void	loop(void) override;
 	void	deinit(void) override;
 	void	setMapSize(Point const & size) override;
 	void	setCameraPos(Point const & size);
@@ -146,11 +152,17 @@ public:
 	/* Utils */
 	bool						isDeviceRunning(void);
 	irr::IrrlichtDevice			*getDevice(void) const;
+	long long					getMovementDuration(void) const noexcept;
 
-	static int							random_pos();
-	static int							getRotationDegrees(Direction const & dir);
-	static irr::core::vector3df			getRandomPos(Point mapPos, float z);
-	static irr::core::vector3df			getCenterPos(Point mapPos, float z);
+	static int						random_pos();
+	static int						getRotationDegrees(Direction const & dir);
+	static irr::core::vector3df		getRandomPos(Point mapPos, float z);
+	static irr::core::vector3df		getCenterPos(Point mapPos, float z);
+	static irr::core::vector3df		moveVector(
+		irr::core::vector3df from,
+		Direction const & dir,
+		float inc
+	);
 
 private:
 
@@ -234,12 +246,12 @@ private:
 		);
 		virtual ~Player();
 
-		void	setPos(Point const & pos);
+		void	setPos(Point const & pos, long long movDurationMillis);
 		void	setLevel(size_t level);
 		void	setDir(Direction const & dir);
 		Point	getPos(void) const noexcept;
 		irr::core::vector3df	getPosMesh(void) const noexcept;
-
+		void	loop(void);
 
 	private:
 
@@ -251,6 +263,13 @@ private:
 		Direction								_dir;
 		size_t									_level;
 		irr::scene::IAnimatedMeshSceneNode *	_node;
+
+		bool		_isMoving;
+		Point		_movFrom;
+		Point		_movTo;
+		Direction	_movDir;
+		Clock		_movClock;
+		long long	_movDuration;
 
 	};
 

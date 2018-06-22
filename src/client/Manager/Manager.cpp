@@ -126,6 +126,7 @@ void	Manager::spectateGame()
 		{
 			_stop = true;
 		}
+		_display->loop();
 		if (refresh.timeSinceMark() > 20) {
 			if (_display->isDeviceRunning()) {
 				//_display->Display(_map, _players, _idxPlayers, _eggs, _idxEggs, _gui);

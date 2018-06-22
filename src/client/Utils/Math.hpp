@@ -21,6 +21,11 @@ public:
 	static size_t	roundUp(size_t numToRound, size_t multiple);
 	static size_t	manhattanDistance(Point const & from, Point const & to);
 	static int		randomNumberBetween(int min, int max);
+	template <typename T>
+	static T	clamp(T const & min, T const & max, T const & value)
+	{
+		return std::min(max, std::max(min, value));
+	}
 
 };
 

@@ -28,6 +28,7 @@ public:
 
 	/* Init */
 	virtual bool	init(void) = 0;
+	virtual void	loop(void) = 0;
 	virtual void	deinit(void) = 0;
 	virtual void	setMapSize(Point const & size) = 0;
 	virtual void	setTeams(std::vector<std::string> const & teams) = 0;

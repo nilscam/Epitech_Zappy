@@ -45,6 +45,18 @@ bool IrrlichtDisplay::init(void)
 	return true;
 }
 
+void	IrrlichtDisplay::loop(void)
+{
+	if (_device && _device->run())
+	{
+		for (auto const & pair : _players)
+		{
+			auto & player = pair.second;
+			player->loop();
+		}
+	}
+}
+
 void IrrlichtDisplay::deinit(void)
 {
 	_map.clear();
@@ -89,9 +101,11 @@ void IrrlichtDisplay::setMapSize(Point const &size)
 	for (int y = 0; y < size.getY(); ++y) {
 		_map.push_back({});
 		for (int x = 0; x < size.getX(); ++x) {
-			float x_pos = (x + 1) * 50;
-			float y_pos = (y + 1) * 50;
-			auto node = create_block(IrrlichtDisplayConst::IRON_BOX_IDX, { x_pos, 0, y_pos }, { 5, 5, 5 });
+			auto node = create_block(
+				IrrlichtDisplayConst::IRON_BOX_IDX,
+				getCenterPos({x, y}, IrrlichtDisplayConst::BLOCK_Z),
+				IrrlichtDisplayConst::BLOCK_SCALE
+			);
 			auto content = std::make_shared<MapContent>(node);
 			_map[y].push_back(content);
 		}
@@ -101,8 +115,8 @@ void IrrlichtDisplay::setMapSize(Point const &size)
 
 void	IrrlichtDisplay::setCameraPos(Point const & size)
 {
-	float cameraX = (size.x() + 1) * 50 / 10;
-	float cameraY = (size.y() + 1) * 50 / 2;
+	float cameraX = (size.x() + 1) * IrrlichtDisplayConst::SIZE_MAP_TILE / 10;
+	float cameraY = (size.y() + 1) * IrrlichtDisplayConst::SIZE_MAP_TILE / 2;
 	float cameraZ = std::max(cameraX, cameraY) * 2;
 
 	if (!_camera) {
@@ -301,15 +315,19 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content)
 }
 
 irr::scene::IAnimatedMeshSceneNode *IrrlichtDisplay::create_player(
-		irr::core::vector3df pos, irr::core::vector3df scale, int idxtexture) {
-	irr::scene::IAnimatedMeshSceneNode* Daxter = _sceneManager->addAnimatedMeshSceneNode(
-			_sceneManager->getMesh(IrrlichtDisplayConst::PERSO)
-	);
-	Daxter->setPosition(pos);
-	Daxter->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-	Daxter->setScale(scale);
-	Daxter->setMaterialTexture(0, _texture[idxtexture]);
-	return (Daxter);
+		irr::core::vector3df pos, irr::core::vector3df scale, int idxtexture)
+{
+	auto * mesh = _sceneManager->getMesh(IrrlichtDisplayConst::PERSO);
+	if (!mesh)
+		return nullptr;
+	auto * animatedMesh = _sceneManager->addAnimatedMeshSceneNode(mesh);
+	if (!animatedMesh)
+		return nullptr;
+	animatedMesh->setPosition(pos);
+	animatedMesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	animatedMesh->setScale(scale);
+	animatedMesh->setMaterialTexture(0, _texture[idxtexture]);
+	return (animatedMesh);
 }
 
 int	IrrlichtDisplay::random_pos()
@@ -364,7 +382,7 @@ void IrrlichtDisplay::movePlayer(
 	if (doesPlayerExist(id))
 	{
 		auto player = getPlayer(id);
-		player->setPos(to);
+		player->setPos(to, getMovementDuration());
 	}
 }
 
@@ -512,6 +530,11 @@ irr::IrrlichtDevice		*IrrlichtDisplay::getDevice(void) const
 	return _device;
 }
 
+long long	IrrlichtDisplay::getMovementDuration(void) const noexcept
+{
+	return _timeUnit == 0 ? 0 : 1.0 / _timeUnit * 1E3;
+}
+
 void	IrrlichtDisplay::remove_block(irr::scene::ISceneNode * node)
 {
 	node->remove();
@@ -552,6 +575,24 @@ irr::core::vector3df	IrrlichtDisplay::getCenterPos(Point mapPos, float z)
 	mapPos = (mapPos + 1) * 50;
 	return { (float)mapPos.getX(), z, (float)mapPos.getY() };
 }
+
+irr::core::vector3df	IrrlichtDisplay::moveVector(
+	irr::core::vector3df from,
+	Direction const & dir,
+	float inc
+)
+{
+	if (dir == Direction::Dir_t::Left)
+		from.X -= inc;
+	else if (dir == Direction::Dir_t::Right)
+		from.X += inc;
+	else if (dir == Direction::Dir_t::Up)
+		from.Y -= inc;
+	else if (dir == Direction::Dir_t::Down)
+		from.Y += inc;
+	return from;
+}
+
 bool	IrrlichtDisplay::doesMapContentExist(Point const & pos) const noexcept
 {
 	int x = pos.getX();
@@ -576,6 +617,8 @@ IrrlichtDisplay::Player::Player(
 	,	_dir(dir)
 	,	_level(level)
 	,	_node(node)
+	,	_isMoving(false)
+	,	_movDuration(0)
 {
 	positionNode(pos);
 	rotateNode(dir);
@@ -589,10 +632,26 @@ IrrlichtDisplay::Player::~Player()
 	}
 }
 
-void	IrrlichtDisplay::Player::setPos(Point const & pos)
+void	IrrlichtDisplay::Player::setPos(Point const & pos, long long movDuration)
 {
-	_pos = pos;
-	positionNode(pos);
+	if (_pos != pos)
+	{
+		_pos = pos;
+		if (movDuration <= 0)
+		{
+			_isMoving = false;
+			positionNode(pos);
+		}
+		else
+		{
+			_isMoving = true;
+			_movFrom = _pos;
+			_movTo = pos;
+			_movDir = Direction(_movFrom, _movTo);
+			_movClock.mark();
+			_movDuration = movDuration;
+		}
+	}
 }
 
 void	IrrlichtDisplay::Player::setLevel(size_t level)
@@ -614,6 +673,52 @@ Point	IrrlichtDisplay::Player::getPos(void) const noexcept
 irr::core::vector3df	IrrlichtDisplay::Player::getPosMesh(void) const noexcept
 {
 	return _node->getPosition();
+}
+
+void	IrrlichtDisplay::Player::loop(void)
+{
+	if (_node && _isMoving)
+	{
+		long long movMillis = _movClock.timeSinceMark();
+		if (movMillis >= _movDuration)
+		{
+			_isMoving = false;
+			positionNode(_movTo);
+		}
+		else
+		{
+			double movPercentage = movMillis * 100.0 / _movDuration;
+			double maxDistance = IrrlichtDisplayConst::SIZE_MAP_TILE / 2;
+			Point movStart;
+			double distanceToEnd;
+			Direction movDir;
+			if (movPercentage <= 50.0)
+			{
+				movStart = _movFrom;
+				distanceToEnd = movPercentage * maxDistance / 50.0;
+				movDir = _movDir;
+			}
+			else
+			{
+				movStart = _movTo;
+				distanceToEnd = maxDistance - ((movPercentage - 50) * maxDistance / 50.0);
+				movDir = _movDir.reverse();
+			}
+			irr::core::vector3df newPos = IrrlichtDisplay::moveVector(
+				IrrlichtDisplay::getCenterPos(
+					movStart,
+					IrrlichtDisplayConst::PLAYER_Z
+				),
+				movDir,
+				Math::clamp(0.0, maxDistance, distanceToEnd)
+			);
+			_node->setPosition(newPos);
+			if (distanceToEnd == maxDistance)
+			{
+				_isMoving = false;
+			}
+		}
+	}
 }
 
 void	IrrlichtDisplay::Player::rotateNode(Direction const & dir)
