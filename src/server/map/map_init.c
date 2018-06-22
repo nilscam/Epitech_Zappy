@@ -25,12 +25,12 @@ to_place = rand(max / 2, max)
 void	init_total_map_content(inventory_t *inv,int players, int nb_teams,
 	map_t *map)
 {
-	inv->stones[0] = 33 * players * nb_teams * 0;
-	inv->stones[1] = 38 * players * nb_teams * 0;
-	inv->stones[2] = 46 * players * nb_teams * 0;
-	inv->stones[3] = 24 * players * nb_teams * 0;
-	inv->stones[4] = 26 * players * nb_teams * 0;
-	inv->stones[5] = 6 * players * nb_teams * 0;
+	inv->stones[0] = 33 * players * nb_teams;
+	inv->stones[1] = 38 * players * nb_teams;
+	inv->stones[2] = 46 * players * nb_teams;
+	inv->stones[3] = 24 * players * nb_teams;
+	inv->stones[4] = 26 * players * nb_teams;
+	inv->stones[5] = 6 * players * nb_teams;
 	inv->food = map->size.x * map->size.y * randome_between(1, 4) +200;
 }
 
