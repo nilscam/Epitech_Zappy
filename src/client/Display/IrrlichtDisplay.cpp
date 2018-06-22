@@ -645,6 +645,14 @@ IrrlichtDisplay::Player::Player(
 )
 	:	_sceneManager(sceneManager)
 	,	_textures(textures)
+	,	_randomPos(
+				{
+					Math::randomNumberBetween(0, IrrlichtDisplayConst::SIZE_MAP_TILE)
+						- (IrrlichtDisplayConst::SIZE_MAP_TILE / 2),
+					Math::randomNumberBetween(0, IrrlichtDisplayConst::SIZE_MAP_TILE)
+						- (IrrlichtDisplayConst::SIZE_MAP_TILE / 2)
+				}
+		)
 	,	_id(id)
 	,	_pos(pos)
 	,	_dir(dir)
@@ -761,10 +769,7 @@ void	IrrlichtDisplay::Player::loop(void)
 					movDir.reverse();
 				}
 				irr::core::vector3df newPos = IrrlichtDisplay::moveVector(
-						IrrlichtDisplay::getCenterPos(
-								movStart,
-								IrrlichtDisplayConst::PLAYER_Z
-						),
+						getCenter(movStart),
 						movDir,
 						Math::clamp(0.0, maxDistance, distanceToEnd)
 				);
@@ -799,7 +804,7 @@ void	IrrlichtDisplay::Player::rotateNode(Direction const & dir)
 
 void	IrrlichtDisplay::Player::positionNode(Point const & pos)
 {
-	_meshPos = IrrlichtDisplay::getCenterPos(pos, IrrlichtDisplayConst::PLAYER_Z);
+	_meshPos = getCenter(pos);
 	if (_mesh)
 	{
 		_mesh->setPosition(_meshPos);
@@ -878,4 +883,15 @@ void IrrlichtDisplay::Player::setDurationMillis(
 {
 	_movDurationMillis = movDurationMillis;
 	_timeUnit = timeUnit;
+}
+
+irr::core::vector3df IrrlichtDisplay::Player::getCenter(Point const &pos) {
+	irr::core::vector3df mesh = IrrlichtDisplay::getCenterPos(
+			pos, IrrlichtDisplayConst::PLAYER_Z
+	);
+	return {
+			mesh.X + _randomPos.getX(),
+			mesh.Y,
+			mesh.Z + _randomPos.getY()
+	};
 }

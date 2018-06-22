@@ -276,6 +276,7 @@ private:
 
 	private:
 
+		irr::core::vector3df	getCenter(Point const & pos);
 		void	rotateNode(Direction const & dir);
 		void	positionNode(Point const & pos);
 		void	changeMesh(irr::io::path const & path); //todo idx_texture for teams
@@ -287,6 +288,7 @@ private:
 		irr::core::vector3df					_meshRot;
 
 		/* data */
+		Point 									_randomPos;
 		size_t									_id;
 		Point									_pos;
 		Direction								_dir;
