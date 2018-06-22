@@ -25,12 +25,6 @@ ifeq ($(ARGS),)
 			cp $(ROOT_SERVER)/$@ $(ROOT_BIN) || true
 endif
 
-$(NAME_AI):
-			$(MAKE) -C $(ROOT_AI) $(ARGS)
-ifeq ($(ARGS),)
-			cp $(ROOT_AI)/$@ $(ROOT_BIN) || true
-endif
-
 $(NAME_CLIENT):
 			$(MAKE) -C $(ROOT_CLIENT) $(ARGS)
 ifeq ($(ARGS),)

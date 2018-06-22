@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import sys
-from init import init
+from manager import IAManager
 
 def eprint(*args, **kwargs):
         print(*args, file=sys.stderr, **kwargs)
@@ -34,7 +34,8 @@ def main():
             exit(84)
 
         try:
-            init(port, name, machine)
+            ia = IAManager(port, name, ip)
+            print ('a fini')
             exit(0)
         except:
             eprint("Error: execution")
