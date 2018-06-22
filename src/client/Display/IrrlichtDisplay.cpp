@@ -660,12 +660,16 @@ IrrlichtDisplay::Player::Player(
 	:	_sceneManager(sceneManager)
 	,	_textures(textures)
 	,	_randomPos(
-				{
-					Math::randomNumberBetween(0, IrrlichtDisplayConst::SIZE_MAP_TILE)
-						- (IrrlichtDisplayConst::SIZE_MAP_TILE / 2),
-					Math::randomNumberBetween(0, IrrlichtDisplayConst::SIZE_MAP_TILE)
-						- (IrrlichtDisplayConst::SIZE_MAP_TILE / 2)
-				}
+			{
+				Math::randomNumberBetween(
+					-(IrrlichtDisplayConst::SIZE_MAP_TILE / 4),
+					IrrlichtDisplayConst::SIZE_MAP_TILE / 4
+				),
+				Math::randomNumberBetween(
+					-(IrrlichtDisplayConst::SIZE_MAP_TILE / 4),
+					IrrlichtDisplayConst::SIZE_MAP_TILE / 4
+				)
+			}
 		)
 	,	_id(id)
 	,	_pos(pos)
