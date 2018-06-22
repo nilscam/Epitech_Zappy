@@ -380,14 +380,6 @@ void	IrrlichtDisplay::addPlayer(
 )
 {
 	killPlayer(id);
-	_players[id] = std::make_shared<Player>(
-		id, pos, dir, level,
-		create_player(
-				getCenterPos(pos, IrrlichtDisplayConst::PLAYER_Z),
-				IrrlichtDisplayConst::PLAYER_SCALE,
-				IrrlichtDisplayConst::TEXTURE_PERSO_IDX
-		)
-	);
 	_idxPlayers.push_back(id);
 	_players[id] = std::make_shared<Player>(id, pos, dir, level, *_sceneManager, _texture);
 }

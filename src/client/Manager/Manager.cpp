@@ -133,6 +133,7 @@ void	Manager::spectateGame()
 			if (_display->isDeviceRunning()) {
 				_display->display(_gui);
 				this->updateGUILevelPlayer();
+				this->updateGUITimeUnit();
 				//_display->getTeamClicked(_idxPlayers);
 			} else {
 				_stop = true;
