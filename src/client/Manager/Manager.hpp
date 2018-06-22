@@ -35,8 +35,10 @@ class Manager
 {
 public:
 	Manager();
-	Manager(const char *ip, int port);
 	~Manager();
+	bool	init();
+	bool	init(const char *ip, int port);
+	bool	initServer();
 	int		connectClient(const char *ip, int port);
 	void	spectateGame();
 
@@ -87,6 +89,7 @@ private:
 	std::shared_ptr<GUI>		_gui;
 	std::unique_ptr<IrrlichtDisplay>				_display;
 	std::map<std::string, std::function<void()>>	_cmd;
+	int												_port;
 
 	Map												_map;
 	std::map<int, std::shared_ptr<Player>>			_players;

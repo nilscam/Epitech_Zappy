@@ -13,10 +13,13 @@ int	main(int ac, char **av)
 {
 	try {
 		if (ac == 2) {
-			auto man = std::make_shared<Manager>(std::string("127.0.0.1").c_str(), atoi(av[1]));
-			man->spectateGame();
+			auto man = std::make_shared<Manager>();
+			if (man->init(std::string("127.0.0.1").c_str(), atoi(av[1]))) {
+				man->spectateGame();
+			}
 		} else if (ac == 1) {
 			auto man = std::make_shared<Manager>();
+			man->init();
 			man->spectateGame();
 		}
 	} catch (std::exception &e) {

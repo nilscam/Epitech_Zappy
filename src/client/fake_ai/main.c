@@ -60,7 +60,7 @@ int	main(int ac, char **av)
 	printf("%s %s %s\n", av[1], av[2], av[3]);
 	if (client->init(client, av[1], atoi(av[2]), "TCP") == -1)
 		return (84);
-	srand(time(NULL));
+	srand(time(NULL) + getpid());
 	bool sentChooseTeam = false;
 	while (1) {
 		client->select(client, TIMEOUT);

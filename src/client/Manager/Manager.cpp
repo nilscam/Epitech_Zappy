@@ -9,36 +9,48 @@
 
 Manager::Manager()
 {
-	_serverHandler = std::make_unique<ServerHandler>();
-	_serverHandler->startServer(3, 3, 4242, { "red", "blue" }, 12, 10);
-	usleep(100000);
 	_client = std::make_unique<Client>();
 	_readBuffer = std::make_unique<Buffer>(LIMIT_READ);
 	_sendBuffer = std::make_unique<Buffer>(LIMIT_SEND);
 	_char_read = 0;
 	_args = NULL;
+	_port = 4242;
 	this->initReadCmd();
-	if (!this->connectClient(std::string("127.0.0.1").c_str(), 4242)) {
-		throw std::runtime_error("Error: Failed to connect");
-	}
-	_serverHandler->addAiAllTeams(2);
 }
 
-Manager::Manager(const char *ip, int port)
+bool	Manager::init()
 {
-	_client = std::make_unique<Client>();
-	_readBuffer = std::make_unique<Buffer>(LIMIT_READ);
-	_sendBuffer = std::make_unique<Buffer>(LIMIT_SEND);
-	_char_read = 0;
-	_args = NULL;
-	this->initReadCmd();
-	if (!this->connectClient(ip, port)) {
-		throw std::runtime_error("Error: Failed to connect");
-	}
+	while (!this->initServer());
+	return (true);
 }
+
+bool	Manager::init(const char *ip, int port)
+{
+	if (!this->connectClient(ip, port)) {
+		return (false);
+	}
+	return (true);
+}
+
+bool	Manager::initServer()
+{
+	++_port;
+	std::cout << "PORT:" << _port << std::endl;
+	_serverHandler = std::make_unique<ServerHandler>();
+	//_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 10);
+	_serverHandler->startServer(5, 5, _port, { "red" }, 12, 10);
+	sleep(1);	
+	if (!this->connectClient(std::string("127.0.0.1").c_str(), _port)) {
+		return (false);
+	}
+	_serverHandler->addAiAllTeams(1);
+	return (true);
+}
+
 Manager::~Manager()
 {
 }
+
 int		Manager::connectClient(const char *ip, int port)
 {
 	if (_client->connectServer(ip, port) == -1) {
