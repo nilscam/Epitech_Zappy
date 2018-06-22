@@ -50,6 +50,14 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	SKY_BACKWARD = "./Ress/model/irrlicht2_bk.jpg";
 	const irr::io::path 	PERSO = "./Ress/model/perso/perso.DAE";
 	const irr::io::path	TEXTURE_PERSO = "./Ress/model/perso/texture_perso.png";
+	const irr::io::path	PERSO_RUN = "././Ress/model/perso/MD3/running.MD3";
+	const irr::io::path	PERSO_KICK1 = "././Ress/model/perso/MD3/mmakick.MD3";
+	const irr::io::path	PERSO_KICK2 = "././Ress/model/perso/MD3/mmakick2.MD3";
+	const irr::io::path	PERSO_HEADSPIN = "././Ress/model/perso/MD3/head_spin.MD3";
+	const irr::io::path	PERSO_DROP = "././Ress/model/perso/MD3/drop.MD3";
+	const irr::io::path	PERSO_TAKE = "././Ress/model/perso/MD3/take.MD3";
+	const irr::io::path	PERSO_FALL = "././Ress/model/perso/MD3/die.MD3";
+
 
 	enum TexIdx {
 		TEXTURE_BASE_IDX,
@@ -270,6 +278,7 @@ private:
 		Direction	_movDir;
 		Clock		_movClock;
 		long long	_movDuration;
+		double 		_movLastPercentage;
 
 	};
 

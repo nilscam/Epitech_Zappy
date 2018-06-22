@@ -39,7 +39,7 @@ bool	Manager::initServer()
 	_serverHandler = std::make_unique<ServerHandler>();
 	//_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 10);
 	_serverHandler->startServer(5, 5, _port, { "red" }, 12, 10);
-	sleep(1);	
+	sleep(1);
 	if (!this->connectClient(std::string("127.0.0.1").c_str(), _port)) {
 		return (false);
 	}
@@ -73,7 +73,7 @@ int		Manager::connectClient(const char *ip, int port)
 					_sendBuffer->Put("SPECTATOR\n");
 					this->writeInFd(_client->getFdServer());
 				} else if (_args && !strcmp(_args[0], "ok")) {
-					_sendBuffer->Put("msz\nmct\ntna\npnw\negg\n");
+					_sendBuffer->Put("msz\nmct\ntna\npnw\negg\nsgt\n");
 					this->writeInFd(_client->getFdServer());
 					this->freeArgs();
 					return (1);

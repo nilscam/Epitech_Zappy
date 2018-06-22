@@ -317,7 +317,7 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content)
 irr::scene::IAnimatedMeshSceneNode *IrrlichtDisplay::create_player(
 		irr::core::vector3df pos, irr::core::vector3df scale, int idxtexture)
 {
-	auto * mesh = _sceneManager->getMesh(IrrlichtDisplayConst::PERSO);
+	auto * mesh = _sceneManager->getMesh(IrrlichtDisplayConst::PERSO_RUN);
 	if (!mesh)
 		return nullptr;
 	auto * animatedMesh = _sceneManager->addAnimatedMeshSceneNode(mesh);
@@ -490,18 +490,18 @@ irr::scene::IMeshSceneNode *IrrlichtDisplay::create_mesh(
 
 irr::scene::ICameraSceneNode *IrrlichtDisplay::create_camera()
 {
-	// irr::SKeyMap keyMap[5];                             // re-assigne les commandes
-	// keyMap[0].Action = irr::EKA_MOVE_FORWARD;           // avancer
-	// keyMap[0].KeyCode = irr::KEY_KEY_Z;                 // w
-	// keyMap[1].Action = irr::EKA_MOVE_BACKWARD;          // reculer
-	// keyMap[1].KeyCode = irr::KEY_KEY_S;                 // s
-	// keyMap[2].Action = irr::EKA_STRAFE_LEFT;            // a gauche
-	// keyMap[2].KeyCode = irr::KEY_KEY_Q;                 // a
-	// keyMap[3].Action = irr::EKA_STRAFE_RIGHT;           // a droite
-	// keyMap[3].KeyCode = irr::KEY_KEY_D;                 // d
-	// keyMap[4].Action = irr::EKA_JUMP_UP;                // saut
-	// keyMap[4].KeyCode = irr::KEY_SPACE;                 // barre espace
-	//_camera = _sceneManager->addCameraSceneNodeFPS(0, 1.0 , 1.0f, -1, keyMap, 5);
+	 irr::SKeyMap keyMap[5];                             // re-assigne les commandes
+	 keyMap[0].Action = irr::EKA_MOVE_FORWARD;           // avancer
+	 keyMap[0].KeyCode = irr::KEY_KEY_Z;                 // w
+	 keyMap[1].Action = irr::EKA_MOVE_BACKWARD;          // reculer
+	 keyMap[1].KeyCode = irr::KEY_KEY_S;                 // s
+	 keyMap[2].Action = irr::EKA_STRAFE_LEFT;            // a gauche
+	 keyMap[2].KeyCode = irr::KEY_KEY_Q;                 // a
+	 keyMap[3].Action = irr::EKA_STRAFE_RIGHT;           // a droite
+	 keyMap[3].KeyCode = irr::KEY_KEY_D;                 // d
+	 keyMap[4].Action = irr::EKA_JUMP_UP;                // saut
+	 keyMap[4].KeyCode = irr::KEY_SPACE;                 // barre espace
+	_camera = _sceneManager->addCameraSceneNodeFPS(0, 1.0 , 1.0f, -1, keyMap, 5);
 	return (_camera);
 }
 
@@ -587,9 +587,9 @@ irr::core::vector3df	IrrlichtDisplay::moveVector(
 	else if (dir == Direction::Dir_t::Right)
 		from.X += inc;
 	else if (dir == Direction::Dir_t::Up)
-		from.Y -= inc;
+		from.Z -= inc;
 	else if (dir == Direction::Dir_t::Down)
-		from.Y += inc;
+		from.Z += inc;
 	return from;
 }
 
@@ -619,6 +619,7 @@ IrrlichtDisplay::Player::Player(
 	,	_node(node)
 	,	_isMoving(false)
 	,	_movDuration(0)
+	,	_movLastPercentage(-1)
 {
 	positionNode(pos);
 	rotateNode(dir);
@@ -636,7 +637,6 @@ void	IrrlichtDisplay::Player::setPos(Point const & pos, long long movDuration)
 {
 	if (_pos != pos)
 	{
-		_pos = pos;
 		if (movDuration <= 0)
 		{
 			_isMoving = false;
@@ -647,10 +647,12 @@ void	IrrlichtDisplay::Player::setPos(Point const & pos, long long movDuration)
 			_isMoving = true;
 			_movFrom = _pos;
 			_movTo = pos;
-			_movDir = Direction(_movFrom, _movTo);
+			_movDir = _dir;
 			_movClock.mark();
 			_movDuration = movDuration;
+			_movLastPercentage = -1;
 		}
+		_pos = pos;
 	}
 }
 
@@ -688,34 +690,39 @@ void	IrrlichtDisplay::Player::loop(void)
 		else
 		{
 			double movPercentage = movMillis * 100.0 / _movDuration;
-			double maxDistance = IrrlichtDisplayConst::SIZE_MAP_TILE / 2;
-			Point movStart;
-			double distanceToEnd;
-			Direction movDir;
-			if (movPercentage <= 50.0)
+			if (movPercentage != _movLastPercentage)
 			{
-				movStart = _movFrom;
-				distanceToEnd = movPercentage * maxDistance / 50.0;
-				movDir = _movDir;
-			}
-			else
-			{
-				movStart = _movTo;
-				distanceToEnd = maxDistance - ((movPercentage - 50) * maxDistance / 50.0);
-				movDir = _movDir.reverse();
-			}
-			irr::core::vector3df newPos = IrrlichtDisplay::moveVector(
-				IrrlichtDisplay::getCenterPos(
-					movStart,
-					IrrlichtDisplayConst::PLAYER_Z
-				),
-				movDir,
-				Math::clamp(0.0, maxDistance, distanceToEnd)
-			);
-			_node->setPosition(newPos);
-			if (distanceToEnd == maxDistance)
-			{
-				_isMoving = false;
+				_movLastPercentage = movPercentage;
+				double maxDistance = IrrlichtDisplayConst::SIZE_MAP_TILE / 2;
+				Point movStart;
+				double distanceToEnd;
+				Direction movDir = _movDir;
+				bool isFirstTile = movPercentage <= 50.0;
+				if (isFirstTile)
+				{
+					movStart = _movFrom;
+					distanceToEnd = movPercentage * maxDistance / 50.0;
+				}
+				else
+				{
+					movStart = _movTo;
+					distanceToEnd = maxDistance - ((movPercentage - 50) * maxDistance / 50.0);
+					movDir.reverse();
+				}
+				irr::core::vector3df newPos = IrrlichtDisplay::moveVector(
+						IrrlichtDisplay::getCenterPos(
+								movStart,
+								IrrlichtDisplayConst::PLAYER_Z
+						),
+						movDir,
+						Math::clamp(0.0, maxDistance, distanceToEnd)
+				);
+				_node->setPosition(newPos);
+				if (!isFirstTile && distanceToEnd == maxDistance)
+				{
+					_isMoving = false;
+					positionNode(_movTo);
+				}
 			}
 		}
 	}
