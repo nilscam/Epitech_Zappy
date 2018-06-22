@@ -7,6 +7,7 @@
 
 #include "server.h"
 #include "player.h"
+#include "player_callback.h"
 
 void	handle_players_action(t_server *server)
 {
@@ -18,13 +19,15 @@ void	handle_players_action(t_server *server)
 	while (list_it_can_iterate(&it)) {
 		player = list_it_get(&it);
 		player_consume_time(player);
-		if (player_is_dead_of_hunger(player)) {
-			remove_player(server, player);
-			list_it_erase(&it, NULL);
+		if (!player->is_waiting_to_die
+			&& player_is_dead_of_hunger(player)) {
+			client_callback(CB_DEATH_PLAYER, player->client);
+			player->client->kill_me = true;
+			player->is_waiting_to_die = true;
 		} else {
 			player_wait(player);
-			list_it_iterate(&it);
 		}
+		list_it_iterate(&it);
 	}
 	DEINIT(it);
 }

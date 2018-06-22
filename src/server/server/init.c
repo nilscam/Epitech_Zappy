@@ -28,10 +28,10 @@ t_server	*init_struct_server(map_t *map, double f)
 	this->_fd_server = -1;
 	this->map = map;
 	this->f = f;
-	this->anonymous_clients = NEW(LIST);
-	this->players_clients = NEW(LIST);
-	this->spectators_clients = NEW(LIST);
-	this->teams = NEW(LIST);
+	this->anonymous_clients = NEW(LIST_ALLOC, 255);
+	this->players_clients = NEW(LIST_ALLOC, 255);
+	this->spectators_clients = NEW(LIST_ALLOC, 255);
+	this->teams = NEW(LIST_ALLOC, 16);
 	this->winner = NULL;
 	if (!this->anonymous_clients
 		|| !this->players_clients

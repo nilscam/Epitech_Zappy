@@ -14,9 +14,7 @@ void	list_clear(list_t *self, void (*fct)(void *))
 
 	while (tmp) {
 		next = tmp->next;
-		if (fct)
-			fct(tmp->data);
-		free(tmp);
+		list_node_deinit(tmp, self, fct);
 		tmp = next;
 	}
 	self->tail = NULL;
@@ -27,4 +25,9 @@ void	list_clear(list_t *self, void (*fct)(void *))
 size_t	list_size(list_t *self)
 {
 	return self->size;
+}
+
+bool	list_is_empty(list_t *self)
+{
+	return list_size(self) <= 0;
 }

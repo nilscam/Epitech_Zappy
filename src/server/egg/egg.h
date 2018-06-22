@@ -26,6 +26,7 @@ typedef struct
 /* egg_hatch.c */
 void	egg_wait(egg_t *self);
 bool	egg_is_hatched(egg_t *self);
+bool	egg_will_hatch(egg_t *self);
 
 /* egg.c */
 extern const class_t *EGG;

@@ -12,6 +12,6 @@
 
 void	spectate_cmd_time_unit(player_cmd_arg_t *args)
 {
-	//todo replace time unit
-	client_callback(CB_TIME_UNIT_REQUEST, args->client, 1);
+	client_callback(CB_TIME_UNIT_REQUEST, args->client,
+		(int)args->server->f);
 }

@@ -33,7 +33,13 @@ static const client_callback_t	ANONYMOUS_CALLBACKS[] = {
 		"ko\n",
 		"",
 		"invalid team name"
-	}
+	},
+	{
+		CB_FULL_TEAM, player_callback_send_format,
+		"team is full\n",
+		"",
+		"team is full"
+	},
 };
 
 static const client_callback_t	CLIENT_CALLBACKS[] = {
@@ -72,6 +78,24 @@ static const client_callback_t	CLIENT_CALLBACKS[] = {
 		"Current level: %d\n",
 		"<lvl>",
 		"Current level: k"
+	},
+	{
+		CB_BROADCAST, player_callback_send_format,
+		"message %d, %s\n",
+		"<direction> <message>",
+		"broadcast"
+	},
+	{
+		CB_PLAYER_INVENTORY, player_callback_send_format,
+		CB_PLAYER_INV_1 CB_PLAYER_INV_2,
+		"<food> <6 stones>",
+		"Inventory"
+	},
+	{
+		CB_EJECT, player_callback_send_format,
+		"eject: %d\n",
+		"<direction>",
+		"Ejected from direction"
 	}
 };
 
@@ -89,15 +113,9 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 		"content of a tile"
 	},
 	{
-		CB_CONTENT_MAP, player_callback_content_map,
-		"bct X Y q0 q1 q2 q3 q4 q5 q6\n * nbr_tiles",
-		"//todo special",
-		"content of the map (all the tiles)"
-	},
-	{
-		CB_NAME_TEAMS, player_callback_name_teams,
-		"tna N\n * nbr_teams",
-		"//todo special",
+		CB_NAME_TEAMS, player_callback_send_format,
+		"tna %s\n",
+		"<team>",
 		"name of all the teams"
 	},
 	{
@@ -139,7 +157,7 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 	{
 		CB_START_INCANTATION, spectate_callback_start_incantation,
 		"pic X Y L n n ...\n",
-		"//todo special",
+		"<x> <y> <lvl> <id_first_player> <map_t *>",
 		"start of an incantation (by the first player)"
 	},
 	{
@@ -180,25 +198,25 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 	},
 	{
 		CB_EGG_HATCHING, player_callback_send_format,
-		"eht e\n",
+		"eht %d\n",
 		"<egg_nb>",
 		"egg hatching"
 	},
 	{
 		CB_PLAYER_CONNECTION_EGG, player_callback_send_format,
-		"ebo e\n",
-		"<egg_nb>",
+		"ebo %d %d %d %d %d %d %s\n",
+		"<egg_nb> <player_nb> <X> <Y> <dir> <lvl> <team>",
 		"player connection for an egg"
 	},
 	{
 		CB_TIME_UNIT_REQUEST, player_callback_send_format,
-		"sgt T\n",
+		"sgt %d\n",
 		"<time_unit>",
 		"time unit request"
 	},
 	{
 		CB_TIME_UNIT_MODIF, player_callback_send_format,
-		"sst T\n",
+		"sst %d\n",
 		"<time_unit>",
 		"time unit modification"
 	},
@@ -225,6 +243,12 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 		"sbp\n",
 		"",
 		"command parameter"
+	},
+	{
+		CB_EGG_POSITION, player_callback_send_format,
+		"egg %d %d %d\n",
+		"<egg_nb> <X> <Y>",
+		"position of an egg"
 	}
 };
 

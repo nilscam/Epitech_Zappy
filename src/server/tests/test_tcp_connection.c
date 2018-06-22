@@ -13,7 +13,9 @@
 
 int	test_tcp_connection(int ac, char **av)
 {
-	map_t		*map = NEW(MAP, 10, 10);
+	int		players_per_team = 12;
+	int		nb_teams = 2;
+	map_t		*map = NEW(MAP, 10, 10, players_per_team, nb_teams);
 	t_server	*server = init_struct_server(map, 1.0);
 	zclock_t	zclock;
 

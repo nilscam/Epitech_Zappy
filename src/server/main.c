@@ -8,14 +8,18 @@
 #include "server.h"
 #include "parsing.h"
 #include "save_signal.h"
+#include "player_callback.h"
 #include <errno.h>
 
 int	tests(int ac, char **av);
 
 static map_t	*infos_init_map(t_infos *infos)
 {
+	int	nb_teams = 0;
+
 	srand((unsigned int)time(NULL));
-	return NEW(MAP, infos->_width, infos->_height);
+	while (infos->_team_name && infos->_team_name[++nb_teams]);
+	return NEW(MAP, infos->_width, infos->_height, infos->_max_per_team, nb_teams);
 }
 
 static t_server	*infos_init_server(map_t *map, t_infos *infos)
@@ -44,6 +48,8 @@ static int	start_server_loop(t_server *server)
 			handle_eggs_action(server);
 		}
 	}
+	clients_callback(CB_END_OF_GAME, server->spectators_clients,
+		server->winner->name);
 	printf("winner: %s\n", server->winner->name);
 	return 0;
 }
@@ -54,6 +60,8 @@ int	main(int ac, char **av)
 	t_infos		infos = parse_args(ac, av);
 	t_server	*server;
 
+	if (infos._is_help)
+		return (help(av[0]));
 	if (!infos._err) {
 		dprintf(2, "Parsing error\n");
 		return (84);

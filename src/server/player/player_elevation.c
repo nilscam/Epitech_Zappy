@@ -31,7 +31,7 @@ bool	elevation_can_elevate(int level, int nb_of_players, int *stones)
 	if (!el)
 		return false;
 	for (int i = 0; i < NUMBER_OF_INV_TYPE; ++i)
-		if (stones[i] != el->stones[i])
+		if (stones[i] < el->stones[i] * el->nb_players)
 			return false;
 	return nb_of_players >= el->nb_players;
 }
@@ -39,4 +39,16 @@ bool	elevation_can_elevate(int level, int nb_of_players, int *stones)
 void	player_elevate(player_t *self)
 {
 	++self->level;
+}
+
+elevation_tab_t	*get_elevation_at_level(int level)
+{
+	int max_el = sizeof(ELEVATIONS) / sizeof(elevation_tab_t);
+
+	for (int i = 0; i < max_el; ++i) {
+		if (level == ELEVATIONS[i].level) {
+			return (elevation_tab_t *)(ELEVATIONS + i);
+		}
+	}
+	return NULL;
 }

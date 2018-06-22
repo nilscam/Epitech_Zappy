@@ -7,7 +7,8 @@
 
 NAME	=	zappy_server
 MAIN	=	main.c
-SRC	=	buffer/circular_buffer.c				\
+SRC	=	big_buff/big_buff.c					\
+		buffer/circular_buffer.c				\
 		class/class.c						\
 		class/class_utils.c					\
 		client/client_read.c					\
@@ -15,17 +16,21 @@ SRC	=	buffer/circular_buffer.c				\
 		client/client.c						\
 		egg/egg_hatch.c						\
 		egg/egg.c						\
+		list/list_iterator/list_iterator_erase.c			\
+		list/list_iterator/list_iterator_it.c			\
+		list/list_iterator/list_iterator_move.c			\
+		list/list_iterator/list_iterator_ops.c			\
+		list/list_iterator/list_iterator.c				\
 		list/list_extract.c					\
 		list/list_get.c						\
+		list/list_node.c					\
 		list/list_pop.c						\
 		list/list_push.c					\
 		list/list_utils.c					\
 		list/list.c						\
-		list_iterator/list_iterator_it.c			\
-		list_iterator/list_iterator_move.c			\
-		list_iterator/list_iterator_ops.c			\
-		list_iterator/list_iterator.c				\
+		map/elevation.c						\
 		map/inventory.c						\
+		map/map_deinit.c					\
 		map/map_egg.c						\
 		map/map_init.c						\
 		map/map_it.c						\
@@ -34,6 +39,7 @@ SRC	=	buffer/circular_buffer.c				\
 		map/map_sound.c						\
 		map/map_utils.c						\
 		map/map.c						\
+		map/stat.c						\
 		map/vision.c						\
 		parsing/help.c						\
 		parsing/parsing.c					\
@@ -45,14 +51,14 @@ SRC	=	buffer/circular_buffer.c				\
 		player/player_turn.c					\
 		player/player_utils.c					\
 		player/player.c						\
-		player_cmd/player_callback/content_map.c		\
-		player_cmd/player_callback/name_teams.c			\
 		player_cmd/player_callback/send_format.c		\
 		player_cmd/player_callback/start_incantation.c		\
+		player_cmd/player_cmd/anonymous_cmd_spectator.c		\
 		player_cmd/player_cmd/anonymous_cmd.c			\
 		player_cmd/player_cmd/broadcast.c			\
 		player_cmd/player_cmd/connect_nbr.c			\
 		player_cmd/player_cmd/content_map.c			\
+		player_cmd/player_cmd/eggs_pos.c			\
 		player_cmd/player_cmd/eject.c				\
 		player_cmd/player_cmd/error.c				\
 		player_cmd/player_cmd/fork.c				\
@@ -88,8 +94,11 @@ SRC	=	buffer/circular_buffer.c				\
 		server/select.c						\
 		server/server.c						\
 		server/write.c						\
+		team/team_find.c					\
 		team/team_utils.c					\
 		team/team.c						\
+		tests/test_big_buff.c					\
+		tests/test_list_alloc.c					\
 		tests/test_list_extract.c				\
 		tests/test_list.c					\
 		tests/test_map_it.c					\
@@ -105,6 +114,7 @@ SRC	=	buffer/circular_buffer.c				\
 		tests/tests.c						\
 		unique_id/unique_id.c					\
 		utils/debug.c						\
+		utils/direction_to_int.c				\
 		utils/direction.c					\
 		utils/math_utils.c					\
 		utils/point.c						\
@@ -115,12 +125,13 @@ SRC	=	buffer/circular_buffer.c				\
 		zclock/zclock.c
 
 INC	=	-I .			\
+		-I big_buff		\
 		-I buffer		\
 		-I class		\
 		-I client		\
 		-I egg			\
+		-I list/list_iterator	\
 		-I list			\
-		-I list_iterator	\
 		-I map			\
 		-I parsing		\
 		-I player		\

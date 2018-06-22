@@ -7,6 +7,7 @@
 
 #include "server.h"
 #include "player.h"
+#include "player_callback.h"
 
 static bool	remove_client_it(client_t *client, va_list *args)
 {
@@ -44,6 +45,8 @@ void	remove_player(t_server *this, void *pl)
 {
 	player_t	*player = (player_t *)pl;
 
+	clients_callback(CB_DEATH_PLAYER,
+		this->spectators_clients, player->id);
 	team_remove_player(player->team);
 	remove_client_from_list(this, player->client, true);
 	DELETE(player);

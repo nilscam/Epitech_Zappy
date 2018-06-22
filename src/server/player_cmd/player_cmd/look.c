@@ -9,9 +9,12 @@
 #include "player_callback.h"
 #include "debug.h"
 #include "player.h"
+#include "map_it.h"
 
 void	player_cmd_look(player_cmd_arg_t *args)
 {
-	(void)args;DEBUG("%s", __func__);
-	//todo_alex
+	char *vision = look(args->server->map, args->player);
+
+	list_push_back(args->client->write_buff, vision);
+	printf("VISION COMPLETE\n");
 }

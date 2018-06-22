@@ -38,6 +38,7 @@ typedef struct
 {
 	point_t		pos;
 	inventory_t	inventory;
+	list_t		*players;
 }	map_content_t;
 
 typedef struct
@@ -51,7 +52,10 @@ typedef struct
 }	map_t;
 
 /* map_init.c */
-void	init_map_contents(map_t *self);
+bool	init_map_contents(map_t *self, int players_per_team, int nb_teams);
+
+/* map_deinit.c */
+void	deinit_map_contents(map_t *self);
 
 /* map_egg.c */
 void	map_add_egg_at(map_t *self, team_t *team, point_t pos);
@@ -65,16 +69,16 @@ point_t	map_move(map_t *self, point_t from, direction_t to, int inc);
 
 /* map_utils.c */
 map_content_t	*map_content_at(map_t *self, point_t pos);
-bool	add_player_to_map(map_t *map, const team_t *team, client_t *client);
-bool	add_player_to_map_at(map_t *map, point_t pos,
-		const team_t *team, client_t *client);
 
 /* map_sound.c */
 direction_t	map_dir_sound_from(map_t *self, point_t from, point_t to);
 
 /* inventory.c */
-void	init_map_inventory(inventory_t *inv);
+void	fill_inv_ptrs(inventory_t *inv, int **ptrs);
+void	fill_inv_reprs(char **reprs);
+void 	init_map_inventory(inventory_t *inv, inventory_t *map_inv);
 void	init_player_inventory(inventory_t *inv);
+void	empty_stones_inventory(inventory_t *inv);
 
 /* map.c */
 extern const class_t *MAP;

@@ -10,12 +10,11 @@
 #include "debug.h"
 #include "player.h"
 
-void	spectate_cmd_map_content_tile(player_cmd_arg_t *args)
+void	show_content_tile(client_t *client, map_t *map, point_t point)
 {
-	point_t	point = { atoi(args->args[0]), atoi(args->args[1]) };
-	map_content_t *c = map_content_at(args->server->map, point);
+	map_content_t *c = map_content_at(map, point);
 
-	client_callback(CB_CONTENT_TILE, args->client,
+	client_callback(CB_CONTENT_TILE, client,
 		point.x, point.y,
 		c->inventory.food,
 		c->inventory.stones[LINEMATE],
@@ -24,4 +23,11 @@ void	spectate_cmd_map_content_tile(player_cmd_arg_t *args)
 		c->inventory.stones[MENDIANE],
 		c->inventory.stones[PHIRAS],
 		c->inventory.stones[THYSTAME]);
+}
+
+void	spectate_cmd_map_content_tile(player_cmd_arg_t *args)
+{
+	point_t	point = { atoi(args->args[0]), atoi(args->args[1]) };
+
+	show_content_tile(args->client, args->server->map, point);
 }

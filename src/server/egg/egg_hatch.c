@@ -18,3 +18,8 @@ bool	egg_is_hatched(egg_t *self)
 {
 	return self->remaining_time_units <= 0;
 }
+
+bool	egg_will_hatch(egg_t *self)
+{
+	return self->remaining_time_units == 1;
+}

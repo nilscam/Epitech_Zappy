@@ -6,24 +6,57 @@
 ##
 
 NAME	=	zappy_client
-MAIN	=	main.c
-SRC	=
+MAIN	=	main.cpp
+SRC	=		Display/IrrlichtDisplay.cpp			\
+			Hud/Button.cpp						\
+			Hud/ButtonManager.cpp				\
+			Hud/GUI.cpp							\
+			Hud/Image.cpp						\
+			Hud/ImageManager.cpp				\
+			Hud/ListBox.cpp						\
+			Hud/main.cpp						\
+			Hud/Rectangle.cpp					\
+			Hud/ScrollBar.cpp					\
+			Hud/Table.cpp						\
+			Manager/Buffer.cpp					\
+			Manager/Manager.cpp					\
+			Manager/Map.cpp						\
+			Manager/Player.cpp					\
+			Manager/parseMe.cpp					\
+			Manager/Egg.cpp						\
+			reseau/Client.cpp					\
+			reseau/Select.cpp					\
+			ServerHandler/ChildHandler.cpp		\
+			ServerHandler/ServerHandler.cpp		\
+			Utils/Clock.cpp						\
+			Utils/Debug.cpp						\
+			Utils/Direction.cpp					\
+			Utils/Math.cpp						\
+			Utils/Point.cpp
 
-INC	=	-I include
+INC	=	-I include			\
+		-I Display			\
+		-I Hud				\
+		-I Manager			\
+		-I reseau			\
+		-I ServerHandler	\
+		-I Utils
 F	=	-W -Wall -Werror -Wextra
 
-NAM_OBJ	=	$(MAIN:.c=.o)
-OBJ	=	$(SRC:.c=.o)
+NAM_OBJ	=	$(MAIN:.cpp=.o)
+OBJ	=	$(SRC:.cpp=.o)
 
-GCC	=	gcc -o
+LIB		=	-lIrrlicht -lGL -lXxf86vm -lXext -lX11
+
+G++	=	g++ -std=c++14 -g3 -o
 
 all:		$(NAME)
 
 $(NAME):	$(NAM_OBJ) $(OBJ)
-		$(GCC) $@ $^ $(LIB)
+		$(G++) $@ $^ $(LIB)
 
-%.o:		%.c
-		$(GCC) $@ $(F) $(FF) $(INC) -c $<
+%.o:		%.cpp
+		$(G++) $@ $(F) $(FF) $(INC) -c $<
 
 clean:
 		rm -f $(NAM_OBJ) $(OBJ) $(NAME)

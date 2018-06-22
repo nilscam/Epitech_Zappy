@@ -14,6 +14,8 @@
 #include <stddef.h>
 
 #define SIZE_ARRAY(x)	(sizeof(x) / sizeof(*x))
+#define CB_PLAYER_INV_1 "[food %d, linemate %d, deraumere %d, "
+#define CB_PLAYER_INV_2 "sibur %d, mendiane %d, phiras %d, thystame %d]\n"
 
 typedef struct client_callback_s client_callback_t;
 typedef void (*pl_callback_fct_t)(
@@ -25,6 +27,7 @@ typedef enum
 	CB_WELCOME_PLAYER,
 	CB_WELCOME_SPECTATOR,
 	CB_INVALID_TEAM_NAME,
+	CB_FULL_TEAM,
 	CB_NEW_PLAYER,
 	CB_EXPLUSION,
 	CB_BROADCAST,
@@ -54,7 +57,9 @@ typedef enum
 	CB_PLAYER_LEVEL,
 	CB_PLAYER_INVENTORY,
 	CB_TIME_UNIT_REQUEST,
-	CB_TIME_UNIT_MODIF
+	CB_TIME_UNIT_MODIF,
+	CB_EJECT,
+	CB_EGG_POSITION
 }	callback_type_t;
 
 struct client_callback_s
@@ -69,14 +74,6 @@ struct client_callback_s
 /* player_callback.c */
 void	client_callback(callback_type_t type, client_t *client, ...);
 void	clients_callback(callback_type_t type, list_t *clients, ...);
-
-/* player_callback/content_map.c */
-void	player_callback_content_map(
-	const client_callback_t *cb, client_t *client, va_list *args);
-
-/* player_callback/name_teams.c */
-void	player_callback_name_teams(
-	const client_callback_t *cb, client_t *client, va_list *args);
 
 /* player_callback/send_format.c */
 void	player_callback_send_format(

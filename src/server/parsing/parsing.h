@@ -12,11 +12,13 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <stdbool.h>
 
 typedef struct	s_infos		t_infos;
 
 struct 				s_infos
 {
+	bool				_is_help;
 	int				_port;
 	int				_width;
 	int				_height;
@@ -27,7 +29,8 @@ struct 				s_infos
 };
 
 //				help.c
-int	help(void);
+bool	check_is_help(int ac, char **av);
+int	help(char *self);
 
 //				get_infos.c
 int			get_port(t_infos *infos, int *i, int ac, char **av);

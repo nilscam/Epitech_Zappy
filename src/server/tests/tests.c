@@ -6,6 +6,8 @@
 */
 
 #include "debug.h"
+#include <stdlib.h>
+#include <time.h>
 
 int	test_list(void);
 int	test_map(void);
@@ -18,13 +20,15 @@ int	test_player_cmd(void);
 int	test_parsing(int ac, char **av);
 int	test_list_extract(void);
 int	test_zclock(void);
-
 int	test_unique_id(void);
+int	test_big_buff(void);
+int	test_list_alloc(void);
 
 int	tests(
 	__attribute__((unused))int ac,
 	__attribute__((unused))char **av)
 {
+	srand((unsigned int)time(NULL));
 	// return test_list();
 	// return test_player();
 	// return test_map();
@@ -37,5 +41,7 @@ int	tests(
 	// return test_list_extract();
 	// return test_zclock();
 	// return test_unique_id();
+	// return test_big_buff();
+	// return test_list_alloc();
 	return 0;
 }

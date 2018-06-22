@@ -6,7 +6,6 @@
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -35,6 +34,7 @@
 # IDE
 *.vscode*
 cmake-build-debug
+cmake*
 .idea
 
 # GTAGS

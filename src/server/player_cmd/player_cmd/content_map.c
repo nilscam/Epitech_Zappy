@@ -12,6 +12,12 @@
 
 void	spectate_cmd_content_map(player_cmd_arg_t *args)
 {
-	//todo content map
-	(void)args;DEBUG("%s", __func__);
+	map_t	*map = args->server->map;
+
+	for (int y = 0; y < map->size.y; ++y) {
+		for (int x = 0; x < map->size.x; ++x) {
+			show_content_tile(args->client, map,
+				(point_t){ x, y });
+		}
+	}
 }

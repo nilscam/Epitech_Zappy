@@ -11,28 +11,31 @@ static bool	new_map(map_t *self, va_list *args)
 {
 	int	x = va_arg(*args, int);
 	int	y = va_arg(*args, int);
+	int	players_per_team = va_arg(*args, int);
+	int	nb_teams = va_arg(*args, int);
 
 	self->size.x = x;
 	self->size.y = y;
 	self->cases_buff = malloc(sizeof(map_content_t) * (x * y));
 	self->cases = malloc(sizeof(map_content_t *) * (y + 1));
-	self->players = NEW(LIST);
-	self->eggs = NEW(LIST);
+	self->players = NEW(LIST_ALLOC, 255);
+	self->eggs = NEW(LIST_ALLOC, 255);
 	if (!self->cases_buff || !self->cases
 		|| !self->players || !self->eggs)
 		return false;
-	init_map_contents(self);
-	return true;
+	return init_map_contents(self, players_per_team, nb_teams);
 }
 
 static void	delete_map(map_t *self)
 {
-	SAFE_FREE(self->cases_buff);
-	SAFE_FREE(self->cases);
-	list_clear(self->players, delete_class);
+	if (self->cases_buff && self->cases)
+		deinit_map_contents(self);
 	list_clear(self->eggs, delete_class);
-	SAFE_DELETE(self->players);
 	SAFE_DELETE(self->eggs);
+	list_clear(self->players, delete_class);
+	SAFE_DELETE(self->players);
+	SAFE_FREE(self->cases);
+	SAFE_FREE(self->cases_buff);
 }
 
 static const map_t	MAP_CLASS = {

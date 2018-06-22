@@ -19,11 +19,8 @@ bool	team_can_add_player(team_t *team)
 
 bool	team_add_player(team_t *team)
 {
-	if (team_can_add_player(team)) {
-		++team->nb_players;
-		return true;
-	}
-	return false;
+	++team->nb_players;
+	return true;
 }
 
 void	team_remove_player(team_t *team)

@@ -34,18 +34,21 @@ typedef struct
 	void		*is_busy_callback_args;
 	client_t	*client;
 	long long	id;
+	bool		is_elevating;
+	bool		is_waiting_to_die;
 }	player_t;
 
-struct elevation_tab_s
+typedef struct elevation_tab_s
 {
 	int		level;
 	int		nb_players;
 	int		stones[NUMBER_OF_INV_TYPE];
-};
+}	elevation_tab_t;
 
 /* player_elevation.c */
 bool	elevation_can_elevate(int level, int nb_of_players, int *stones);
 void	player_elevate(player_t *self);
+elevation_tab_t	*get_elevation_at_level(int level);
 
 /* player_food.c */
 bool	player_is_dead_of_hunger(player_t *self);
@@ -53,6 +56,7 @@ void	player_consume_food(player_t *self);
 void	player_consume_time(player_t *self);
 
 /* player_move.c */
+void	player_remove_from_map(player_t *self);
 void	player_move(player_t *self);
 void	player_move_to(player_t *self, point_t pos);
 void	player_move_toward(player_t *self, direction_t dir, int inc);
