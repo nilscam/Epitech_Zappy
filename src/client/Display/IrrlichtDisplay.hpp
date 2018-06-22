@@ -265,13 +265,14 @@ private:
 		);
 		virtual ~Player();
 
-		void	setPos(Point const & pos, long long movDurationMillis, PlayerMoveStyle const & how);
+		void	setPos(Point const & pos, PlayerMoveStyle const & how);
 		void	setLevel(size_t level);
 		void	setDir(Direction const & dir);
 		Point	getPos(void) const noexcept;
 		irr::core::vector3df	getPosMesh(void) const noexcept;
 		void	loop(void);
 		void	animate(PlayerAnimationStyle const & how);
+		void 	setDurationMillis(long long movDurationMillis, double timeUnit);
 
 	private:
 
@@ -291,6 +292,10 @@ private:
 		Direction								_dir;
 		size_t									_level;
 		irr::scene::IAnimatedMeshSceneNode *	_mesh;
+		long long								_movDurationMillis;
+		double 									_timeUnit;
+		Clock									_startAnimationClock;
+		bool 									_isAnimating;
 
 		/* movements */
 		bool		_isMoving;
@@ -298,7 +303,6 @@ private:
 		Point		_movTo;
 		Direction	_movDir;
 		Clock		_movClock;
-		long long	_movDuration;
 		double 		_movLastPercentage;
 
 	};
