@@ -53,8 +53,13 @@ class IAManager(ai.ai):
 
     def reGroup(self):
         if self.canStartIncante():
+            print ('i icante')
             self.dropNecessary()
             self.castCmd("Incantation\n")
+
+            # tant que j'ai pas fini d'incanter je fais rien
+            while self.incanting == True:
+                self.waitServerEvent()
         else:
             # remplacer ça par les règles de Paint
             self.exploreStep()
@@ -90,10 +95,11 @@ class IAManager(ai.ai):
         # eject, dead, (ko, currentLevel)
         splitted = response.split()
 
+        print (response)
         if response == 'ko':
             self.incanting = False
         elif splitted[0] == 'Current':
-            self.level = response.split()[2]
+            self.level = int(response.split()[2])
             self.incanting = False
         elif response == 'dead':
             print ('fuck im dead :(')
@@ -115,12 +121,12 @@ class IAManager(ai.ai):
         elif command in ['Set', 'Take']:
             getattr(self, command)(response, cmdResponse['cmd'].split()[1])
 
+    # prend un exemplaire de chaque item dispo sur la case
     def takeAllItem(self):
         actualSquare = self.map.getSquare(self.x, self.y)
         if actualSquare:
             for item, number in actualSquare.items():
-                for i in range(number):
-                    self.castCmd("Take" + item)
+                self.castCmd("Take " + item + "\n")
 
     def dropNumber(self, ressource, nb):
         i = 0
@@ -145,3 +151,13 @@ class IAManager(ai.ai):
                     self.interpreteServerEvent(r['response'])
                 else:
                     self.interpreteCmd(r)
+
+    def waitServerEvent(self):
+        responses = self.cmdManager.getResponse()
+        for r in responses:
+            if r['type'] == 'message':
+                self.interpreteMsg(r['message'])
+            elif r['type'] == 'server':
+                self.interpreteServerEvent(r['response'])
+            else:
+                print ('ERRORORORORORORRR')

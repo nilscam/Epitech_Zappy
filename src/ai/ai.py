@@ -74,6 +74,7 @@ class map:
 
         i = 1
         infos = lookResult.strip("[]\n").split(",")
+        print (infos)
 
         for idx in range(len(infos)):
             infos[idx] = infos[idx].split()
@@ -170,6 +171,10 @@ class ai:
             self.x -= self.map.x
         if self.y >= self.map.y:
             self.y -= self.map.y
+        if self.x < 0:
+            self.x += self.map.x
+        if self.y < 0:
+            self.y += self.map.y
 
     def turn(self, dirTurn):
         # modify self.listIncantationsDir ( + 2 - 2 )
@@ -186,8 +191,8 @@ class ai:
                     player['direction'] += 8
 
     def ejected(self, dir):
-        self.y -= self.optimizeDir[optimizeDirRelativ[self.orientation][dir]][0]
-        self.x -= self.optimizeDir[optimizeDirRelativ[self.orientation][dir]][1]
+        self.y -= self.optimizeDir[self.optimizeDirRelativ[self.orientation][dir]][0]
+        self.x -= self.optimizeDir[self.optimizeDirRelativ[self.orientation][dir]][1]
 
     def removeFromAlly(self, id):
         self.listIncantationsDir = [x for x in self.listIncantationsDir if x['id'] != id]
@@ -197,9 +202,9 @@ class ai:
 
     def orienteRegroupIncantation(self):
         actualDir = [0, 0]
-        for id, dir in listIncantationsDir.items():
-            actualDir[0] += self.optimizeDir[optimizeDirRelativ[self.orientation][dir]][0]
-            actualDir[1] += self.optimizeDir[optimizeDirRelativ[self.orientation][dir]][1]
+        for player in self.listIncantationsDir:
+            actualDir[0] += self.optimizeDir[self.optimizeDirRelativ[self.orientation][player['direction']]][0]
+            actualDir[1] += self.optimizeDir[self.optimizeDirRelativ[self.orientation][player['direction']]][1]
 
         actualDir[0] = utils.smoothDir(actualDir[0])
         actualDir[1] = utils.smoothDir(actualDir[1])
@@ -217,7 +222,14 @@ class ai:
 
     # return True if i can incante with all others players of my lv, False otherwise
     def canIncante(self):
-        full_inventory = { 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0 }
+        full_inventory = {
+        'linemate': self.inventory.linemate,
+        'deraumere': self.inventory.deraumere,
+        'sibur': self.inventory.sibur,
+        'mendiane': self.inventory.mendiane,
+        'phiras': self.inventory.phiras,
+        'thystame': self.inventory.thystame
+        }
 
         for player in self.listIncantationsDir:
             for item, nb in player.inventory.items():
@@ -234,7 +246,7 @@ class ai:
 
     # return True if there is enough player on my square to level up with me
     def canStartIncante(self):
-        nbSameSquare = 0
+        nbSameSquare = 1
         for player in self.listIncantationsDir:
             if player['direction'] == 0:
                 nbSameSquare += 1
@@ -276,8 +288,11 @@ class ai:
 
     def Take(self, response, ressource):
         if response == 'ok':
-            setattr(self.inventory, ressource, getattr(self.inventory, ressource) + 1)
+            if ressource == 'food':
+                setattr(self.inventory, ressource, getattr(self.inventory, 'life') + 126)
+            else:
+                setattr(self.inventory, ressource, getattr(self.inventory, ressource) + 1)
 
     def Incantation(self, response):
         if response == 'Elevation underway':
-            self.incanting == True
+            self.incanting = True
