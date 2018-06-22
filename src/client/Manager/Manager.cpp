@@ -411,6 +411,28 @@ bool	Manager::pex()// n\n explusion
 		_display->setPlayerAction(
 				idxPlayer, IDisplay::PlayerAnimationStyle::PUSH_PLAYER);
 	}
+	
+	for(auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it)
+	{
+		if (*it == idxPlayer) {
+			continue;
+		}
+		if (_players[idxPlayer]->getPos() == _players[*it]->getPos()) {
+			Point pos(_players[*it]->getPos());
+			if (_players[idxPlayer]->getCurrentDir() == Direction::Up) {
+				pos.incY(-1);
+			} else if (_players[idxPlayer]->getCurrentDir() == Direction::Right) {
+				pos.incX(1);
+			} else if (_players[idxPlayer]->getCurrentDir() == Direction::Down) {
+				pos.incY(1);
+			} else if (_players[idxPlayer]->getCurrentDir() == Direction::Left) {
+				pos.incX(-1);
+			}
+			_players[*it]->setPos(pos);
+			_display->movePlayer(*it, pos, IDisplay::PlayerMoveStyle::PUSHED);
+		}
+	}
+	
 	return (true);
 }
 bool	Manager::pbc()// n M\n broadcast
