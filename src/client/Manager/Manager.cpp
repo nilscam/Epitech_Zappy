@@ -358,7 +358,7 @@ bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
 			_players[idxPlayer]->setCurrentDir(dir);
 		}
 		if (pos != _players[idxPlayer]->getPos()) {
-			_display->movePlayer(idxPlayer, pos, IDisplay::PlayerMoveStyle::WALK);
+			_display->movePlayer(idxPlayer, pos);
 			_players[idxPlayer]->setPos(pos);
 		}
 		std::string	str("Player #");
@@ -438,7 +438,7 @@ bool	Manager::pex()// n\n explusion
 			pos.setX(pos.getX() % mapSize.getX());
 			pos.setY(pos.getY() % mapSize.getY());
 			_players[*it]->setPos(pos);
-			_display->movePlayer(*it, pos, IDisplay::PlayerMoveStyle::PUSHED);
+			_display->pushPlayer(*it, pos, _players[*it]->getCurrentDir());
 		}
 	}
 	

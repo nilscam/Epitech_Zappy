@@ -412,19 +412,23 @@ void IrrlichtDisplay::killPlayer(size_t id)
 			return;
 		}
 	}
-	
 }
 
-void IrrlichtDisplay::movePlayer(
-	size_t id,
-	Point const &to,
-	const IDisplay::PlayerMoveStyle &how
-)
+void IrrlichtDisplay::movePlayer(size_t id, Point const &to)
 {
 	if (doesPlayerExist(id))
 	{
 		auto player = getPlayer(id);
-		player->setPos(to, how);
+		player->moveTo(to);
+	}
+}
+
+void IrrlichtDisplay::pushPlayer(size_t id, Point const &to, Direction const & dir)
+{
+	if (doesPlayerExist(id))
+	{
+		auto player = getPlayer(id);
+		player->pushTo(to, dir);
 	}
 }
 
@@ -687,10 +691,7 @@ IrrlichtDisplay::Player::~Player()
 	}
 }
 
-void	IrrlichtDisplay::Player::setPos(
-		Point const & pos,
-		PlayerMoveStyle const & how
-)
+void	IrrlichtDisplay::Player::moveTo(Point const & pos)
 {
 	if (_pos != pos)
 	{
@@ -701,22 +702,31 @@ void	IrrlichtDisplay::Player::setPos(
 		}
 		else
 		{
-			switch (how)
-			{
-				case PUSHED:
-				{
-					_movDir = _dir.reverse();
-					changeMesh(IrrlichtDisplayConst::PERSO_FALL);
-					break;
-				}
-				default:
-				case WALK:
-				{
-					_movDir = _dir;
-					changeMesh(IrrlichtDisplayConst::PERSO_RUN);
-					break;
-				}
-			}
+			changeMesh(IrrlichtDisplayConst::PERSO_RUN);
+			_movDir = _dir;
+			_isMoving = true;
+			_movFrom = _pos;
+			_movTo = pos;
+			_movClock.mark();
+			_movLastPercentage = -1;
+		}
+		_pos = pos;
+	}
+}
+
+void	IrrlichtDisplay::Player::pushTo(Point const & pos, Direction const & dir)
+{
+	if (_pos != pos)
+	{
+		if (_movDurationMillis <= 0)
+		{
+			_isMoving = false;
+			positionNode(pos);
+		}
+		else
+		{
+			changeMesh(IrrlichtDisplayConst::PERSO_FALL);
+			_movDir = dir;
 			_isMoving = true;
 			_movFrom = _pos;
 			_movTo = pos;

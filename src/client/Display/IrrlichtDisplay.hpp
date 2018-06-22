@@ -120,11 +120,8 @@ public:
 		PlayerOrigin const & origin
 	) override;
 	void	killPlayer(size_t id) override;
-	void	movePlayer(
-		size_t id,
-		Point const & to,
-		PlayerMoveStyle const & how
-	) override;
+	void	movePlayer(size_t id, Point const & to) override;
+	void	pushPlayer(size_t id, Point const & to, Direction const & dir) override;
 	void	changePlayerDir(size_t id, Direction const & dir) override;
 	void	setPlayerLevel(size_t id, size_t level) override;
 	void	addEgg(size_t idEgg, size_t idPlayerFrom) override;
@@ -134,8 +131,7 @@ public:
 		PlayerAnimationStyle const & what
 	) override;
 
-
-	void display(std::shared_ptr<GUI> gui);
+	void	display(std::shared_ptr<GUI> gui);
 
 	/* Init */
 	bool							initTexture();
@@ -265,7 +261,8 @@ private:
 		);
 		virtual ~Player();
 
-		void	setPos(Point const & pos, PlayerMoveStyle const & how);
+		void	moveTo(Point const & pos);
+		void	pushTo(Point const & pos, Direction const & dir);
 		void	setLevel(size_t level);
 		void	setDir(Direction const & dir);
 		Point	getPos(void) const noexcept;

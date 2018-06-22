@@ -22,7 +22,6 @@ public:
 	virtual ~IDisplay() = default;
 
 	enum PlayerOrigin { TELEPORT, EGG };
-	enum PlayerMoveStyle { WALK, PUSHED };
 	enum PlayerAnimationStyle
 	{ NONE, BROADCAST, INCANTATION, EGG_LAYING, DROP_RESOURCE, TAKE_RESOURCE, PUSH_PLAYER };
 
@@ -49,11 +48,8 @@ public:
 		PlayerOrigin const & origin
 	) = 0;
 	virtual void	killPlayer(size_t id) = 0;
-	virtual void	movePlayer(
-		size_t id,
-		Point const & to,
-		PlayerMoveStyle const & how
-	) = 0;
+	virtual void	movePlayer(size_t id, Point const & to) = 0;
+	virtual void	pushPlayer(size_t id, Point const & to, Direction const & dir) = 0;
 	virtual void	changePlayerDir(size_t id, Direction const & dir) = 0;
 	virtual void	setPlayerLevel(size_t id, size_t level) = 0;
 	virtual void	addEgg(size_t idEgg, size_t idPlayerFrom) = 0;
