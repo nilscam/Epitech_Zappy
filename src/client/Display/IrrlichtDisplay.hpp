@@ -395,6 +395,7 @@ private:
 	std::shared_ptr<Egg>			getEgg(size_t id) noexcept;
 	std::shared_ptr<MapContent>	getMapContent(Point const & pos) noexcept;
 	void							manageCam();
+	void							manageEvent();
 
 	std::vector<std::vector<std::shared_ptr<MapContent>>>	_map;
 	std::map<size_t, std::shared_ptr<Player>>				_players;
@@ -412,6 +413,7 @@ private:
 	bool									_isInit;
 	int										_followCam;
 	Clock									_antiSpamCam;
+	int										_zoomCam;
 
 };
 

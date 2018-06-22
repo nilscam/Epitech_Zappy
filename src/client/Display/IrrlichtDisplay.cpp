@@ -13,6 +13,7 @@ IrrlichtDisplay::IrrlichtDisplay()
 	,	_camera(nullptr)
 	,	_isInit(false)
 	,	_followCam(IrrlichtDisplayConst::CLICK_ON_MAP)
+	,	_zoomCam(250)
 {
 	_antiSpamCam.mark();
 }
@@ -144,6 +145,14 @@ int	IrrlichtDisplay::getTeamClicked(std::list<int> idxPlayers)
 	return (IrrlichtDisplayConst::CLICK_ON_MAP);
 }
 
+void	IrrlichtDisplay::manageEvent()
+{
+	if (_receiver.IsKeyDown(irr::KEY_KEY_W))
+		_zoomCam -= 3;
+	else if(_receiver.IsKeyDown(irr::KEY_KEY_S))
+		_zoomCam += 3;
+}
+
 void	IrrlichtDisplay::setCameraPos(Point const & size)
 {
 	float cameraX = (size.x() + 1) * IrrlichtDisplayConst::SIZE_MAP_TILE / 10;
@@ -195,12 +204,12 @@ void	IrrlichtDisplay::setCameraOnPlayer(int id)
 
     float cameraX = position.X;
     float cameraY = position.Z;
-    float cameraZ = 150;
+    float cameraZ = _zoomCam;
 	if (!_camera) {
-		_camera = _sceneManager->addCameraSceneNode(0, {cameraX - 350, cameraZ, cameraY}, { cameraX, 0, cameraY });
+		_camera = _sceneManager->addCameraSceneNode(0, {cameraX -  _zoomCam, cameraZ, cameraY}, { cameraX, 0, cameraY });
 		return;
 	}
-	_camera->setPosition(irr::core::vector3df(cameraX - 100, cameraZ, cameraY));
+	_camera->setPosition(irr::core::vector3df(cameraX - _zoomCam, cameraZ, cameraY));
     _camera->setTarget({ cameraX, 0, cameraY });
 }
 
@@ -247,6 +256,7 @@ void IrrlichtDisplay::display(void)
 
 void IrrlichtDisplay::display(std::shared_ptr<GUI> gui)
 {
+	this->manageEvent();
 	this->getTeamClicked(_idxPlayers);
 	this->manageCam();
 	if (_isInit && _device && _device->run())
