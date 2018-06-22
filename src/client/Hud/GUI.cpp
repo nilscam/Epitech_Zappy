@@ -140,7 +140,7 @@ int GUI::getLastButtonId() const
 
 bool	GUI::scrollBarPosChanged()
 {
-	bool hasChanged = scrollBar.getPos() != _posScrollBar;
+	bool	hasChanged = scrollBar.getPos() != _posScrollBar;
 	_posScrollBar = scrollBar.getPos();
 	return (hasChanged);
 }

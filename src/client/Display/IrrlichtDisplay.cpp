@@ -13,6 +13,7 @@ IrrlichtDisplay::IrrlichtDisplay()
 	,	_camera(nullptr)
 	,	_isInit(false)
 	,	_followCam(IrrlichtDisplayConst::CLICK_ON_MAP)
+	,	_zoomCam(250)
 {
 	_antiSpamCam.mark();
 }
@@ -87,7 +88,11 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::BLUE_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::BLUE_GEM);
 	_texture[IrrlichtDisplayConst::YOSHI_EGG_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YOSHI_EGG);
 	_texture[IrrlichtDisplayConst::FOOD_BASE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::FOOD_BASE);
-	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_RED);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BLUE);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_GREEN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_GREEN);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BROWN);
 	for (auto const & pair : _texture)
 	{
 		auto const & texture = pair.second;
@@ -144,6 +149,14 @@ int	IrrlichtDisplay::getTeamClicked(std::list<int> idxPlayers)
 	return (IrrlichtDisplayConst::CLICK_ON_MAP);
 }
 
+void	IrrlichtDisplay::manageEvent()
+{
+	if (_receiver.IsKeyDown(irr::KEY_KEY_W))
+		_zoomCam -= 3;
+	else if(_receiver.IsKeyDown(irr::KEY_KEY_S))
+		_zoomCam += 3;
+}
+
 void	IrrlichtDisplay::setCameraPos(Point const & size)
 {
 	float cameraX = (size.x() + 1) * IrrlichtDisplayConst::SIZE_MAP_TILE / 10;
@@ -195,12 +208,12 @@ void	IrrlichtDisplay::setCameraOnPlayer(int id)
 
     float cameraX = position.X;
     float cameraY = position.Z;
-    float cameraZ = 150;
+    float cameraZ = _zoomCam;
 	if (!_camera) {
-		_camera = _sceneManager->addCameraSceneNode(0, {cameraX - 350, cameraZ, cameraY}, { cameraX, 0, cameraY });
+		_camera = _sceneManager->addCameraSceneNode(0, {cameraX -  _zoomCam, cameraZ, cameraY}, { cameraX, 0, cameraY });
 		return;
 	}
-	_camera->setPosition(irr::core::vector3df(cameraX - 100, cameraZ, cameraY));
+	_camera->setPosition(irr::core::vector3df(cameraX - _zoomCam, cameraZ, cameraY));
     _camera->setTarget({ cameraX, 0, cameraY });
 }
 
@@ -219,9 +232,11 @@ irr::scene::ISceneNode *IrrlichtDisplay::create_block(
 
 void IrrlichtDisplay::setTeams(std::vector<std::string> const &teams) {
 	_teams.clear();
+	int idx = 0;
 	for (auto const & team : teams)
 	{
-		_teams.push_back(std::make_shared<Team>(team));
+		_teams.push_back(std::make_shared<Team>(idx, team));
+		++idx;
 	}
 }
 
@@ -247,6 +262,7 @@ void IrrlichtDisplay::display(void)
 
 void IrrlichtDisplay::display(std::shared_ptr<GUI> gui)
 {
+	this->manageEvent();
 	this->getTeamClicked(_idxPlayers);
 	this->manageCam();
 	if (_isInit && _device && _device->run())
@@ -380,13 +396,15 @@ void	IrrlichtDisplay::addPlayer(
 	Point const &pos,
 	Direction const &dir,
 	size_t level,
-	__attribute__((unused)) std::string const &team,
+	std::string const &team,
 	__attribute__((unused)) const IDisplay::PlayerOrigin &origin
 )
 {
 	killPlayer(id);
 	_idxPlayers.push_back(id);
-	_players[id] = std::make_shared<Player>(id, pos, dir, level, *_sceneManager, _texture);
+	_players[id] = std::make_shared<Player>(
+		id, pos, dir, level, getTeamIdx(team), *_sceneManager, _texture
+	);
 }
 
 void IrrlichtDisplay::killPlayer(size_t id)
@@ -402,19 +420,23 @@ void IrrlichtDisplay::killPlayer(size_t id)
 			return;
 		}
 	}
-	
 }
 
-void IrrlichtDisplay::movePlayer(
-	size_t id,
-	Point const &to,
-	const IDisplay::PlayerMoveStyle &how
-)
+void IrrlichtDisplay::movePlayer(size_t id, Point const &to)
 {
 	if (doesPlayerExist(id))
 	{
 		auto player = getPlayer(id);
-		player->setPos(to, how);
+		player->moveTo(to);
+	}
+}
+
+void IrrlichtDisplay::pushPlayer(size_t id, Point const &to, Direction const & dir)
+{
+	if (doesPlayerExist(id))
+	{
+		auto player = getPlayer(id);
+		player->pushTo(to, dir);
 	}
 }
 
@@ -565,6 +587,18 @@ long long	IrrlichtDisplay::getMovementDuration(void) const noexcept
 	return _timeUnit == 0 ? 0 : 1.0 / _timeUnit * 1E3;
 }
 
+int	IrrlichtDisplay::getTeamIdx(std::string const & name) const noexcept
+{
+	for (auto const & team : _teams)
+	{
+		if (*team.get() == name)
+		{
+			return team->getIdx();
+		}
+	}
+	return -1;
+}
+
 void	IrrlichtDisplay::remove_block(irr::scene::ISceneNode * node)
 {
 	node->remove();
@@ -640,15 +674,29 @@ IrrlichtDisplay::Player::Player(
 		Point const & pos,
 		Direction const & dir,
 		size_t level,
+		int teamIdx,
 		irr::scene::ISceneManager & sceneManager,
 		std::map<int, irr::video::ITexture *> & textures
 )
 	:	_sceneManager(sceneManager)
 	,	_textures(textures)
+	,	_randomPos(
+			{
+				Math::randomNumberBetween(
+					-(IrrlichtDisplayConst::SIZE_MAP_TILE / 4),
+					IrrlichtDisplayConst::SIZE_MAP_TILE / 4
+				),
+				Math::randomNumberBetween(
+					-(IrrlichtDisplayConst::SIZE_MAP_TILE / 4),
+					IrrlichtDisplayConst::SIZE_MAP_TILE / 4
+				)
+			}
+		)
 	,	_id(id)
 	,	_pos(pos)
 	,	_dir(dir)
 	,	_level(level)
+	,	_teamIdx(teamIdx)
 	,	_mesh(nullptr)
 	,	_movDurationMillis(1000)
 	,	_timeUnit(1)
@@ -669,10 +717,7 @@ IrrlichtDisplay::Player::~Player()
 	}
 }
 
-void	IrrlichtDisplay::Player::setPos(
-		Point const & pos,
-		PlayerMoveStyle const & how
-)
+void	IrrlichtDisplay::Player::moveTo(Point const & pos)
 {
 	if (_pos != pos)
 	{
@@ -683,24 +728,34 @@ void	IrrlichtDisplay::Player::setPos(
 		}
 		else
 		{
-			switch (how)
-			{
-				case PUSHED:
-				{
-					changeMesh(IrrlichtDisplayConst::PERSO_FALL);
-					break;
-				}
-				default:
-				case WALK:
-				{
-					changeMesh(IrrlichtDisplayConst::PERSO_RUN);
-					break;
-				}
-			}
+			changeMesh(IrrlichtDisplayConst::PERSO_RUN);
+			_movDir = _dir;
 			_isMoving = true;
 			_movFrom = _pos;
 			_movTo = pos;
-			_movDir = _dir;
+			_movClock.mark();
+			_movLastPercentage = -1;
+		}
+		_pos = pos;
+	}
+}
+
+void	IrrlichtDisplay::Player::pushTo(Point const & pos, Direction const & dir)
+{
+	if (_pos != pos)
+	{
+		if (_movDurationMillis <= 0)
+		{
+			_isMoving = false;
+			positionNode(pos);
+		}
+		else
+		{
+			changeMesh(IrrlichtDisplayConst::PERSO_FALL);
+			_movDir = dir;
+			_isMoving = true;
+			_movFrom = _pos;
+			_movTo = pos;
 			_movClock.mark();
 			_movLastPercentage = -1;
 		}
@@ -726,7 +781,7 @@ Point	IrrlichtDisplay::Player::getPos(void) const noexcept
 
 irr::core::vector3df	IrrlichtDisplay::Player::getPosMesh(void) const noexcept
 {
-	return _mesh->getPosition();
+	return _mesh ? _mesh->getPosition() : getCenter(_pos);
 }
 
 void	IrrlichtDisplay::Player::loop(void)
@@ -761,10 +816,7 @@ void	IrrlichtDisplay::Player::loop(void)
 					movDir.reverse();
 				}
 				irr::core::vector3df newPos = IrrlichtDisplay::moveVector(
-						IrrlichtDisplay::getCenterPos(
-								movStart,
-								IrrlichtDisplayConst::PLAYER_Z
-						),
+						getCenter(movStart),
 						movDir,
 						Math::clamp(0.0, maxDistance, distanceToEnd)
 				);
@@ -799,7 +851,7 @@ void	IrrlichtDisplay::Player::rotateNode(Direction const & dir)
 
 void	IrrlichtDisplay::Player::positionNode(Point const & pos)
 {
-	_meshPos = IrrlichtDisplay::getCenterPos(pos, IrrlichtDisplayConst::PLAYER_Z);
+	_meshPos = getCenter(pos);
 	if (_mesh)
 	{
 		_mesh->setPosition(_meshPos);
@@ -823,7 +875,16 @@ void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path)
 			_mesh->setRotation(_meshRot);
 			_mesh->setScale(IrrlichtDisplayConst::PLAYER_SCALE);
 			_mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-			_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_IDX]);
+			if (_teamIdx == 0)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX]);
+			else if (_teamIdx == 1)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX]);
+			else if (_teamIdx == 2)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_GREEN_IDX]);
+			else if (_teamIdx == 3)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW_IDX]);
+			else
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX]);
 			auto maxFrames = _mesh->getEndFrame();
 			if (_movDurationMillis > 0)
 			{
@@ -878,4 +939,16 @@ void IrrlichtDisplay::Player::setDurationMillis(
 {
 	_movDurationMillis = movDurationMillis;
 	_timeUnit = timeUnit;
+}
+
+irr::core::vector3df IrrlichtDisplay::Player::getCenter(Point const &pos) const noexcept
+{
+	irr::core::vector3df mesh = IrrlichtDisplay::getCenterPos(
+			pos, IrrlichtDisplayConst::PLAYER_Z
+	);
+	return {
+			mesh.X + _randomPos.getX(),
+			mesh.Y,
+			mesh.Z + _randomPos.getY()
+	};
 }

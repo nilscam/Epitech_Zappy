@@ -37,9 +37,10 @@ bool	Manager::initServer()
 	++_port;
 	std::cout << "PORT:" << _port << std::endl;
 	_serverHandler = std::make_unique<ServerHandler>();
-	//_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 10);
-	_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 5);
-	sleep(1);	
+	_serverHandler->startServer(5, 5, _port,
+		{ "red", "blue", "green", "yellow" }, 12, 5
+	);
+	sleep(1);
 	if (!this->connectClient(std::string("127.0.0.1").c_str(), _port)) {
 		return (false);
 	}
@@ -297,7 +298,7 @@ bool	Manager::tna()//! N\n * nbr_teams || tna\n name of all the teams
 		return (false);
 	}
 	_teams.emplace_back(std::string(_args[1]));
-	_display->setTeams({{_teams.back()}});
+	_display->setTeams(_teams);
 	_gui->table.addTeamName({{_teams.back()}});
 	std::string	str("New team Connected : ");
 	str.append(_teams.back());
@@ -358,7 +359,7 @@ bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
 			_players[idxPlayer]->setCurrentDir(dir);
 		}
 		if (pos != _players[idxPlayer]->getPos()) {
-			_display->movePlayer(idxPlayer, pos, IDisplay::PlayerMoveStyle::WALK);
+			_display->movePlayer(idxPlayer, pos);
 			_players[idxPlayer]->setPos(pos);
 		}
 		std::string	str("Player #");
@@ -411,6 +412,37 @@ bool	Manager::pex()// n\n explusion
 		_display->setPlayerAction(
 				idxPlayer, IDisplay::PlayerAnimationStyle::PUSH_PLAYER);
 	}
+	
+	for(auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it)
+	{
+		if (*it == idxPlayer) {
+			continue;
+		}
+		if (_players[idxPlayer]->getPos() == _players[*it]->getPos()) {
+			Point pos(_players[*it]->getPos());
+			if (_players[idxPlayer]->getCurrentDir() == Direction::Up) {
+				pos.incY(-1);
+			} else if (_players[idxPlayer]->getCurrentDir() == Direction::Right) {
+				pos.incX(1);
+			} else if (_players[idxPlayer]->getCurrentDir() == Direction::Down) {
+				pos.incY(1);
+			} else if (_players[idxPlayer]->getCurrentDir() == Direction::Left) {
+				pos.incX(-1);
+			}
+			Point mapSize = _map.getMapSize();
+			if (pos.getX() < 0) {
+				pos.setX(mapSize.getX() + (pos.getX() % mapSize.getX()));
+			}
+			if (pos.getY() < 0) {
+				pos.setY(mapSize.getY() + (pos.getY() * mapSize.getY()));
+			}
+			pos.setX(pos.getX() % mapSize.getX());
+			pos.setY(pos.getY() % mapSize.getY());
+			_players[*it]->setPos(pos);
+			_display->pushPlayer(*it, pos, _players[*it]->getCurrentDir());
+		}
+	}
+	
 	return (true);
 }
 bool	Manager::pbc()// n M\n broadcast
