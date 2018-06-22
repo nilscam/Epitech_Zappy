@@ -52,7 +52,7 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	SKY_RIGHT = "./Ress/model/irrlicht2_rt.jpg";
 	const irr::io::path	SKY_FORWARD = "./Ress/model/irrlicht2_ft.jpg";
 	const irr::io::path	SKY_BACKWARD = "./Ress/model/irrlicht2_bk.jpg";
-	const irr::io::path 	PERSO = "./Ress/model/perso/perso.DAE";
+	const irr::io::path 	PERSO = "./Ress/model/perso/perso.dae";
 	const irr::io::path	TEXTURE_PERSO = "./Ress/model/perso/texture_perso.png";
 	const irr::io::path	PERSO_RUN = "././Ress/model/perso/MD3/running.MD3";
 	const irr::io::path	PERSO_KICK1 = "././Ress/model/perso/MD3/mmakick.MD3";
@@ -276,7 +276,7 @@ private:
 
 	private:
 
-		irr::core::vector3df	getCenter(Point const & pos);
+		irr::core::vector3df	getCenter(Point const & pos) const noexcept;
 		void	rotateNode(Direction const & dir);
 		void	positionNode(Point const & pos);
 		void	changeMesh(irr::io::path const & path); //todo idx_texture for teams

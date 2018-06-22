@@ -705,12 +705,14 @@ void	IrrlichtDisplay::Player::setPos(
 			{
 				case PUSHED:
 				{
+					_movDir = _dir.reverse();
 					changeMesh(IrrlichtDisplayConst::PERSO_FALL);
 					break;
 				}
 				default:
 				case WALK:
 				{
+					_movDir = _dir;
 					changeMesh(IrrlichtDisplayConst::PERSO_RUN);
 					break;
 				}
@@ -718,7 +720,6 @@ void	IrrlichtDisplay::Player::setPos(
 			_isMoving = true;
 			_movFrom = _pos;
 			_movTo = pos;
-			_movDir = _dir;
 			_movClock.mark();
 			_movLastPercentage = -1;
 		}
@@ -744,7 +745,7 @@ Point	IrrlichtDisplay::Player::getPos(void) const noexcept
 
 irr::core::vector3df	IrrlichtDisplay::Player::getPosMesh(void) const noexcept
 {
-	return _mesh->getPosition();
+	return _mesh ? _mesh->getPosition() : getCenter(_pos);
 }
 
 void	IrrlichtDisplay::Player::loop(void)
@@ -895,7 +896,8 @@ void IrrlichtDisplay::Player::setDurationMillis(
 	_timeUnit = timeUnit;
 }
 
-irr::core::vector3df IrrlichtDisplay::Player::getCenter(Point const &pos) {
+irr::core::vector3df IrrlichtDisplay::Player::getCenter(Point const &pos) const noexcept
+{
 	irr::core::vector3df mesh = IrrlichtDisplay::getCenterPos(
 			pos, IrrlichtDisplayConst::PLAYER_Z
 	);
