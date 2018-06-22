@@ -74,8 +74,6 @@ class map:
 
         i = 1
         infos = lookResult.strip("[]\n").split(",")
-        print (infos)
-
         for idx in range(len(infos)):
             infos[idx] = infos[idx].split()
         self.setSquare(x, y, infos[0])
@@ -232,7 +230,7 @@ class ai:
         }
 
         for player in self.listIncantationsDir:
-            for item, nb in player.inventory.items():
+            for item, nb in player['inventory'].items():
                     full_inventory[item] += nb
 
         for prerequisites, number in self.incantationsStats[self.level].items():

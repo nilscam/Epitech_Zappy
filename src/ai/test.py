@@ -23,8 +23,11 @@ class inventory:
         getattr(self, 'update')(list_infos)
 
 
-test = inventory()
+msg = "message 8, red 170654137 2 {'linemate':10,'deraumere':12,'sibur':20,'mendiane':8,'phiras':4,'thystame':0}"
 
-test.test({'life': 3, 'linemate': 200})
+splitted = msg.split(',', 1)
 
-print(test)
+dir = int(splitted[0].split()[1])
+recv = splitted[1].split()
+print (dir)
+print (recv)

@@ -67,6 +67,7 @@ class IAManager(ai.ai):
     def play(self):
         while self.level < 8:
             if self.canIncante():
+                print ('i can icante')
                 self.reGroup()
             else:
                 self.exploreStep()
@@ -84,7 +85,7 @@ class IAManager(ai.ai):
 
         #si il est de ma clic
         if recv[0] == self.team:
-            info = {'direction': dir, 'id': int(recv[2]), 'level': int(recv[1]), 'inventory': eval(recv[3])}
+            info = {'direction': dir, 'id': int(recv[1]), 'level': int(recv[2]), 'inventory': eval(recv[3])}
             if self.level == info['level']:
                 self.removeFromAlly(info['id'])
                 self.addToAlly(info)
@@ -120,6 +121,9 @@ class IAManager(ai.ai):
             getattr(self, command)(response)
         elif command in ['Set', 'Take']:
             getattr(self, command)(response, cmdResponse['cmd'].split()[1])
+        elif command == 'Broadcast':
+            #print ('broadcast with success')
+            pass
 
     # prend un exemplaire de chaque item dispo sur la case
     def takeAllItem(self):
