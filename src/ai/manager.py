@@ -6,12 +6,13 @@ import ai
 
 class IAManager(ai.ai):
 
-    def __init__(self, port, ip):
+    def __init__(self, port, name, ip):
         self.cmdManager = commands.commands(port, ip)
-        welcome = self.cmdManager.getWelcome()
-        self.team = welcome[1]
-        self.nbClients = welcome[2]
-        ai.ai.__init__(self, *list(map(int, welcome[3].split())))
+        print('command init')
+        welcome = self.cmdManager.getWelcome(name)
+        self.team = name
+        self.nbClients = welcome[0]
+        ai.ai.__init__(self, *list(map(int, welcome[1].split())))
 
         # play firsts moves optimized
         self.firstStep()

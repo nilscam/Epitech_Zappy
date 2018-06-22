@@ -33,12 +33,12 @@ class map:
         # size x and y
         self.x = x
         self.y = y
-        self.map = [[None] * x] * y
+        self.map = [[dict()] * x] * y
 
     def setSquare(self, x, y, infoStr):
         square = dict()
         for item in infoStr:
-            if square[item]:
+            if item in square.keys():
                 square[item] += 1
             else:
                 square[item] = 1
@@ -50,7 +50,7 @@ class map:
             x -= self.x
         if y > self.y:
             y -= self.y
-        map[y][x] = square
+        self.map[y][x] = square
 
     def getSquare(self, x, y):
         if x < 0:
@@ -61,7 +61,7 @@ class map:
             x -= self.x
         if y > self.y:
             y -= self.y
-        return map[y][x]
+        return self.map[y][x]
 
     def setLook(self, lookResult, dirLook, x, y, level):
 
@@ -73,7 +73,10 @@ class map:
         }
 
         i = 1
-        infos = lookResult.split(",")
+        infos = lookResult.strip("[]\n").split(",")
+
+        for idx in range(len(infos)):
+            infos[idx] = infos[idx].split()
         self.setSquare(x, y, infos[0])
         actualCase = cases[dirLook]
         ymove = actualCase[0]
@@ -81,21 +84,25 @@ class map:
 
         if len(ymove) == 1:
             while i <= level:
-                range = range(i * 2 + 1) if xmove[0] == -1 else range(i * 2 + 1).reverse()
-                for toto in range(i * 2 + 1):
+                rangex = list(range(i * 2 + 1))
+                if xmove[0] != -1:
+                    rangex.reverse()
+                for toto in rangex:
                     self.setSquare(x - toto, y + (ymove[0] * i), infos[i])
                 i += 1
         else:
             while i <= level:
-                range = range(i * 2 + 1) if ymove[0] == -1 else range(i * 2 + 1).reverse()
-                for toto in range(i * 2 + 1):
+                rangey = list(range(i * 2 + 1))
+                if ymove[0] != -1:
+                    rangey.reverse()
+                for toto in rangey:
                     self.setSquare(x + (xmove[0] * i), y - toto, infos[i])
                 i += 1
 
 class ai:
 
     dirChanges = {
-    'LEFT': {'UP': 'LEFT', 'DOWN': 'RIGHT', 'LEFT': 'DOWN', 'RIGHT': 'UP'}
+    'LEFT': {'UP': 'LEFT', 'DOWN': 'RIGHT', 'LEFT': 'DOWN', 'RIGHT': 'UP'},
     'RIGHT': {'UP': 'RIGHT', 'DOWN': 'LEFT', 'LEFT': 'UP', 'RIGHT': 'DOWN'}
     }
 
@@ -108,14 +115,14 @@ class ai:
 
     # pour up
     optimizeDir = {
-    0: (0, 0)
-    1: (-1, 0)
-    2: (-1, -1)
-    3: (0, -1)
-    4: (1, -1)
-    5: (1, 0)
-    6: (1, 1)
-    7: (0, 1)
+    0: (0, 0),
+    1: (-1, 0),
+    2: (-1, -1),
+    3: (0, -1),
+    4: (1, -1),
+    5: (1, 0),
+    6: (1, 1),
+    7: (0, 1),
     8: (-1, 1)
     }
 

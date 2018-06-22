@@ -36,29 +36,28 @@ class network:
 
     # retourne une liste de message
     def getServerMessages(self):
-        try:
+        inputready, outputready, _ = select.select([self.socket], [], [], 0)
 
-            inputready, outputready, _ = select.select([self.socket], [], 0)
+        for i in inputready:
+            if i == self.socket:
+                data = self.readSocket()
+                if not data:
+                     print ('Server shut down')
+                     self.socket.close()
+                     exit(0)
 
-            for i in inputready:
-                if i == self.socket:
-                    data = self.readSocket()
-                    if not data:
-                         print ('Server shut down')
-                         self.socket.close()
-                         exit(0)
+                lines = data.splitlines(True)
+                endlast = lines[-1]
+                lines = data.splitlines()
 
-                    lines = data.splitlines(True)
-                    endlast = lines[-1]
-                    lines = data.splitlines()
+                if not endlast[-1:] in self.list_endlines:
+                    # si on a qu'une seule ligne et pas de \n on l'ajoute au buffer
+                    if len(lines) == 1:
+                        self.buffer += endlast
+                    # sinon on a plusieurs lignes et pas de \n à la dernière ligne donc on dit que le buffer vaut la dernièr ligne
+                    else:
+                        self.buffer = endlast
+                    lines = lines[:-1]
 
-                    if not endlast[-1:] in self.list_endlines:
-                        # si on a qu'une seule ligne et pas de \n on l'ajoute au buffer
-                        if len(lines) == 1:
-                            self.buffer += endlast
-                        # sinon on a plusieurs lignes et pas de \n à la dernière ligne donc on dit que le buffer vaut la dernièr ligne
-                        else:
-                            self.buffer = endlast
-                        lines = lines[:-1]
-
-                    return lines
+                return lines
+        return []

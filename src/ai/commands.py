@@ -9,11 +9,12 @@ class commands:
         self.cmdBuffer = []
         self.networkManager = network.network(port, ip)
 
-    def getWelcome(self):
+    def getWelcome(self, teamname):
         welcome = self.networkManager.getServerMessages()
-        while len(welcome) < 4:
+        self.networkManager.sendMsg(teamname + "\n")
+        while len(welcome) < 3:
             welcome += self.networkManager.getServerMessages()
-        return welcome[:4]
+        return welcome[1:3]
 
     def getResponse(self):
         responses = self.networkManager.getServerMessages()
@@ -32,7 +33,7 @@ class commands:
         return cmdResponses
 
     def sendCmd(self, command):
-        if len(cmdBuffer) >= 10:
+        if len(self.cmdBuffer) >= 10:
             print("too many commands are already in queue")
         else:
             self.cmdBuffer.append(command)
