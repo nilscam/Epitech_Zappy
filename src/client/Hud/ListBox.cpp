@@ -11,8 +11,8 @@ ListBox::ListBox(irr::gui::IGUIListBox *list, int id)
 {
 	_idx = 0;
 	_id = id;
-	_color.push_back(irr::video::SColor(20, 20, 30, 40));
-	_color.push_back(irr::video::SColor(209, 200, 20, 40));
+	_color.push_back(irr::video::SColor(255, 150, 150, 150));
+	_color.push_back(irr::video::SColor(255, 200, 20, 40));
 	listBox = list;
 	listBox->setAutoScrollEnabled(true);
 	setHeight(20);
