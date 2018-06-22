@@ -10,6 +10,7 @@ IrrlichtDisplay::IrrlichtDisplay()
 	,	_device(nullptr)
 	,	_driver(nullptr)
 	,	_sceneManager(nullptr)
+	,	_camera(nullptr)
 	,	_isInit(false)
 {}
 
