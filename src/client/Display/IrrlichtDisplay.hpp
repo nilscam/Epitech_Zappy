@@ -16,8 +16,8 @@ namespace IrrlichtDisplayConst
 	const irr::core::vector3df	STONE_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	EGG_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	PLAYER_SCALE = { 2.2, 2.2, 2.2 };
-	const int SCREEN_X = 800;//1920;
-	const int SCREEN_Y = 800;//1080;
+	const int SCREEN_X = 1920;//800;//1920;
+	const int SCREEN_Y = 1080;//800;//1080;
 	const int FPS = 32;
 	const float EGG_Z = 27.5;
 	const float FOOD_Z = 30;
@@ -73,6 +73,8 @@ public:
 	bool	init(void) override;
 	void	deinit(void) override;
 	void	setMapSize(Point const & size) override;
+	void	setCameraPos(Point const & size);
+	void	setCameraOnPlayer(int id);
 	void	setTeams(std::vector<std::string> const & teams) override;
 	void	setTimeUnit(double unit) override;
 	void	display(void) override;
@@ -236,6 +238,8 @@ private:
 		void	setLevel(size_t level);
 		void	setDir(Direction const & dir);
 		Point	getPos(void) const noexcept;
+		irr::core::vector3df	getPosMesh(void) const noexcept;
+
 
 	private:
 
@@ -345,6 +349,7 @@ private:
 	irr::IrrlichtDevice *					_device;
 	irr::video::IVideoDriver *				_driver;
 	irr::scene::ISceneManager *				_sceneManager;
+	irr::scene::ICameraSceneNode *			_camera;
 	std::map<int, irr::video::ITexture *>	_texture;
 	bool									_isInit;
 

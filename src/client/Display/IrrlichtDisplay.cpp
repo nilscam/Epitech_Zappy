@@ -36,7 +36,7 @@ bool IrrlichtDisplay::init(void)
 	_sceneManager = _device->getSceneManager();
 	if (!_sceneManager
 		|| !this->create_sky()
-		|| !this->create_camera()
+		//|| !this->create_camera()
 		|| !this->initTexture())
 		return false;
 	_device->getCursorControl()->setVisible(true);
@@ -95,6 +95,67 @@ void IrrlichtDisplay::setMapSize(Point const &size)
 			_map[y].push_back(content);
 		}
 	}
+	this->setCameraPos(size);
+}
+
+void	IrrlichtDisplay::setCameraPos(Point const & size)
+{
+	float cameraX = (size.x() + 1) * 50 / 10;
+	float cameraY = (size.y() + 1) * 50 / 2;
+	float cameraZ = std::max(cameraX, cameraY) * 2;
+
+	if (!_camera) {
+		_camera = _sceneManager->addCameraSceneNode(0, {cameraX - 400, cameraZ, cameraY}, { cameraX, 0, cameraY });
+		return;
+	}
+	_camera->setPosition(irr::core::vector3df(cameraX - 400, cameraZ, cameraY));
+	_camera->setTarget({ cameraX, 0, cameraY });
+}
+
+void	IrrlichtDisplay::setCameraOnPlayer(int id)
+{
+	if (!doesPlayerExist(id)) {
+		return;
+	}
+	auto player = getPlayer(id);
+	//Point posPlayer = player->getPos();
+	auto posPlayer = player->getPosMesh();
+	int movex = posPlayer.X;
+    int movey = posPlayer.Z;
+
+    //int permove = myPlayer.isMoving() ? static_cast<int>(myPlayer.getMovementPercentage()) / 2 : 0;
+    // int movex = (posPlayer.x() + 1) * 50;
+    // int movey = (posPlayer.y() + 1) * 50;
+	// std::cout << "movex:" << movex << " movey:" << movey << std::endl;
+	// std::cout << "vecx:" << vec.X << " vecy:" << vec.Y << " vecz:" << vec.Z << std::endl << std::endl;
+    // Direction::Dir_t dir = myPlayer.getCurrentDir().getDir();
+    // switch (dir) {
+    //     case Direction::Left:
+    //         movex -= permove;
+    //         break;
+    //     case Direction::Right:
+    //         movex += permove;
+    //         break;
+    //     case Direction::Up:
+    //         movey -= permove;
+    //         break;
+    //     case Direction::Down:
+    //         movey += permove;
+    //         break;
+    //     default:
+    //         break;
+    // }
+    irr::core::vector3df position(movex, 0, movey);
+
+    float cameraX = position.X;
+    float cameraY = position.Z;
+    float cameraZ = 250;
+	if (!_camera) {
+		_camera = _sceneManager->addCameraSceneNode(0, {cameraX - 350, cameraZ, cameraY}, { cameraX, 0, cameraY });
+		return;
+	}
+	_camera->setPosition(irr::core::vector3df(cameraX - 300, cameraZ, cameraY));
+    _camera->setTarget({ cameraX, 0, cameraY });
 }
 
 irr::scene::ISceneNode *IrrlichtDisplay::create_block(
@@ -410,18 +471,19 @@ irr::scene::IMeshSceneNode *IrrlichtDisplay::create_mesh(
 
 irr::scene::ICameraSceneNode *IrrlichtDisplay::create_camera()
 {
-	irr::SKeyMap keyMap[5];                             // re-assigne les commandes
-	keyMap[0].Action = irr::EKA_MOVE_FORWARD;           // avancer
-	keyMap[0].KeyCode = irr::KEY_KEY_Z;                 // w
-	keyMap[1].Action = irr::EKA_MOVE_BACKWARD;          // reculer
-	keyMap[1].KeyCode = irr::KEY_KEY_S;                 // s
-	keyMap[2].Action = irr::EKA_STRAFE_LEFT;            // a gauche
-	keyMap[2].KeyCode = irr::KEY_KEY_Q;                 // a
-	keyMap[3].Action = irr::EKA_STRAFE_RIGHT;           // a droite
-	keyMap[3].KeyCode = irr::KEY_KEY_D;                 // d
-	keyMap[4].Action = irr::EKA_JUMP_UP;                // saut
-	keyMap[4].KeyCode = irr::KEY_SPACE;                 // barre espace
-	return (_sceneManager->addCameraSceneNodeFPS(0, 1.0 , 1.0f, -1, keyMap, 5));
+	// irr::SKeyMap keyMap[5];                             // re-assigne les commandes
+	// keyMap[0].Action = irr::EKA_MOVE_FORWARD;           // avancer
+	// keyMap[0].KeyCode = irr::KEY_KEY_Z;                 // w
+	// keyMap[1].Action = irr::EKA_MOVE_BACKWARD;          // reculer
+	// keyMap[1].KeyCode = irr::KEY_KEY_S;                 // s
+	// keyMap[2].Action = irr::EKA_STRAFE_LEFT;            // a gauche
+	// keyMap[2].KeyCode = irr::KEY_KEY_Q;                 // a
+	// keyMap[3].Action = irr::EKA_STRAFE_RIGHT;           // a droite
+	// keyMap[3].KeyCode = irr::KEY_KEY_D;                 // d
+	// keyMap[4].Action = irr::EKA_JUMP_UP;                // saut
+	// keyMap[4].KeyCode = irr::KEY_SPACE;                 // barre espace
+	//_camera = _sceneManager->addCameraSceneNodeFPS(0, 1.0 , 1.0f, -1, keyMap, 5);
+	return (_camera);
 }
 
 bool IrrlichtDisplay::create_sky()
@@ -518,7 +580,7 @@ IrrlichtDisplay::Player::Player(
 	rotateNode(dir);
 }
 
-virtual IrrlichtDisplay::Player::~Player()
+IrrlichtDisplay::Player::~Player()
 {
 	if (_node != nullptr)
 	{
@@ -546,6 +608,11 @@ void	IrrlichtDisplay::Player::setDir(Direction const & dir)
 Point	IrrlichtDisplay::Player::getPos(void) const noexcept
 {
 	return _pos;
+}
+
+irr::core::vector3df	IrrlichtDisplay::Player::getPosMesh(void) const noexcept
+{
+	return _node->getPosition();
 }
 
 void	IrrlichtDisplay::Player::rotateNode(Direction const & dir)
