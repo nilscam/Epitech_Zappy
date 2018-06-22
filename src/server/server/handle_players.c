@@ -35,8 +35,12 @@ void	handle_players_action(t_server *server)
 bool	can_simulate_game(t_server *server)
 {
 	zclock_t	*zclock = &server->zclock;
-	double		us_to_wait = 1.0 / server->f * 1E6;
+	bool		can_wait = server->f > 0;
+	double		us_to_wait;
 
+	if (!can_wait)
+		return false;
+	us_to_wait = 1.0 / server->f * 1E6;
 	if (zclock_time_since_mark(zclock, MICROSECONDS) >= us_to_wait) {
 		zclock_mark(zclock);
 		return true;
