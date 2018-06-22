@@ -46,9 +46,9 @@ class map:
             x += self.x
         if y < 0:
             y += self.y
-        if x > self.x:
+        if x >= self.x:
             x -= self.x
-        if y > self.y:
+        if y >= self.y:
             y -= self.y
         self.map[y][x] = square
 
@@ -57,9 +57,9 @@ class map:
             x += self.x
         if y < 0:
             y += self.y
-        if x > self.x:
+        if x >= self.x:
             x -= self.x
-        if y > self.y:
+        if y >= self.y:
             y -= self.y
         return self.map[y][x]
 
@@ -211,9 +211,9 @@ class ai:
         dirToChoose = 'UP'
         if actualDir[0] == 1:
             dirToChoose = 'DOWN'
-        elif dirToChoose[1] == 1:
+        elif actualDir[1] == 1:
             dirToChoose = 'RIGHT'
-        elif dirToChoose[1] == -1:
+        elif actualDir[1] == -1:
             dirToChoose = 'LEFT'
 
         return self.nbTurn[self.orientation][dirToChoose]
@@ -248,7 +248,7 @@ class ai:
         for player in self.listIncantationsDir:
             if player['direction'] == 0:
                 nbSameSquare += 1
-        if self.incantationsStats[self.level]['player'] < nbSameSquare:
+        if self.incantationsStats[self.level]['player'] > nbSameSquare:
             return False
         return True
 

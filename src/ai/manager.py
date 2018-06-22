@@ -54,6 +54,7 @@ class IAManager(ai.ai):
     def reGroup(self):
         if self.canStartIncante():
             print ('i icante')
+            print (self.listIncantationsDir)
             self.dropNecessary()
             self.castCmd("Incantation\n")
 
