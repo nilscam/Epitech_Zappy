@@ -237,6 +237,11 @@ void IrrlichtDisplay::setTeams(std::vector<std::string> const &teams) {
 void IrrlichtDisplay::setTimeUnit(double unit)
 {
 	_timeUnit = unit;
+	for (auto const & pair : _players)
+	{
+		auto & player = pair.second;
+		player->setDurationMillis(getMovementDuration(), _timeUnit);
+	}
 }
 
 void IrrlichtDisplay::display(void)
@@ -419,7 +424,7 @@ void IrrlichtDisplay::movePlayer(
 	if (doesPlayerExist(id))
 	{
 		auto player = getPlayer(id);
-		player->setPos(to, getMovementDuration(), how);
+		player->setPos(to, how);
 	}
 }
 
@@ -655,8 +660,10 @@ IrrlichtDisplay::Player::Player(
 	,	_dir(dir)
 	,	_level(level)
 	,	_mesh(nullptr)
+	,	_movDurationMillis(1000)
+	,	_timeUnit(1)
+	,	_isAnimating(false)
 	,	_isMoving(false)
-	,	_movDuration(0)
 	,	_movLastPercentage(-1)
 {
 	positionNode(pos);
@@ -674,13 +681,12 @@ IrrlichtDisplay::Player::~Player()
 
 void	IrrlichtDisplay::Player::setPos(
 		Point const & pos,
-		long long movDuration,
 		PlayerMoveStyle const & how
 )
 {
 	if (_pos != pos)
 	{
-		if (movDuration <= 0)
+		if (_movDurationMillis <= 0)
 		{
 			_isMoving = false;
 			positionNode(pos);
@@ -706,7 +712,6 @@ void	IrrlichtDisplay::Player::setPos(
 			_movTo = pos;
 			_movDir = _dir;
 			_movClock.mark();
-			_movDuration = movDuration;
 			_movLastPercentage = -1;
 		}
 		_pos = pos;
@@ -739,13 +744,13 @@ void	IrrlichtDisplay::Player::loop(void)
 	if (_mesh && _isMoving)
 	{
 		long long movMillis = _movClock.timeSinceMark();
-		if (movMillis >= _movDuration)
+		if (movMillis >= _movDurationMillis)
 		{
 			_isMoving = false;
 		}
 		else
 		{
-			double movPercentage = movMillis * 100.0 / _movDuration;
+			double movPercentage = movMillis * 100.0 / _movDurationMillis;
 			if (movPercentage != _movLastPercentage)
 			{
 				_movLastPercentage = movPercentage;
@@ -786,6 +791,11 @@ void	IrrlichtDisplay::Player::loop(void)
 			positionNode(_movTo);
 		}
 	}
+	else if (_isAnimating && _startAnimationClock.timeSinceMark() > _movDurationMillis)
+	{
+		_isAnimating = false;
+		changeMesh(IrrlichtDisplayConst::PERSO);
+	}
 }
 
 void	IrrlichtDisplay::Player::rotateNode(Direction const & dir)
@@ -824,12 +834,20 @@ void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path)
 			_mesh->setScale(IrrlichtDisplayConst::PLAYER_SCALE);
 			_mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_IDX]);
+			auto maxFrames = _mesh->getEndFrame();
+			if (_movDurationMillis > 0)
+			{
+				irr::f32 fps = (float)_timeUnit * maxFrames;
+				_mesh->setAnimationSpeed(fps);
+			}
 		}
 	}
 }
 
 void	IrrlichtDisplay::Player::animate(PlayerAnimationStyle const & how)
 {
+	_isAnimating = true;
+	_startAnimationClock.mark();
 	switch (how)
 	{
 		case INCANTATION:
@@ -861,4 +879,13 @@ void	IrrlichtDisplay::Player::animate(PlayerAnimationStyle const & how)
 			break;
 		}
 	}
+}
+
+void IrrlichtDisplay::Player::setDurationMillis(
+		long long movDurationMillis,
+		double timeUnit
+)
+{
+	_movDurationMillis = movDurationMillis;
+	_timeUnit = timeUnit;
 }
