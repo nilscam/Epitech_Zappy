@@ -76,6 +76,7 @@ private:
 	int listBoxId;
 	int buttonId;
 	int imageId;
+	irr::IrrlichtDevice			*_device;
 	irr::gui::IGUIEnvironment	*env;
 	irr::video::IVideoDriver	*_driver;
 	irr::scene::ISceneManager	*_scene;

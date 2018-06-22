@@ -9,6 +9,7 @@
 
 GUI::GUI(irr::IrrlichtDevice *device)
 {
+	_device = device;
 	env = device->getGUIEnvironment();
 	_driver = device->getVideoDriver();
 	_scene = device->getSceneManager();

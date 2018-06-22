@@ -7,8 +7,11 @@
 
 #include "IDisplay.hpp"
 #include "GUI.hpp"
+#include "MyEventReceiver.hpp"
+#include "Clock.hpp"
 #include <irrlicht/irrlicht.h>
 #include <memory>
+#include <list>
 
 namespace IrrlichtDisplayConst
 {
@@ -18,6 +21,8 @@ namespace IrrlichtDisplayConst
 	const irr::core::vector3df	PLAYER_SCALE = { 2.2, 2.2, 2.2 };
 	const int SCREEN_X = 1920;//800;//1920;
 	const int SCREEN_Y = 1080;//800;//1080;
+	const int NOT_CLICKED = -1;
+	const int CLICK_ON_MAP = -2;
 	const int FPS = 32;
 	const float EGG_Z = 27.5;
 	const float FOOD_Z = 30;
@@ -73,6 +78,7 @@ public:
 	bool	init(void) override;
 	void	deinit(void) override;
 	void	setMapSize(Point const & size) override;
+	int		getTeamClicked(std::list<int> idxPlayers);
 	void	setCameraPos(Point const & size);
 	void	setCameraOnPlayer(int id);
 	void	setTeams(std::vector<std::string> const & teams) override;
@@ -339,6 +345,7 @@ private:
 	std::shared_ptr<Player>		getPlayer(size_t id) noexcept;
 	std::shared_ptr<Egg>			getEgg(size_t id) noexcept;
 	std::shared_ptr<MapContent>	getMapContent(Point const & pos) noexcept;
+	void							manageCam();
 
 	std::vector<std::vector<std::shared_ptr<MapContent>>>	_map;
 	std::map<size_t, std::shared_ptr<Player>>				_players;
@@ -350,8 +357,11 @@ private:
 	irr::video::IVideoDriver *				_driver;
 	irr::scene::ISceneManager *				_sceneManager;
 	irr::scene::ICameraSceneNode *			_camera;
+	MyEventReceiver							_receiver;
 	std::map<int, irr::video::ITexture *>	_texture;
 	bool									_isInit;
+	int										_followCam;
+	Clock									_antiSpamCam;
 
 };
 

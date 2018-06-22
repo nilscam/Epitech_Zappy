@@ -12,7 +12,10 @@ IrrlichtDisplay::IrrlichtDisplay()
 	,	_sceneManager(nullptr)
 	,	_camera(nullptr)
 	,	_isInit(false)
-{}
+	,	_followCam(IrrlichtDisplayConst::CLICK_ON_MAP)
+{
+	_antiSpamCam.mark();
+}
 
 IrrlichtDisplay::~IrrlichtDisplay()
 {
@@ -31,6 +34,7 @@ bool IrrlichtDisplay::init(void)
 	);
 	if (!_device)
 		return false;
+	_device->setEventReceiver(&_receiver);
 	_driver = _device->getVideoDriver();
 	if (!_driver)
 		return false;
@@ -96,7 +100,34 @@ void IrrlichtDisplay::setMapSize(Point const &size)
 			_map[y].push_back(content);
 		}
 	}
-	this->setCameraPos(size);
+}
+
+int	IrrlichtDisplay::getTeamClicked(std::list<int> idxPlayers)
+{
+	if (!_receiver.isMouseClick()
+		|| !_camera
+		|| _antiSpamCam.timeSinceMark() <= 100) {
+		return (IrrlichtDisplayConst::NOT_CLICKED);
+	}
+	_antiSpamCam.mark();
+	auto pos = _device->getCursorControl()->getPosition();
+	auto node = _sceneManager->getSceneCollisionManager()->getSceneNodeFromScreenCoordinatesBB(pos);
+	auto posNode = node->getPosition();
+	
+	for (auto it = idxPlayers.begin(); it != idxPlayers.end(); ++it)
+	{
+		if (!doesPlayerExist(*it)) {
+			continue;
+		}
+		auto player = getPlayer(*it);
+		auto posPlayer = player->getPosMesh();
+		if (posNode.X == posPlayer.X && posNode.Z == posPlayer.Z && posNode.Z == posPlayer.Z) {
+			_followCam = *it;
+			return (*it);
+		}
+	}
+	_followCam = IrrlichtDisplayConst::CLICK_ON_MAP;
+	return (IrrlichtDisplayConst::CLICK_ON_MAP);
 }
 
 void	IrrlichtDisplay::setCameraPos(Point const & size)
@@ -197,12 +228,22 @@ void IrrlichtDisplay::display(void)
 
 void IrrlichtDisplay::display(std::shared_ptr<GUI> gui)
 {
-	if (_device->run())
+	this->manageCam();
+	if (_isInit && _device && _device->run())
 	{
 		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
 		_sceneManager->drawAll();
 		gui->draw();
 		_driver->endScene();
+	}
+}
+
+void	IrrlichtDisplay::manageCam()
+{
+	if (_followCam == IrrlichtDisplayConst::CLICK_ON_MAP && _map.size() > 0) {
+		this->setCameraPos({static_cast<int>(_map.size()), static_cast<int>(_map[0].size())});
+	} else if (_followCam > 0) {
+		this->setCameraOnPlayer(_followCam);
 	}
 }
 
@@ -344,6 +385,8 @@ void	IrrlichtDisplay::addPlayer(
 				IrrlichtDisplayConst::TEXTURE_PERSO_IDX
 		)
 	);
+	auto npos = _players[id]->getPosMesh();
+	std::cout << "POS PERSO:" << npos.X << " | " << npos.Y << " | " << npos.Z << std::endl;
 }
 
 void IrrlichtDisplay::killPlayer(size_t id)

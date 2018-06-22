@@ -38,12 +38,12 @@ bool	Manager::initServer()
 	std::cout << "PORT:" << _port << std::endl;
 	_serverHandler = std::make_unique<ServerHandler>();
 	//_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 10);
-	_serverHandler->startServer(5, 5, _port, { "red" }, 12, 10);
+	_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 10);
 	sleep(1);	
 	if (!this->connectClient(std::string("127.0.0.1").c_str(), _port)) {
 		return (false);
 	}
-	_serverHandler->addAiAllTeams(1);
+	_serverHandler->addAiAllTeams(2);
 	return (true);
 }
 
@@ -90,8 +90,10 @@ void	Manager::spectateGame()
 {
 	Clock refresh;
 	// * baptiste
+	std::cout << "A" << std::endl;
 	// _display = std::make_unique<IrrlichtDisplay>();
 	_display = std::make_unique<IrrlichtDisplay>();
+	std::cout << "B" << std::endl;
 	if (!_display->init()) {
 		return;
 	}
@@ -128,9 +130,9 @@ void	Manager::spectateGame()
 		}
 		if (refresh.timeSinceMark() > 20) {
 			if (_display->isDeviceRunning()) {
-				//_display->Display(_map, _players, _idxPlayers, _eggs, _idxEggs, _gui);
 				_display->display(_gui);
 				this->updateGUILevelPlayer();
+				_display->getTeamClicked(_idxPlayers);
 			} else {
 				_stop = true;
 			}
