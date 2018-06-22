@@ -140,7 +140,9 @@ int GUI::getLastButtonId() const
 
 bool	GUI::scrollBarPosChanged()
 {
-	return (scrollBar.getPos() != _posScrollBar);
+	bool	hasChanged = scrollBar.getPos() != _posScrollBar;
+	_posScrollBar = scrollBar.getPos();
+	return (hasChanged);
 }
 
 const wchar_t *GUI::getWC(const char *str)
