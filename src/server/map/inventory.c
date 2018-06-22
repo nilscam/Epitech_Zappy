@@ -33,7 +33,6 @@ void	fill_inv_reprs(char **reprs)
 
 void init_map_inventory(inventory_t *inv, inventory_t *map_inv)
 {
-	inv->food = rand() % 4;
 	int res;
 	for (int i = 0; i < NUMBER_OF_INV_TYPE; ++i) {
 		if (map_inv->stones[i] > 0 && rand() % 8 < 2) {
@@ -41,6 +40,11 @@ void init_map_inventory(inventory_t *inv, inventory_t *map_inv)
 			inv->stones[i] += res;
 			map_inv->stones[i] -= res;
 		}
+	}
+	if (map_inv->food > 0 && rand() % 8 > 2) {
+		res = (rand() % 2) % map_inv->food;
+		inv->food += res;
+		map_inv->food -= res;
 	}
 }
 

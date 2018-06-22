@@ -22,14 +22,16 @@ max = [REQUIS] * [rand entre 1 et nb_max_joueurs] * nb_teams
 to_place = rand(max / 2, max)
 */
 
-void	init_total_map_content(inventory_t *inv,int players, int nb_teams)
+void	init_total_map_content(inventory_t *inv,int players, int nb_teams,
+	map_t *map)
 {
-	inv->stones[0] = 33 * players * nb_teams;
-	inv->stones[1] = 38 * players * nb_teams;
-	inv->stones[2] = 46 * players * nb_teams;
-	inv->stones[3] = 24 * players * nb_teams;
-	inv->stones[4] = 26 * players * nb_teams;
-	inv->stones[5] = 6 * players * nb_teams;
+	inv->stones[0] = 33 * players * nb_teams * 0;
+	inv->stones[1] = 38 * players * nb_teams * 0;
+	inv->stones[2] = 46 * players * nb_teams * 0;
+	inv->stones[3] = 24 * players * nb_teams * 0;
+	inv->stones[4] = 26 * players * nb_teams * 0;
+	inv->stones[5] = 6 * players * nb_teams * 0;
+	inv->food = map->size.x * map->size.y * randome_between(1, 4) +200;
 }
 
 bool	not_empty(inventory_t *inv)
@@ -38,6 +40,8 @@ bool	not_empty(inventory_t *inv)
 		if (inv->stones[i] > 1)
 			return true;
 	}
+	if (inv->food > 1)
+		return true;
 	return false;
 }
 
@@ -48,9 +52,7 @@ bool	init_map_contents(map_t *self, int players_per_team, int nb_teams)
 	int	size_y = self->size.y;
 	inventory_t inv;
 
-	init_total_map_content(&inv, players_per_team, nb_teams);
-	// for (int i = 0 ; i < NUMBER_OF_INV_TYPE ; ++i)
-	// 	printf("%d\n", inv.stones[i]);
+	init_total_map_content(&inv, players_per_team, nb_teams, self);
 	for (int i = 0; i < size_y; ++i)
 		self->cases[i] = self->cases_buff + size_x * i;
 	self->cases[size_y] = NULL;
