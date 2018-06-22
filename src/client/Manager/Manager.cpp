@@ -37,9 +37,10 @@ bool	Manager::initServer()
 	++_port;
 	std::cout << "PORT:" << _port << std::endl;
 	_serverHandler = std::make_unique<ServerHandler>();
-	//_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 10);
-	_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 5);
-	sleep(1);	
+	_serverHandler->startServer(5, 5, _port,
+		{ "red", "blue", "green", "yellow" }, 12, 5
+	);
+	sleep(1);
 	if (!this->connectClient(std::string("127.0.0.1").c_str(), _port)) {
 		return (false);
 	}
@@ -297,7 +298,7 @@ bool	Manager::tna()//! N\n * nbr_teams || tna\n name of all the teams
 		return (false);
 	}
 	_teams.emplace_back(std::string(_args[1]));
-	_display->setTeams({{_teams.back()}});
+	_display->setTeams(_teams);
 	_gui->table.addTeamName({{_teams.back()}});
 	std::string	str("New team Connected : ");
 	str.append(_teams.back());

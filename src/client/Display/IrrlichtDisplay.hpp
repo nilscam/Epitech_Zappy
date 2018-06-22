@@ -53,7 +53,11 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	SKY_FORWARD = "./Ress/model/irrlicht2_ft.jpg";
 	const irr::io::path	SKY_BACKWARD = "./Ress/model/irrlicht2_bk.jpg";
 	const irr::io::path 	PERSO = "./Ress/model/perso/perso.dae";
-	const irr::io::path	TEXTURE_PERSO = "./Ress/model/perso/texture_perso.png";
+	const irr::io::path	TEXTURE_PERSO_RED = "./Ress/model/perso/texture_perso_1.png";
+	const irr::io::path	TEXTURE_PERSO_BLUE = "./Ress/model/perso/texture_perso_2.png";
+	const irr::io::path	TEXTURE_PERSO_GREEN = "./Ress/model/perso/texture_perso_3.png";
+	const irr::io::path	TEXTURE_PERSO_YELLOW = "./Ress/model/perso/texture_perso_4.png";
+	const irr::io::path	TEXTURE_PERSO_BROWN = "./Ress/model/perso/texture_perso_5.png";
 	const irr::io::path	PERSO_RUN = "././Ress/model/perso/MD3/running.MD3";
 	const irr::io::path	PERSO_KICK1 = "././Ress/model/perso/MD3/mmakick.MD3";
 	const irr::io::path	PERSO_KICK2 = "././Ress/model/perso/MD3/mmakick2.MD3";
@@ -74,7 +78,11 @@ namespace IrrlichtDisplayConst
 		BLUE_GEM_IDX,
 		YOSHI_EGG_IDX,
 		FOOD_BASE_IDX,
-		TEXTURE_PERSO_IDX,
+		TEXTURE_PERSO_RED_IDX,
+		TEXTURE_PERSO_BLUE_IDX,
+		TEXTURE_PERSO_GREEN_IDX,
+		TEXTURE_PERSO_YELLOW_IDX,
+		TEXTURE_PERSO_BROWN_IDX
 	};
 
 }
@@ -167,6 +175,7 @@ public:
 	bool						isDeviceRunning(void);
 	irr::IrrlichtDevice			*getDevice(void) const;
 	long long					getMovementDuration(void) const noexcept;
+	int							getTeamIdx(std::string const & name) const noexcept;
 
 	static int						random_pos();
 	static int						getRotationDegrees(Direction const & dir);
@@ -184,13 +193,23 @@ private:
 	{
 	public:
 
-		Team(std::string const & name)
-				:	_name(name)
+		Team(int idx, std::string const & name)
+				:	_idx(idx)
+				,	_name(name)
 		{}
 		virtual ~Team() = default;
 
+		bool	operator==(std::string const & rhs) const noexcept
+		{ return _name == rhs; }
+		bool	operator!=(std::string const & rhs) const noexcept
+		{ return !(*this == rhs); }
+
+		int	getIdx(void) const noexcept
+		{ return _idx; }
+
 	private:
 
+		int				_idx;
 		std::string		_name;
 
 	};
@@ -256,6 +275,7 @@ private:
 				Point const & pos,
 				Direction const & dir,
 				size_t level,
+				int teamIdx,
 				irr::scene::ISceneManager & sceneManager,
 				std::map<int, irr::video::ITexture *> & textures
 		);
@@ -276,7 +296,7 @@ private:
 		irr::core::vector3df	getCenter(Point const & pos) const noexcept;
 		void	rotateNode(Direction const & dir);
 		void	positionNode(Point const & pos);
-		void	changeMesh(irr::io::path const & path); //todo idx_texture for teams
+		void	changeMesh(irr::io::path const & path);
 
 		/* irrlicht */
 		irr::scene::ISceneManager &				_sceneManager;
@@ -290,6 +310,7 @@ private:
 		Point									_pos;
 		Direction								_dir;
 		size_t									_level;
+		int										_teamIdx;
 		irr::scene::IAnimatedMeshSceneNode *	_mesh;
 		long long								_movDurationMillis;
 		double 									_timeUnit;

@@ -88,7 +88,11 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::BLUE_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::BLUE_GEM);
 	_texture[IrrlichtDisplayConst::YOSHI_EGG_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YOSHI_EGG);
 	_texture[IrrlichtDisplayConst::FOOD_BASE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::FOOD_BASE);
-	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_RED);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BLUE);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_GREEN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_GREEN);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW);
+	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BROWN);
 	for (auto const & pair : _texture)
 	{
 		auto const & texture = pair.second;
@@ -228,9 +232,11 @@ irr::scene::ISceneNode *IrrlichtDisplay::create_block(
 
 void IrrlichtDisplay::setTeams(std::vector<std::string> const &teams) {
 	_teams.clear();
+	int idx = 0;
 	for (auto const & team : teams)
 	{
-		_teams.push_back(std::make_shared<Team>(team));
+		_teams.push_back(std::make_shared<Team>(idx, team));
+		++idx;
 	}
 }
 
@@ -390,13 +396,15 @@ void	IrrlichtDisplay::addPlayer(
 	Point const &pos,
 	Direction const &dir,
 	size_t level,
-	__attribute__((unused)) std::string const &team,
+	std::string const &team,
 	__attribute__((unused)) const IDisplay::PlayerOrigin &origin
 )
 {
 	killPlayer(id);
 	_idxPlayers.push_back(id);
-	_players[id] = std::make_shared<Player>(id, pos, dir, level, *_sceneManager, _texture);
+	_players[id] = std::make_shared<Player>(
+		id, pos, dir, level, getTeamIdx(team), *_sceneManager, _texture
+	);
 }
 
 void IrrlichtDisplay::killPlayer(size_t id)
@@ -579,6 +587,18 @@ long long	IrrlichtDisplay::getMovementDuration(void) const noexcept
 	return _timeUnit == 0 ? 0 : 1.0 / _timeUnit * 1E3;
 }
 
+int	IrrlichtDisplay::getTeamIdx(std::string const & name) const noexcept
+{
+	for (auto const & team : _teams)
+	{
+		if (*team.get() == name)
+		{
+			return team->getIdx();
+		}
+	}
+	return -1;
+}
+
 void	IrrlichtDisplay::remove_block(irr::scene::ISceneNode * node)
 {
 	node->remove();
@@ -654,6 +674,7 @@ IrrlichtDisplay::Player::Player(
 		Point const & pos,
 		Direction const & dir,
 		size_t level,
+		int teamIdx,
 		irr::scene::ISceneManager & sceneManager,
 		std::map<int, irr::video::ITexture *> & textures
 )
@@ -675,6 +696,7 @@ IrrlichtDisplay::Player::Player(
 	,	_pos(pos)
 	,	_dir(dir)
 	,	_level(level)
+	,	_teamIdx(teamIdx)
 	,	_mesh(nullptr)
 	,	_movDurationMillis(1000)
 	,	_timeUnit(1)
@@ -853,7 +875,16 @@ void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path)
 			_mesh->setRotation(_meshRot);
 			_mesh->setScale(IrrlichtDisplayConst::PLAYER_SCALE);
 			_mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-			_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_IDX]);
+			if (_teamIdx == 0)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX]);
+			else if (_teamIdx == 1)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX]);
+			else if (_teamIdx == 2)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_GREEN_IDX]);
+			else if (_teamIdx == 3)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW_IDX]);
+			else
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX]);
 			auto maxFrames = _mesh->getEndFrame();
 			if (_movDurationMillis > 0)
 			{
