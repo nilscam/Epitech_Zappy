@@ -20,6 +20,9 @@ GUI::GUI(irr::IrrlichtDevice *device)
 	this->setFont(PATH_TO_RES GLOBAL_FONT);
 	this->createListBox(Rectangle(LISTBOX_X, LISTBOX_Y, LISTBOX_X2, LISTBOX_Y2), PATH_TO_RES RES_PANEL);
 	this->createTable(Rectangle(TABLE_X, TABLE_Y, TABLE_X2, TABLE_Y2), PATH_TO_RES RES_PANEL);
+	this->createScrollbar(Rectangle(SCROLL_X, SCROLL_Y, SCROLL_X2, SCROLL_Y2), PATH_TO_RES);
+	scrollBar.setPos(5);
+	_posScrollBar = 5;
 	device->setResizable(false);
 }
 
@@ -54,6 +57,14 @@ ListBox GUI::addListBox(Rectangle rect)
 	listBoxId += 1;
 	listBox = ListBox(listBx, listBoxId);
 	return listBox;
+}
+
+ScrollBar GUI::addScrollBar(Rectangle rect)
+{
+	auto scrollBr = env->addScrollBar(true, rect.get());
+	scrollBarId += 1;
+	scrollBar = ScrollBar(scrollBr, scrollBarId);
+	return scrollBar;
 }
 
 Button GUI::addButton(Rectangle rect, Button::Action action,
@@ -101,6 +112,15 @@ void GUI::createListBox(Rectangle rect, const std::string &path, int id)
 	imageManager.setScaleImage(true, getLastImageId());
 }
 
+void GUI::createScrollbar(Rectangle rect, const std::string &path, int id)
+{
+	addImage(rect, path, id);
+	Rectangle scrollbarRect(rect.getX() + 100, rect.getY() + 20,
+			      rect.getX2() - 100, rect.getY2() - 20);
+	auto scroll = addScrollBar(scrollbarRect);
+	imageManager.setScaleImage(true, getLastImageId());
+}
+
 void GUI::addListBoxMessage(const std::string &str, ListBox::MSGtype type)
 {
 	const wchar_t *text = this->getWC(str.c_str());
@@ -116,6 +136,11 @@ int GUI::getLastImageId() const
 int GUI::getLastButtonId() const
 {
 	return buttonId;
+}
+
+bool	GUI::scrollBarPosChanged()
+{
+	return (scrollBar.getPos() != _posScrollBar);
 }
 
 const wchar_t *GUI::getWC(const char *str)

@@ -242,6 +242,7 @@ void IrrlichtDisplay::display(void)
 
 void IrrlichtDisplay::display(std::shared_ptr<GUI> gui)
 {
+	this->getTeamClicked(_idxPlayers);
 	this->manageCam();
 	if (_isInit && _device && _device->run())
 	{
@@ -403,8 +404,7 @@ void	IrrlichtDisplay::addPlayer(
 				IrrlichtDisplayConst::TEXTURE_PERSO_IDX
 		)
 	);
-	auto npos = _players[id]->getPosMesh();
-	std::cout << "POS PERSO:" << npos.X << " | " << npos.Y << " | " << npos.Z << std::endl;
+	_idxPlayers.push_back(id);
 }
 
 void IrrlichtDisplay::killPlayer(size_t id)
@@ -414,6 +414,13 @@ void IrrlichtDisplay::killPlayer(size_t id)
 	{
 		_players.erase(oldPlayer);
 	}
+	for (auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it) {
+		if (*it == static_cast<int>(id)) {
+			_idxPlayers.erase(it);
+			return;
+		}
+	}
+	
 }
 
 void IrrlichtDisplay::movePlayer(

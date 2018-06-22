@@ -16,6 +16,7 @@ SRC	=		Display/IrrlichtDisplay.cpp			\
 			Hud/ListBox.cpp						\
 			Hud/main.cpp						\
 			Hud/Rectangle.cpp					\
+			Hud/ScrollBar.cpp					\
 			Hud/Table.cpp						\
 			Manager/Buffer.cpp					\
 			Manager/Manager.cpp					\

@@ -376,6 +376,7 @@ private:
 
 	std::vector<std::vector<std::shared_ptr<MapContent>>>	_map;
 	std::map<size_t, std::shared_ptr<Player>>				_players;
+	std::list<int>											_idxPlayers;
 	std::map<size_t, std::shared_ptr<Egg>>					_eggs;
 	std::vector<std::shared_ptr<Team>>						_teams;
 	double													_timeUnit;

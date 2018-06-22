@@ -51,6 +51,7 @@ private:
 	void	initReadCmd(void);
 	void	freeArgs(void);
 	void	updateGUILevelPlayer();
+	void	updateGUITimeUnit();
 
 	bool	msz();//! X Y\n || msz\n map size
 	bool	bct();//! X Y q0 q1 q2 q3 q4 q5 q6\n || bct X Y\n content of a tile

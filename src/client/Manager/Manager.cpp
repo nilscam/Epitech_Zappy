@@ -38,7 +38,7 @@ bool	Manager::initServer()
 	std::cout << "PORT:" << _port << std::endl;
 	_serverHandler = std::make_unique<ServerHandler>();
 	//_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 10);
-	_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 10);
+	_serverHandler->startServer(5, 5, _port, { "red", "blue" }, 12, 5);
 	sleep(1);	
 	if (!this->connectClient(std::string("127.0.0.1").c_str(), _port)) {
 		return (false);
@@ -133,7 +133,7 @@ void	Manager::spectateGame()
 			if (_display->isDeviceRunning()) {
 				_display->display(_gui);
 				this->updateGUILevelPlayer();
-				_display->getTeamClicked(_idxPlayers);
+				//_display->getTeamClicked(_idxPlayers);
 			} else {
 				_stop = true;
 			}
@@ -244,6 +244,17 @@ void	Manager::updateGUILevelPlayer()
 			_gui->table.setValue(j, i + 1, std::to_string(teamLevel[i][j]));
 		}
 	}
+}
+
+void	Manager::updateGUITimeUnit()
+{
+	if (!_gui->scrollBarPosChanged()) {
+		return;
+	}
+	auto freq = _gui->scrollBar.getPos();
+	char str[20];
+	sprintf(str, "sst %d\n", freq);
+	_sendBuffer->Put(str);
 }
 
 bool	Manager::msz()//! X Y\n || msz\n map size
