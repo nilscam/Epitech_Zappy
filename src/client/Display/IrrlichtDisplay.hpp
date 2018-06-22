@@ -62,7 +62,6 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	PERSO_TAKE = "././Ress/model/perso/MD3/take.MD3";
 	const irr::io::path	PERSO_FALL = "././Ress/model/perso/MD3/die.MD3";
 
-
 	enum TexIdx {
 		TEXTURE_BASE_IDX,
 		IRON_BOX_IDX,
@@ -82,6 +81,17 @@ namespace IrrlichtDisplayConst
 
 class IrrlichtDisplay: private IDisplay {
 public:
+
+	// class AnimationEndCallback : public irr::scene::IAnimationEndCallBack
+	// {
+	// 	AnimationEndCallback(irr::io::path const & afterAnimMesh);
+	// 	~AnimationEndCallback() override = default;
+	// 	void	OnAnimationEnd(IAnimatedMeshSceneNode * node) override
+	// 	{
+	// 		std::cout << "OnAnimationEnd" << std::endl;
+	// 		// ..
+	// 	}
+	// };
 
 	IrrlichtDisplay();
 	~IrrlichtDisplay() override;
@@ -156,11 +166,6 @@ public:
 			int texture,
 			irr::core::vector3df pos,
 			irr::core::vector3df scale
-	);
-	irr::scene::IAnimatedMeshSceneNode *create_player(
-			irr::core::vector3df pos,
-			irr::core::vector3df scale,
-			int idxtexture
 	);
 	/* Utils */
 	bool						isDeviceRunning(void);
@@ -255,28 +260,39 @@ private:
 				Point const & pos,
 				Direction const & dir,
 				size_t level,
-				irr::scene::IAnimatedMeshSceneNode * node
+				irr::scene::ISceneManager & sceneManager,
+				std::map<int, irr::video::ITexture *> & textures
 		);
 		virtual ~Player();
 
-		void	setPos(Point const & pos, long long movDurationMillis);
+		void	setPos(Point const & pos, long long movDurationMillis, PlayerMoveStyle const & how);
 		void	setLevel(size_t level);
 		void	setDir(Direction const & dir);
 		Point	getPos(void) const noexcept;
 		irr::core::vector3df	getPosMesh(void) const noexcept;
 		void	loop(void);
+		void	animate(PlayerAnimationStyle const & how);
 
 	private:
 
 		void	rotateNode(Direction const & dir);
 		void	positionNode(Point const & pos);
+		void	changeMesh(irr::io::path const & path); //todo idx_texture for teams
 
+		/* irrlicht */
+		irr::scene::ISceneManager &				_sceneManager;
+		std::map<int, irr::video::ITexture *> &	_textures;
+		irr::core::vector3df					_meshPos;
+		irr::core::vector3df					_meshRot;
+
+		/* data */
 		size_t									_id;
 		Point									_pos;
 		Direction								_dir;
 		size_t									_level;
-		irr::scene::IAnimatedMeshSceneNode *	_node;
+		irr::scene::IAnimatedMeshSceneNode *	_mesh;
 
+		/* movements */
 		bool		_isMoving;
 		Point		_movFrom;
 		Point		_movTo;
@@ -392,6 +408,5 @@ private:
 	Clock									_antiSpamCam;
 
 };
-
 
 #endif //IrrlichtDisplay_H_

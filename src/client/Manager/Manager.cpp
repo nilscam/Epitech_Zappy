@@ -402,6 +402,14 @@ bool	Manager::pin()//! n X Y q0 q1 q2 q3 q4 q5 q6\n || pin #n\n player’s inven
 }
 bool	Manager::pex()// n\n explusion
 {
+	if (!_args[1]) {
+		return (false);
+	}
+	int idxPlayer = atoi(_args[1]);
+	if (_players.find(idxPlayer) != _players.end()) {
+		_display->setPlayerAction(
+				idxPlayer, IDisplay::PlayerAnimationStyle::PUSH_PLAYER);
+	}
 	return (true);
 }
 bool	Manager::pbc()// n M\n broadcast
@@ -484,6 +492,7 @@ bool	Manager::pdr()// n i\n resource dropping
 		_map.setCase(_players[idxPlayer]->getPos(), items);
 		_display->setPlayerAction(
 			idxPlayer, IDisplay::PlayerAnimationStyle::DROP_RESOURCE);
+		_display->setMapTile(_players[idxPlayer]->getPos(), items);
 	}
 	return (true);
 }
@@ -521,6 +530,7 @@ bool	Manager::pgt()// n i\n resource collecting
 		_map.setCase(_players[idxPlayer]->getPos(), items);
 		_display->setPlayerAction(
 			idxPlayer, IDisplay::PlayerAnimationStyle::TAKE_RESOURCE);
+		_display->setMapTile(_players[idxPlayer]->getPos(), items);
 	}
 	return (true);
 }
