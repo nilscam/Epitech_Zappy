@@ -53,6 +53,7 @@ public:
 	void	setCase(Point const & pos, MapCase items);
 	std::vector<std::vector<MapCase>>	getMapCase() const;
 	bool				isInMap(Point pos);
+	Point	getMapSize(void) const noexcept;
 
 	friend std::ostream & operator<<(std::ostream & os, Map const & map);
 

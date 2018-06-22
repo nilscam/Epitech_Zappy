@@ -117,3 +117,10 @@ std::ostream & operator<<(std::ostream & os, Map const & map)
 	os << "\n";
 	return os;
 }
+
+Point	Map::getMapSize(void) const noexcept
+{
+	if (_map.size() <= 0)
+		return { 0, 0 };
+	return { (int)_map[0].size(), (int)_map.size() };
+}

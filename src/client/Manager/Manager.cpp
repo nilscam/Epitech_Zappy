@@ -428,6 +428,15 @@ bool	Manager::pex()// n\n explusion
 			} else if (_players[idxPlayer]->getCurrentDir() == Direction::Left) {
 				pos.incX(-1);
 			}
+			Point mapSize = _map.getMapSize();
+			if (pos.getX() < 0) {
+				pos.setX(mapSize.getX() + (pos.getX() % mapSize.getX()));
+			}
+			if (pos.getY() < 0) {
+				pos.setY(mapSize.getY() + (pos.getY() * mapSize.getY()));
+			}
+			pos.setX(pos.getX() % mapSize.getX());
+			pos.setY(pos.getY() % mapSize.getY());
 			_players[*it]->setPos(pos);
 			_display->movePlayer(*it, pos, IDisplay::PlayerMoveStyle::PUSHED);
 		}
