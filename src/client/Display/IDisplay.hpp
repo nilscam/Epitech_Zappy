@@ -24,7 +24,7 @@ public:
 	enum PlayerOrigin { TELEPORT, EGG };
 	enum PlayerMoveStyle { WALK, PUSHED };
 	enum PlayerAnimationStyle
-	{ NONE, BROADCAST, INCANTATION, EGG_LAYING, DROP_RESOURCE, TAKE_RESOURCE };
+	{ NONE, BROADCAST, INCANTATION, EGG_LAYING, DROP_RESOURCE, TAKE_RESOURCE, PUSH_PLAYER };
 
 	/* Init */
 	virtual bool	init(void) = 0;

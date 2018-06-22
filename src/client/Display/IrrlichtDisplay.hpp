@@ -265,12 +265,13 @@ private:
 		);
 		virtual ~Player();
 
-		void	setPos(Point const & pos, long long movDurationMillis);
+		void	setPos(Point const & pos, long long movDurationMillis, PlayerMoveStyle const & how);
 		void	setLevel(size_t level);
 		void	setDir(Direction const & dir);
 		Point	getPos(void) const noexcept;
 		irr::core::vector3df	getPosMesh(void) const noexcept;
 		void	loop(void);
+		void	animate(PlayerAnimationStyle const & how);
 
 	private:
 
