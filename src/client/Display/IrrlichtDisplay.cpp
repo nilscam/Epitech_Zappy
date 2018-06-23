@@ -13,7 +13,9 @@ IrrlichtDisplay::IrrlichtDisplay()
 	,	_camera(nullptr)
 	,	_isInit(false)
 	,	_followCam(IrrlichtDisplayConst::CLICK_ON_MAP)
-	,	_zoomCam(250)
+	,	_zoomCam(150)
+	,	_rotateCamera(true)
+	,	_cameraRotationDegrees(0)
 {
 	_antiSpamCam.mark();
 }
@@ -59,6 +61,13 @@ void	IrrlichtDisplay::loop(void)
 			auto & player = pair.second;
 			player->loop();
 		}
+	}
+	if (_rotateCamera && _cameraRotationClock.timeSinceMark() > 1)
+	{
+		_cameraRotationClock.mark();
+		_cameraRotationDegrees += 0.025;
+		if (_cameraRotationDegrees > 360)
+			_cameraRotationDegrees = 0;
 	}
 }
 
@@ -157,69 +166,63 @@ int		IrrlichtDisplay::getIdPlayerFollowCam(void) const
 void	IrrlichtDisplay::manageEvent()
 {
 	if (_receiver.IsKeyDown(irr::KEY_KEY_W))
-		_zoomCam -= 3;
+		_zoomCam -= 5;
 	else if(_receiver.IsKeyDown(irr::KEY_KEY_S))
-		_zoomCam += 3;
+		_zoomCam += 5;
 }
 
 void	IrrlichtDisplay::setCameraPos(Point const & size)
 {
-	float cameraX = (size.x() + 1) * IrrlichtDisplayConst::SIZE_MAP_TILE / 10;
-	float cameraY = (size.y() + 1) * IrrlichtDisplayConst::SIZE_MAP_TILE / 2;
-	float cameraZ = std::max(cameraX, cameraY) * 2;
+	Point mapSize = (size + 1) * IrrlichtDisplayConst::SIZE_MAP_TILE;
+	Point mapCenter = mapSize / 2;
+	float distance = std::max(mapSize.x(), mapSize.y()) * 0.8;
+	// float distance = _zoomCam;
+	float height = distance;
+	setCamera(
+		distance,
+		height,
+		{ (float)mapCenter.x(), 0, (float)mapCenter.y() }
+	);
+}
 
-	if (!_camera) {
-		_camera = _sceneManager->addCameraSceneNode(0, {cameraX - 400, cameraZ, cameraY}, { cameraX, 0, cameraY });
-		return;
+void	IrrlichtDisplay::setCamera(
+	float distance,
+	float height,
+	irr::core::vector3df const & target
+)
+{
+	_cameraTarget = target;
+	_cameraPosition = _cameraTarget;
+	_cameraPosition.X += distance;
+	_cameraPosition.Y += height;
+	if (_rotateCamera)
+	{
+		auto rotation = rotatePoint(
+			{ _cameraTarget.X, _cameraTarget.Z },
+			_cameraRotationDegrees,
+			{ _cameraPosition.X, _cameraPosition.Z }
+		);
+		_cameraPosition.X = rotation.X;
+		_cameraPosition.Z = rotation.Y;
 	}
-	_camera->setPosition(irr::core::vector3df(cameraX - 400, cameraZ, cameraY));
-	_camera->setTarget({ cameraX, 0, cameraY });
+	if (!_camera)
+	{
+		_camera = _sceneManager->addCameraSceneNode(0, _cameraPosition, _cameraTarget);
+	}
+	else
+	{
+		_camera->setPosition(_cameraPosition);
+		_camera->setTarget(_cameraTarget);
+	}
 }
 
 void	IrrlichtDisplay::setCameraOnPlayer(int id)
 {
-	if (!doesPlayerExist(id)) {
-		return;
+	if (doesPlayerExist(id))
+	{
+		auto player = getPlayer(id);
+		setCamera(_zoomCam, _zoomCam, player->getPosMesh());
 	}
-	auto player = getPlayer(id);
-	//Point posPlayer = player->getPos();
-	auto posPlayer = player->getPosMesh();
-	int movex = posPlayer.X;
-    int movey = posPlayer.Z;
-
-    //int permove = myPlayer.isMoving() ? static_cast<int>(myPlayer.getMovementPercentage()) / 2 : 0;
-    // int movex = (posPlayer.x() + 1) * 50;
-    // int movey = (posPlayer.y() + 1) * 50;
-	// std::cout << "movex:" << movex << " movey:" << movey << std::endl;
-	// std::cout << "vecx:" << vec.X << " vecy:" << vec.Y << " vecz:" << vec.Z << std::endl << std::endl;
-    // Direction::Dir_t dir = myPlayer.getCurrentDir().getDir();
-    // switch (dir) {
-    //     case Direction::Left:
-    //         movex -= permove;
-    //         break;
-    //     case Direction::Right:
-    //         movex += permove;
-    //         break;
-    //     case Direction::Up:
-    //         movey -= permove;
-    //         break;
-    //     case Direction::Down:
-    //         movey += permove;
-    //         break;
-    //     default:
-    //         break;
-    // }
-    irr::core::vector3df position(movex, 0, movey);
-
-    float cameraX = position.X;
-    float cameraY = position.Z;
-    float cameraZ = _zoomCam;
-	if (!_camera) {
-		_camera = _sceneManager->addCameraSceneNode(0, {cameraX -  _zoomCam, cameraZ, cameraY}, { cameraX, 0, cameraY });
-		return;
-	}
-	_camera->setPosition(irr::core::vector3df(cameraX - _zoomCam, cameraZ, cameraY));
-    _camera->setTarget({ cameraX, 0, cameraY });
 }
 
 irr::scene::ISceneNode *IrrlichtDisplay::create_block(
@@ -660,6 +663,24 @@ irr::core::vector3df	IrrlichtDisplay::moveVector(
 	else if (dir == Direction::Dir_t::Down)
 		from.Z += inc;
 	return from;
+}
+
+irr::core::vector2df	IrrlichtDisplay::rotatePoint(
+	irr::core::vector2df const & center,
+	double angle,
+	irr::core::vector2df point
+)
+{
+	angle = angle * M_PI / 180.0;
+	double s = sin(angle);
+	double c = cos(angle);
+	point.X -= center.X;
+	point.Y -= center.Y;
+	double x_rot = point.X * c - point.Y * s;
+	double y_rot = point.X * s + point.Y * c;
+	point.X = x_rot + center.X;
+	point.Y = y_rot + center.Y;
+	return point;
 }
 
 bool	IrrlichtDisplay::doesMapContentExist(Point const & pos) const noexcept
