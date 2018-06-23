@@ -259,13 +259,35 @@ void	Manager::updateGUITimeUnit()
 	_sendBuffer->Put(str);
 }
 
+ListBox::MSGtype	Manager::getColorForTeam(std::string const & name) const noexcept
+{
+	int idx = 0;
+	for (auto const & team : _teams)
+	{
+		if (name == team)
+		{
+			return	idx == 0 ? ListBox::MSGtype::RED_TEAM
+				:	idx == 1 ? ListBox::MSGtype::BLUE_TEAM
+				:	idx == 2 ? ListBox::MSGtype::GREEN_TEAM
+				:	idx == 3 ? ListBox::MSGtype::YELLOW_TEAM
+				:	ListBox::MSGtype::OTHER_TEAM;
+		}
+		++idx;
+	}
+	return ListBox::MSGtype::OTHER_TEAM;
+}
+
 bool	Manager::msz()//! X Y\n || msz\n map size
 {
 	if (!_args[1] || !_args[2])
 		return (false);
 	_map.createMap(atoi(_args[1]), atoi(_args[2]));
 	_display->setMapSize({atoi(_args[1]), atoi(_args[2])});
-	//std::cout << _map;
+	_gui->addListBoxMessage(
+		"Size of the map : " + std::string(_args[1])
+		+ "x" + std::string(_args[2]),
+		getColorForTeam(_teams.back())
+	);
 	return (true);
 }
 
@@ -300,9 +322,10 @@ bool	Manager::tna()//! N\n * nbr_teams || tna\n name of all the teams
 	_teams.emplace_back(std::string(_args[1]));
 	_display->setTeams(_teams);
 	_gui->table.addTeamName({{_teams.back()}});
-	std::string	str("New team Connected : ");
-	str.append(_teams.back());
-	_gui->addListBoxMessage(str, ListBox::SYSTEM);
+	_gui->addListBoxMessage(
+		"New team Connected : " + _teams.back(),
+		getColorForTeam(_teams.back())
+	);
 	return (true);
 }
 bool	Manager::pnw()// #n X Y O L N\n connection of a new player
@@ -310,7 +333,6 @@ bool	Manager::pnw()// #n X Y O L N\n connection of a new player
 	if (!_args[1] || !_args[2] || !_args[3]
 		|| !_args[4] || !_args[5] || !_args[6])
 		return (false);
-	std::cout << "PLAYER CONNECTED" << std::endl;
 	std::string teamName(_args[6]);
 	int	idxTeam = 0;
 	for(size_t i = 0; i < _teams.size(); i++)
@@ -339,9 +361,10 @@ bool	Manager::pnw()// #n X Y O L N\n connection of a new player
 		teamName,
 		IDisplay::PlayerOrigin::TELEPORT
 		);
-	std::string	str("New Player Connected : #");
-	str.append(std::to_string(_idxPlayers.back()));
-	_gui->addListBoxMessage(str, ListBox::SYSTEM);
+	_gui->addListBoxMessage(
+		"New Player Connected : #" + std::to_string(_idxPlayers.back()),
+		getColorForTeam(teamName)
+	);
 	return (true);
 }
 bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
@@ -362,10 +385,10 @@ bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
 			_display->movePlayer(idxPlayer, pos);
 			_players[idxPlayer]->setPos(pos);
 		}
-		std::string	str("Player #");
-		str.append(std::to_string(idxPlayer));
-		str.append(" Move");
-		_gui->addListBoxMessage(str);
+		_gui->addListBoxMessage(
+			"Player #" + std::to_string(idxPlayer) + " Move",
+			getColorForTeam(_players[idxPlayer]->getNameTeam())
+		);
 	}
 	return (true);
 }
@@ -379,6 +402,11 @@ bool	Manager::plv()//! n L\n || plv #n\n player’s level
 	if (_players.find(idxPlayer) != _players.end()) {
 		_display->setPlayerLevel(idxPlayer, level);
 		_players[idxPlayer]->setLevel(level);
+		_gui->addListBoxMessage(
+			"Player #" + std::to_string(idxPlayer)
+			+ " level is now " + std::to_string(level),
+			getColorForTeam(_players[idxPlayer]->getNameTeam())
+		);
 	}
 	return (true);
 }
@@ -411,8 +439,12 @@ bool	Manager::pex()// n\n explusion
 	if (_players.find(idxPlayer) != _players.end()) {
 		_display->setPlayerAction(
 				idxPlayer, IDisplay::PlayerAnimationStyle::PUSH_PLAYER);
+		_gui->addListBoxMessage(
+			"Player #" + std::to_string(idxPlayer)
+			+ " is aggressive today !",
+			getColorForTeam(_players[idxPlayer]->getNameTeam())
+		);
 	}
-	
 	for(auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it)
 	{
 		if (*it == idxPlayer) {
@@ -455,6 +487,11 @@ bool	Manager::pbc()// n M\n broadcast
 		_display->setPlayerAction(
 			idxPlayer, IDisplay::PlayerAnimationStyle::BROADCAST);
 		_players[idxPlayer]->setIsBroadcasting(true);
+		_gui->addListBoxMessage(
+			"Player #" + std::to_string(idxPlayer)
+			+ " said '" + std::string(_args[2]) + "'",
+			getColorForTeam(_players[idxPlayer]->getNameTeam())
+		);
 	}
 	return (true);
 }
@@ -469,6 +506,11 @@ bool	Manager::pic()// X Y L n n . . . \n start of an incantation (by the first p
 			_display->setPlayerAction(
 				idxPlayer, IDisplay::PlayerAnimationStyle::INCANTATION);
 			_players[idxPlayer]->setIsIncanting(true);
+			_gui->addListBoxMessage(
+				"Player #" + std::to_string(idxPlayer)
+				+ " is incanting",
+				getColorForTeam(_players[idxPlayer]->getNameTeam())
+			);
 		}
 	}
 	return (true);
@@ -483,12 +525,29 @@ bool	Manager::pie()// X Y R\n end of an incantation
 	{
 		if (_players[*it]->getPos() == pos && _players[*it]->getIsIncanting()) {
 			_players[*it]->setIsIncanting(false);
+			_gui->addListBoxMessage(
+				"Player #" + std::to_string(*it)
+				+ " has finished his incantation",
+				getColorForTeam(_players[*it]->getNameTeam())
+			);
 		}
 	}
 	return (true);
 }
 bool	Manager::pfk()// n\n egg laying by the player
 {
+	if (!_args[1]) {
+		return (false);
+	}
+	int idxPlayer = atoi(_args[1]);
+	if (_players.find(idxPlayer) != _players.end())
+	{
+		_gui->addListBoxMessage(
+			"Player #" + std::to_string(idxPlayer)
+			+ " is laying an egg",
+			getColorForTeam(_players[idxPlayer]->getNameTeam())
+		);
+	}
 	return (true);
 }
 bool	Manager::pdr()// n i\n resource dropping
@@ -499,33 +558,46 @@ bool	Manager::pdr()// n i\n resource dropping
 	int idxPlayer = atoi(_args[1]);
 	int nbRess = atoi(_args[2]);
 	if (_players.find(idxPlayer) != _players.end()) {
+		std::string what = "Something";
 		auto items = _map.getCase(_players[idxPlayer]->getPos());
 		if (nbRess == 0) {
 			_players[idxPlayer]->setNbFood(_players[idxPlayer]->getNbFood() - 1);
 			items._food += 1;
+			what = "Food";
 		} else if (nbRess == 1) {
 			_players[idxPlayer]->setNbStone1(_players[idxPlayer]->getNbStone1() - 1);
 			items._stone1 += 1;
+			what = "Linemate";
 		} else if (nbRess == 2) {
 			_players[idxPlayer]->setNbStone2(_players[idxPlayer]->getNbStone2() - 1);
 			items._stone2 += 1;
+			what = "Deraumere";
 		} else if (nbRess == 3) {
 			_players[idxPlayer]->setNbStone3(_players[idxPlayer]->getNbStone3() - 1);
 			items._stone3 += 1;
+			what = "Sibur";
 		} else if (nbRess == 4) {
 			_players[idxPlayer]->setNbStone4(_players[idxPlayer]->getNbStone4() - 1);
 			items._stone4 += 1;
+			what = "Mendiane";
 		} else if (nbRess == 5) {
 			_players[idxPlayer]->setNbStone5(_players[idxPlayer]->getNbStone5() - 1);
 			items._stone5 += 1;
+			what = "Phiras";
 		} else if (nbRess == 6) {
 			_players[idxPlayer]->setNbStone6(_players[idxPlayer]->getNbStone6() - 1);
 			items._stone6 += 1;
+			what = "Thystame";
 		}
 		_map.setCase(_players[idxPlayer]->getPos(), items);
 		_display->setPlayerAction(
 			idxPlayer, IDisplay::PlayerAnimationStyle::DROP_RESOURCE);
 		_display->setMapTile(_players[idxPlayer]->getPos(), items);
+		_gui->addListBoxMessage(
+			"Player #" + std::to_string(idxPlayer)
+			+ " Dropped " + what,
+			getColorForTeam(_players[idxPlayer]->getNameTeam())
+		);
 	}
 	return (true);
 }
@@ -537,33 +609,46 @@ bool	Manager::pgt()// n i\n resource collecting
 	int idxPlayer = atoi(_args[1]);
 	int nbRess = atoi(_args[2]);
 	if (_players.find(idxPlayer) != _players.end()) {
+		std::string what = "Something";
 		auto items = _map.getCase(_players[idxPlayer]->getPos());
 		if (nbRess == 0) {
 			_players[idxPlayer]->setNbFood(_players[idxPlayer]->getNbFood() + 1);
 			items._food -= 1;
+			what = "Food";
 		} else if (nbRess == 1) {
 			_players[idxPlayer]->setNbStone1(_players[idxPlayer]->getNbStone1() + 1);
 			items._stone1 -= 1;
+			what = "Linemate";
 		} else if (nbRess == 2) {
 			_players[idxPlayer]->setNbStone2(_players[idxPlayer]->getNbStone2() + 1);
 			items._stone2 -= 1;
+			what = "Deraumere";
 		} else if (nbRess == 3) {
 			_players[idxPlayer]->setNbStone3(_players[idxPlayer]->getNbStone3() + 1);
 			items._stone3 -= 1;
+			what = "Sibur";
 		} else if (nbRess == 4) {
 			_players[idxPlayer]->setNbStone4(_players[idxPlayer]->getNbStone4() + 1);
 			items._stone4 -= 1;
+			what = "Mendiane";
 		} else if (nbRess == 5) {
 			_players[idxPlayer]->setNbStone5(_players[idxPlayer]->getNbStone5() + 1);
 			items._stone5 -= 1;
+			what = "Phiras";
 		} else if (nbRess == 6) {
 			_players[idxPlayer]->setNbStone6(_players[idxPlayer]->getNbStone6() + 1);
 			items._stone6 -= 1;
+			what = "Thystame";
 		}
 		_map.setCase(_players[idxPlayer]->getPos(), items);
 		_display->setPlayerAction(
 			idxPlayer, IDisplay::PlayerAnimationStyle::TAKE_RESOURCE);
 		_display->setMapTile(_players[idxPlayer]->getPos(), items);
+		_gui->addListBoxMessage(
+			"Player #" + std::to_string(idxPlayer)
+			+ " Took " + what,
+			getColorForTeam(_players[idxPlayer]->getNameTeam())
+		);
 	}
 	return (true);
 }
@@ -582,10 +667,11 @@ bool	Manager::pdi()// n\n death of a player
 				break;
 			}
 		}
-		std::string	str("Player #");
-		str.append(std::to_string(idxPlayer));
-		str.append(" Died");
-		_gui->addListBoxMessage(str, ListBox::SYSTEM);
+		_gui->addListBoxMessage(
+			"Player #" + std::to_string(idxPlayer)
+			+ " Died",
+			getColorForTeam(_players[idxPlayer]->getNameTeam())
+		);
 	}
 	return (true);
 }
@@ -603,6 +689,11 @@ bool	Manager::enw()// e n X Y\n an egg was laid by a player
 	_display->addEgg(eggNumber, idxPlayer);
 	_display->setPlayerAction(
 			idxPlayer, IDisplay::PlayerAnimationStyle::EGG_LAYING);
+	_gui->addListBoxMessage(
+		"Player #" + std::to_string(idxPlayer)
+		+ " has laid an egg",
+		getColorForTeam(_players[idxPlayer]->getNameTeam())
+	);
 	return (true);
 }
 bool	Manager::eht()// e\n egg hatching
@@ -610,6 +701,18 @@ bool	Manager::eht()// e\n egg hatching
 	if (!_args[1]) {
 		return (false);
 	}
+	int idxEgg = atoi(_args[1]);
+	_gui->addListBoxMessage(
+		"Egg #" + std::to_string(idxEgg) + " is hatched"
+	);
+	return (true);
+}
+
+bool	Manager::ebo()// <egg_nb> <player_nb> <X> <Y> <dir> <lvl> <team>\n player connection for an egg
+{
+	if (!_args[1] || !_args[2] || !_args[3]
+		|| !_args[4] || !_args[5] || !_args[6] || !_args[7])
+		return (false);
 	int idxEgg = atoi(_args[1]);
 	if (_eggs.find(idxEgg) != _eggs.end()) {
 		for(auto it = _idxEggs.begin(); it != _idxEggs.end(); ++it) {
@@ -620,13 +723,6 @@ bool	Manager::eht()// e\n egg hatching
 			}
 		}
 	}
-	return (true);
-}
-bool	Manager::ebo()// <egg_nb> <player_nb> <X> <Y> <dir> <lvl> <team>\n player connection for an egg
-{
-	if (!_args[1] || !_args[2] || !_args[3]
-		|| !_args[4] || !_args[5] || !_args[6] || !_args[7])
-		return (false);
 	std::string teamName(_args[7]);
 	int	idxTeam = 0;
 	for(size_t i = 0; i < _teams.size(); i++)
@@ -655,9 +751,11 @@ bool	Manager::ebo()// <egg_nb> <player_nb> <X> <Y> <dir> <lvl> <team>\n player c
 		teamName,
 		IDisplay::PlayerOrigin::EGG
 		);
-	std::string	str("New Player Connected : #");
-	str.append(std::to_string(_idxPlayers.back()));
-	_gui->addListBoxMessage(str, ListBox::SYSTEM);
+	_gui->addListBoxMessage(
+		"New Player Connected : #" + std::to_string(_idxPlayers.back())
+		+ " from egg #" + std::to_string(idxEgg),
+		getColorForTeam(teamName)
+	);
 	return (true);
 }
 bool	Manager::edi()// e\n death of an hatched egg
@@ -671,6 +769,10 @@ bool	Manager::edi()// e\n death of an hatched egg
 			if (*it == idxEgg) {
 				_display->removeEgg(idxEgg);
 				_idxEggs.erase(it);
+				_gui->addListBoxMessage(
+					"Death of the hatched egg #" + std::to_string(idxEgg),
+					getColorForTeam(teamName)
+				);
 				break;
 			}
 		}
@@ -706,6 +808,13 @@ bool	Manager::seg()// N\n end of game
 }
 bool	Manager::smg()// M\n message from the server
 {
+	if (!_args[1]) {
+		return (false);
+	}
+	_gui->addListBoxMessage(
+		"SERVER : " + std::string(_args[1]),
+		ListBox::MSGtype::SYSTEM
+	);
 	return (true);
 }
 bool	Manager::suc()//\n unknown command
