@@ -99,7 +99,8 @@ void	ServerHandler::addAi(std::string const & team)
 			exit(1);
 		}
 		size_t i = 0;
-		argv[i++] = std::string("./zappy_ai").c_str();
+		// zappy ai
+		argv[i++] = std::string("./src/ai/main.py").c_str();
 		argv[i++] = std::string("127.0.0.1").c_str();
 		argv[i++] = std::string(std::to_string(_port)).c_str();
 		argv[i++] = team.c_str();

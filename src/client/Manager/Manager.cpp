@@ -44,7 +44,7 @@ bool	Manager::initServer()
 	if (!this->connectClient(std::string("127.0.0.1").c_str(), _port)) {
 		return (false);
 	}
-	_serverHandler->addAiAllTeams(2);
+	_serverHandler->addAiAllTeams(12);
 	return (true);
 }
 

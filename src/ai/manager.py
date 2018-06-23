@@ -68,7 +68,6 @@ class IAManager(ai.ai):
     def play(self):
         while self.level < 8:
             if self.canIncante():
-                print ('i can icante')
                 self.reGroup()
             else:
                 self.exploreStep()
@@ -118,7 +117,7 @@ class IAManager(ai.ai):
             self.castCmd("Fork\n")
         elif command in ['Forward', 'Left', 'Right', 'Eject', 'Fork']:
             getattr(self, command)()
-        elif command in ['Look', 'Inventory', 'Incantation', 'Connect_nbr']:
+        elif command in ['Look', 'Inventory', 'Incantation']:
             getattr(self, command)(response)
         elif command in ['Set', 'Take']:
             getattr(self, command)(response, cmdResponse['cmd'].split()[1])
@@ -131,7 +130,11 @@ class IAManager(ai.ai):
         actualSquare = self.map.getSquare(self.x, self.y)
         if actualSquare:
             for item, number in actualSquare.items():
-                self.castCmd("Take " + item + "\n")
+                if item == 'food':
+                    self.castCmd("Take " + item + "\n")
+                    self.castCmd("Take " + item + "\n")
+                else:
+                    self.castCmd("Take " + item + "\n")
 
     def dropNumber(self, ressource, nb):
         i = 0

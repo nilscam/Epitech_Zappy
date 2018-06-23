@@ -268,7 +268,7 @@ class ai:
         self.inventory.update(response)
 
     def Connect_nbr(self, response):
-        if int(response) > 0 and randint(0, 30) == 1:
+        if int(response) == 0 and randint(0, 30) == 1:
             return True
         return False
 
