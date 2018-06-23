@@ -13,6 +13,9 @@ IrrlichtDisplay::Player::Player(
 		Direction const & dir,
 		__attribute__((unused)) size_t level,
 		int teamIdx,
+		PlayerOrigin const & origin,
+		long long movDurationMillis,
+		double timeUnit,
 		irr::scene::ISceneManager & sceneManager,
 		std::map<int, irr::video::ITexture *> & textures
 )
@@ -28,13 +31,26 @@ IrrlichtDisplay::Player::Player(
 	,	_dir(dir)
 	,	_teamIdx(teamIdx)
 	,	_isAnimating(false)
-	,	_movDurationMillis(1000)
-	,	_timeUnit(1)
+	,	_movDurationMillis(movDurationMillis)
+	,	_timeUnit(timeUnit)
 	,	_animationPath(IrrlichtDisplayConst::PERSO)
 	,	_isMoving(false)
 	,	_isFalling(false)
 {
-	fall(200);
+	switch (origin)
+	{
+		case EGG:
+		{
+			animate(IrrlichtDisplayConst::PERSO_BACKFLIP);
+			break;
+		}
+		default:
+		case TELEPORT:
+		{
+			fall(200);
+			break;
+		}
+	}
 }
 
 IrrlichtDisplay::Player::~Player()

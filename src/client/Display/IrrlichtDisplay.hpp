@@ -283,6 +283,9 @@ private:
 				Direction const & dir,
 				size_t level,
 				int teamIdx,
+				PlayerOrigin const & origin,
+				long long movDurationMillis,
+				double timeUnit,
 				irr::scene::ISceneManager & sceneManager,
 				std::map<int, irr::video::ITexture *> & textures
 		);

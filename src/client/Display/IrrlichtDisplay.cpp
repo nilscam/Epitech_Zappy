@@ -405,13 +405,15 @@ void	IrrlichtDisplay::addPlayer(
 	Direction const &dir,
 	size_t level,
 	std::string const &team,
-	__attribute__((unused)) const IDisplay::PlayerOrigin &origin
+	const IDisplay::PlayerOrigin &origin
 )
 {
 	killPlayer(id);
 	_idxPlayers.push_back(id);
 	_players[id] = std::make_shared<Player>(
-		id, pos, dir, level, getTeamIdx(team), *_sceneManager, _texture
+		id, pos, dir, level, getTeamIdx(team),
+		origin, getMovementDuration(), _timeUnit,
+		*_sceneManager, _texture
 	);
 }
 
