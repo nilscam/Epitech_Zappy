@@ -6,6 +6,7 @@
 //
 
 #include "ButtonManager.hpp"
+#include "Menu.hpp"
 
 ButtonManager::ButtonManager()
 {
@@ -13,6 +14,18 @@ ButtonManager::ButtonManager()
 
 ButtonManager::~ButtonManager()
 {
+}
+
+void ButtonManager::setText(const wchar_t *str, int id)
+{
+	for (std::vector<Button>::iterator it = list.begin();
+	     it != list.end(); ++it) {
+		if ((*it).getId() == id) {
+			(*it).setText(str);
+			return;
+		}
+	}
+	std::cerr << "ButtonManager::setText() can't find id " << id << "\n";
 }
 
 void ButtonManager::addButton(Button button)
@@ -56,11 +69,15 @@ void ButtonManager::setScaleImage(bool scale, int id)
 	std::cerr << "ButtonManager::setScaleImage() can't find id " << id << "\n";
 }
 
-void ButtonManager::isButtonPressed()
+void ButtonManager::isButtonPressed(Menu *menu)
 {
 	for (std::vector<Button>::iterator it = list.begin();
 	     it != list.end(); ++it) {
-		(*it).pressed();
+		(*it).pressed(menu);
 	}
 }
 				    
+
+
+
+

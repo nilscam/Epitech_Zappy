@@ -13,19 +13,40 @@
 #include "Rectangle.hpp"
 #include <string>
 
+class Menu;
+
 class Button
 {
 public:
 	enum Action {
 		NONE,
-		TEST
+		TEST,		
+		MENU_CANCEL,
+		MENU_OPEN,
+		CREDITS_CANCEL,
+		CREDITS_OPEN,
+		OPTIONS_CANCEL,
+		OPTIONS_OPEN,
+		EXIT,
+		OPEN_CLIENT,
+		CLOSE_CLIENT,
+		ADD_CLIENT,
+		SRV_FIRST_OK,
+		SRV_SECOND_OK,
+		ADD_TEAM1,
+		ADD_TEAM2,
+		ADD_TEAM3,
+		ADD_TEAM4,
+		LAUNCH_GAME,
+		NEXT_SONG
 	};
 	Button(irr::gui::IGUIButton *butt, Button::Action action, int id);
 	~Button();
 	void setVisible(bool visible);
 	void setImage(irr::video::ITexture *text);
 	void setScaleImage(bool scale);
-	void pressed();       
+	void pressed(Menu *menu);
+	void setText(const wchar_t *str);
 	int getId()  const;
 private:
 	Button::Action _action;

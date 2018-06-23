@@ -17,6 +17,7 @@ public:
 	~Image();
 	int getId() const;
 	void setScaleImage(bool scale);
+	void setVisible(bool vsibile);
 private:
 	int _id;
 	irr::gui::IGUIImage *image;	
