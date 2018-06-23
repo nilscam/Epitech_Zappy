@@ -22,7 +22,7 @@ class commands:
         for r in responses:
             # rajouter le fait que si c'est un message d'un joueur on ne l'associe pas à une commande
             if r.split()[0] != 'message':
-                if len(self.cmdBuffer) == 0:
+                if len(self.cmdBuffer) == 0  or r.split()[0] == 'Current':
                     #eject, incantation ...
                     cmdResponses.append({ 'type': 'server', 'response': r })
                 else:

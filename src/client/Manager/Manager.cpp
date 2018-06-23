@@ -365,7 +365,7 @@ bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
 		std::string	str("Player #");
 		str.append(std::to_string(idxPlayer));
 		str.append(" Move");
-		_gui->addListBoxMessage(str);
+		//_gui->addListBoxMessage(str);
 	}
 	return (true);
 }

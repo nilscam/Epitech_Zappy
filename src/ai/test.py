@@ -23,11 +23,22 @@ class inventory:
         getattr(self, 'update')(list_infos)
 
 
-msg = "message 8, red 170654137 2 {'linemate':10,'deraumere':12,'sibur':20,'mendiane':8,'phiras':4,'thystame':0}"
 
-splitted = msg.split(',', 1)
+buffer = "mes"
+msg = "sage 8, red 170654137 2 {'linemate':10,'deraumere':12,'sibur':20,'mendiane':8,'phiras':4,'thystame':0}"
 
-dir = int(splitted[0].split()[1])
-recv = splitted[1].split()
-print (dir)
-print (recv)
+msg = buffer + msg
+buffer = ""
+
+lines = msg.splitlines(True)
+endlast = lines[-1]
+lines = msg.splitlines()
+
+list_endlines = ['\n', '\r']
+
+if not endlast[-1:] in list_endlines:
+    buffer = endlast
+    lines = lines[:-1]
+
+print (lines)
+print (buffer)

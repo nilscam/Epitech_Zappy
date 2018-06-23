@@ -46,17 +46,15 @@ class network:
                      self.socket.close()
                      exit(0)
 
+                data = self.buffer + data
+                self.buffer = ""
+
                 lines = data.splitlines(True)
                 endlast = lines[-1]
                 lines = data.splitlines()
 
                 if not endlast[-1:] in self.list_endlines:
-                    # si on a qu'une seule ligne et pas de \n on l'ajoute au buffer
-                    if len(lines) == 1:
-                        self.buffer += endlast
-                    # sinon on a plusieurs lignes et pas de \n à la dernière ligne donc on dit que le buffer vaut la dernièr ligne
-                    else:
-                        self.buffer = endlast
+                    self.buffer = endlast
                     lines = lines[:-1]
 
                 return lines

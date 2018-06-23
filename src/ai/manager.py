@@ -53,8 +53,6 @@ class IAManager(ai.ai):
 
     def reGroup(self):
         if self.canStartIncante():
-            print ('i icante')
-            print (self.listIncantationsDir)
             self.dropNecessary()
             self.castCmd("Incantation\n")
 
@@ -101,6 +99,7 @@ class IAManager(ai.ai):
             self.incanting = False
         elif splitted[0] == 'Current':
             self.level = int(response.split()[2])
+            self.listIncantationsDir[:] = []
             self.incanting = False
         elif response == 'dead':
             print ('fuck im dead :(')
@@ -131,6 +130,10 @@ class IAManager(ai.ai):
         if actualSquare:
             for item, number in actualSquare.items():
                 if item == 'food':
+                    self.castCmd("Take " + item + "\n")
+                    self.castCmd("Take " + item + "\n")
+                    self.castCmd("Take " + item + "\n")
+                    self.castCmd("Take " + item + "\n")
                     self.castCmd("Take " + item + "\n")
                     self.castCmd("Take " + item + "\n")
                 else:
