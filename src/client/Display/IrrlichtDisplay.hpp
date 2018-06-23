@@ -21,6 +21,7 @@ namespace IrrlichtDisplayConst
 	const irr::core::vector3df	EGG_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	PLAYER_SCALE = { 2.2, 2.2, 2.2 };
 	const irr::core::vector3df	BLOCK_SCALE = { 5, 5, 5 };
+	const irr::core::vector3df	EGG_FX_SCALE = {20.0f, 20.0f, 20.0f};
 	const int SIZE_MAP_TILE = 50;
 	const int SCREEN_X = 1920;//800;//1920;
 	const int SCREEN_Y = 1080;//800;//1080;
@@ -41,7 +42,7 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	GREEN_GEM = "./Ress/model/Gem1/Green.png";
 	const irr::io::path	YELLOW_GEM = "./Ress/model/Gem1/Yellow.png";
 	const irr::io::path	BLUE_GEM = "./Ress/model/Gem1/Blue.png";
-	const irr::io::path	YOSHI_EGG = "./Ress/model/Egg/YoshSS00.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG = "./Ress/model/Egg/YoshSS00.png";
 	const irr::io::path	FOOD_BASE = "./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png";
 	const irr::io::path	GEM_MESH = "./Ress/model/PowerGem/gem.dae";
 	const irr::io::path	FOOD_MESH = "./Ress/model/Food/Watermelon/Watermelon.obj";
@@ -332,24 +333,35 @@ private:
 	{
 	public:
 
-		Egg(size_t id, Point const & pos, irr::scene::IMeshSceneNode * node)
-				:	_id(id)
-				,	_pos(pos)
-				,	_node(node)
-		{}
+		Egg(size_t id, Point const & pos,
+			irr::video::IVideoDriver * _driver,
+			irr::scene::ISceneManager & sceneManager,
+			std::map<int, irr::video::ITexture *> & textures);
 		virtual ~Egg()
 		{
-			if (_node != nullptr)
+			if (_mesh != nullptr)
 			{
-				_node->remove();
+				_mesh->remove();
+			}
+			if (_fx_egg)
+			{
+				_fx_egg->remove();
 			}
 		}
 
+		void							change_texture(irr::io::path const & path);
+		void							create_fx(irr::core::vector3df pos, irr::core::vector3df scale);
+		void							positionNode(Point const & pos);
 	private:
 
-		size_t							_id;
-		Point							_pos;
-		irr::scene::IMeshSceneNode *	_node;
+		size_t									_id;
+		Point									_pos;
+		irr::scene::IMeshSceneNode *				_mesh;
+		irr::core::vector3df						_meshPos;
+		irr::video::IVideoDriver *				_driver;
+		irr::scene::ISceneManager &				_sceneManager;
+		std::map<int, irr::video::ITexture *> &	_textures;
+		irr::scene::IVolumeLightSceneNode * 		_fx_egg;
 	};
 
 	class MapContent
@@ -425,7 +437,7 @@ private:
 
 	irr::IrrlichtDevice *					_device;
 	irr::video::IVideoDriver *				_driver;
-	irr::scene::ISceneManager *				_sceneManager;
+	irr::scene::ISceneManager *			_sceneManager;
 	irr::scene::ICameraSceneNode *			_camera;
 	MyEventReceiver							_receiver;
 	std::map<int, irr::video::ITexture *>	_texture;
