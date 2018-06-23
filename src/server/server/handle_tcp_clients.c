@@ -32,7 +32,7 @@ static bool	client_handle(t_server *server,
 
 	cmd = client_extract_cmd(client);
 	if (cmd && *cmd) {
-		DEBUG("cmd from %d: '%s'", client->_fd, cmd);
+		DEBUG("cmd from fd %d: '%s'", client->_fd, cmd);
 		type = client->type;
 		client_cmd(server, client, cmd, player);
 		if (type != client->type) {

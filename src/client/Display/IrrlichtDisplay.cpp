@@ -65,7 +65,7 @@ void	IrrlichtDisplay::loop(void)
 	if (_rotateCamera && _cameraRotationClock.timeSinceMark() > 1)
 	{
 		_cameraRotationClock.mark();
-		_cameraRotationDegrees += 0.025;
+		_cameraRotationDegrees += 0.095;
 		if (_cameraRotationDegrees > 360)
 			_cameraRotationDegrees = 0;
 	}
@@ -601,6 +601,11 @@ bool	IrrlichtDisplay::isDeviceRunning(void)
 irr::IrrlichtDevice		*IrrlichtDisplay::getDevice(void) const
 {
 	return _device;
+}
+
+irr::video::IVideoDriver	*IrrlichtDisplay::getDriver(void) const
+{
+	return _driver;
 }
 
 long long	IrrlichtDisplay::getMovementDuration(void) const noexcept

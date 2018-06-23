@@ -177,6 +177,7 @@ public:
 	/* Utils */
 	bool						isDeviceRunning(void);
 	irr::IrrlichtDevice			*getDevice(void) const;
+	irr::video::IVideoDriver	*getDriver(void) const;
 	long long					getMovementDuration(void) const noexcept;
 	int							getTeamIdx(std::string const & name) const noexcept;
 

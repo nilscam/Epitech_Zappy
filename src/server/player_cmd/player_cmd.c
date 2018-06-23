@@ -121,7 +121,8 @@ static void	client_callback_cmd(player_cmd_arg_t *args)
 {
 	const player_cmd_t	*c = args->c;
 
-	DEBUG("calling pl %s - %s", c->prototype, c->description);
+	DEBUG("calling callback to fd %d : %s - %s",
+		args->client->_fd, c->prototype, c->description);
 	c->fct(args);
 	free_tab(args->args);
 	SAFE_FREE(args->cmd);
@@ -144,7 +145,8 @@ static void	call_client_cmd(player_cmd_arg_t *args)
 		player_set_is_busy_callback(player,
 			(pl_callback_t)client_callback_cmd, args_cp);
 	} else {
-		DEBUG("calling %s - %s", c->prototype, c->description);
+		DEBUG("calling to %d : %s - %s (exec=%d)",
+			args->client->_fd, c->prototype, c->description, exec);
 		if (exec)
 			c->fct(args);
 		free_tab(args->args);
