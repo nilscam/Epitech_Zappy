@@ -792,12 +792,16 @@ bool	Manager::edi()// e\n death of an hatched egg
 	if (_eggs.find(idxEgg) != _eggs.end()) {
 		for(auto it = _idxEggs.begin(); it != _idxEggs.end(); ++it) {
 			if (*it == idxEgg) {
+				auto idPlayer = _eggs[idxEgg]->getIdxPlayerFrom();
+				if (_players.find(idPlayer) != _players.end()) {
+					auto teamName = _players[idPlayer]->getNameTeam();
+					_gui->addListBoxMessage(
+						"Death of the hatched egg #" + std::to_string(idxEgg),
+						getColorForTeam(teamName)
+					);
+				}
 				_display->removeEgg(idxEgg);
 				_idxEggs.erase(it);
-				_gui->addListBoxMessage(
-					"Death of the hatched egg #" + std::to_string(idxEgg),
-					getColorForTeam(teamName)
-				);
 				break;
 			}
 		}
