@@ -44,7 +44,7 @@ static const player_cmd_t	PLAYER_CMDS[] = {
 		"Incantation", "start incantation" }
 };
 static const player_cmd_t	DEFAULT_PLAYER_CMD = {
-	"", spectate_cmd_error, NULL, 0, 0, "ko", "ko"
+	"", player_cmd_error, NULL, 0, 0, "ko", "ko"
 };
 static const player_cmd_t	SPECTATOR_CMDS[] = {
 	{ "msz", spectate_cmd_map_size, NULL, 0, 0,
@@ -71,7 +71,7 @@ static const player_cmd_t	SPECTATOR_CMDS[] = {
 		"egg", "position of all eggs" }
 };
 static const player_cmd_t	DEFAULT_SPECTATOR_CMD = {
-	"", player_cmd_error, NULL, 0, 0, "ko", "ko"
+	"", spectate_cmd_error, NULL, 0, 0, "ko", "ko"
 };
 
 static const size_t	MAX_ANONYMOUS_CMDS = SIZE_ARRAY(ANONYMOUS_CMDS);

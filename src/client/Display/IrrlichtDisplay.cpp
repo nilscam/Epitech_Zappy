@@ -95,7 +95,7 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::GREEN_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::GREEN_GEM);
 	_texture[IrrlichtDisplayConst::YELLOW_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YELLOW_GEM);
 	_texture[IrrlichtDisplayConst::BLUE_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::BLUE_GEM);
-	_texture[IrrlichtDisplayConst::YOSHI_EGG_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YOSHI_EGG);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG);
 	_texture[IrrlichtDisplayConst::FOOD_BASE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::FOOD_BASE);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_RED);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BLUE);
@@ -406,13 +406,15 @@ void	IrrlichtDisplay::addPlayer(
 	Direction const &dir,
 	size_t level,
 	std::string const &team,
-	__attribute__((unused)) const IDisplay::PlayerOrigin &origin
+	const IDisplay::PlayerOrigin &origin
 )
 {
 	killPlayer(id);
 	_idxPlayers.push_back(id);
 	_players[id] = std::make_shared<Player>(
-		id, pos, dir, level, getTeamIdx(team), *_sceneManager, _texture
+		id, pos, dir, level, getTeamIdx(team),
+		origin, getMovementDuration(), _timeUnit,
+		*_sceneManager, _texture
 	);
 }
 
@@ -477,11 +479,14 @@ void IrrlichtDisplay::addEgg(size_t idEgg, size_t idPlayerFrom)
 		_eggs[idEgg] = std::make_shared<Egg>(
 			idEgg,
 			player->getPos(),
-			create_egg(
+			/*create_egg(
 					IrrlichtDisplayConst::YOSHI_EGG_IDX,
 					getRandomPos(pos, IrrlichtDisplayConst::EGG_Z),
 					IrrlichtDisplayConst::EGG_SCALE
-			)
+			)*/
+			_driver,
+			*_sceneManager,
+			_texture
 		);
 	}
 }
@@ -701,286 +706,79 @@ std::shared_ptr<IrrlichtDisplay::MapContent>	IrrlichtDisplay::getMapContent(Poin
 	return _map[pos.getY()][pos.getX()];
 }
 
-IrrlichtDisplay::Player::Player(
-		size_t id,
-		Point const & pos,
-		Direction const & dir,
-		size_t level,
-		int teamIdx,
-		irr::scene::ISceneManager & sceneManager,
-		std::map<int, irr::video::ITexture *> & textures
-)
-	:	_sceneManager(sceneManager)
-	,	_textures(textures)
-	,	_randomPos(
-			{
-				Math::randomNumberBetween(
-					-(IrrlichtDisplayConst::SIZE_MAP_TILE / 4),
-					IrrlichtDisplayConst::SIZE_MAP_TILE / 4
-				),
-				Math::randomNumberBetween(
-					-(IrrlichtDisplayConst::SIZE_MAP_TILE / 4),
-					IrrlichtDisplayConst::SIZE_MAP_TILE / 4
-				)
-			}
-		)
-	,	_id(id)
-	,	_pos(pos)
-	,	_dir(dir)
-	,	_level(level)
-	,	_teamIdx(teamIdx)
-	,	_mesh(nullptr)
-	,	_movDurationMillis(1000)
-	,	_timeUnit(1)
-	,	_isAnimating(false)
-	,	_isMoving(false)
-	,	_movLastPercentage(-1)
+////////////////////////////////////// eggg/////////////////////////////////
+IrrlichtDisplay::Egg::Egg(size_t id,
+						  Point const & pos, irr::video::IVideoDriver * _driver,
+						  irr::scene::ISceneManager & sceneManager,
+						  std::map<int, irr::video::ITexture *> & textures)
+		:	_id(id)
+		,	_pos(pos)
+		,	_mesh(nullptr)
+		,	_driver(_driver)
+		,	_sceneManager(sceneManager)
+		,	_textures(textures)
+		,	_fx_egg(nullptr)
+
 {
-	positionNode(pos);
-	rotateNode(dir);
-	changeMesh(IrrlichtDisplayConst::PERSO);
+	positionNode(_pos);
+	create_fx(_meshPos, IrrlichtDisplayConst::EGG_FX_SCALE);
+	change_texture(IrrlichtDisplayConst::EGG_MESH);
 }
 
-IrrlichtDisplay::Player::~Player()
-{
-	if (_mesh != nullptr)
-	{
-		_mesh->remove();
-	}
+void IrrlichtDisplay::Egg::positionNode(Point const & pos) {
+	_meshPos = IrrlichtDisplay::getRandomPos(pos, IrrlichtDisplayConst::EGG_Z);
 }
-
-void	IrrlichtDisplay::Player::moveTo(Point const & pos)
-{
-	if (_pos != pos)
-	{
-		if (_movDurationMillis <= 0)
-		{
-			_isMoving = false;
-			positionNode(pos);
-		}
-		else
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_RUN);
-			_movDir = _dir;
-			_isMoving = true;
-			_movFrom = _pos;
-			_movTo = pos;
-			_movClock.mark();
-			_movLastPercentage = -1;
-		}
-		_pos = pos;
-	}
-}
-
-void	IrrlichtDisplay::Player::pushTo(Point const & pos, Direction const & dir)
-{
-	if (_pos != pos)
-	{
-		if (_movDurationMillis <= 0)
-		{
-			_isMoving = false;
-			positionNode(pos);
-		}
-		else
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_FALL);
-			_movDir = dir;
-			_isMoving = true;
-			_movFrom = _pos;
-			_movTo = pos;
-			_movClock.mark();
-			_movLastPercentage = -1;
-		}
-		_pos = pos;
-	}
-}
-
-void	IrrlichtDisplay::Player::setLevel(size_t level)
-{
-	_level = level;
-}
-
-void	IrrlichtDisplay::Player::setDir(Direction const & dir)
-{
-	_dir = dir;
-	rotateNode(dir);
-}
-
-Point	IrrlichtDisplay::Player::getPos(void) const noexcept
-{
-	return _pos;
-}
-
-irr::core::vector3df	IrrlichtDisplay::Player::getPosMesh(void) const noexcept
-{
-	return _mesh ? _mesh->getPosition() : getCenter(_pos);
-}
-
-void	IrrlichtDisplay::Player::loop(void)
-{
-	if (_mesh && _isMoving)
-	{
-		long long movMillis = _movClock.timeSinceMark();
-		if (movMillis >= _movDurationMillis)
-		{
-			_isMoving = false;
-		}
-		else
-		{
-			double movPercentage = movMillis * 100.0 / _movDurationMillis;
-			if (movPercentage != _movLastPercentage)
-			{
-				_movLastPercentage = movPercentage;
-				double maxDistance = IrrlichtDisplayConst::SIZE_MAP_TILE / 2;
-				Point movStart;
-				double distanceToEnd;
-				Direction movDir = _movDir;
-				bool isFirstTile = movPercentage <= 50.0;
-				if (isFirstTile)
-				{
-					movStart = _movFrom;
-					distanceToEnd = movPercentage * maxDistance / 50.0;
-				}
-				else
-				{
-					movStart = _movTo;
-					distanceToEnd = maxDistance - ((movPercentage - 50) * maxDistance / 50.0);
-					movDir.reverse();
-				}
-				irr::core::vector3df newPos = IrrlichtDisplay::moveVector(
-						getCenter(movStart),
-						movDir,
-						Math::clamp(0.0, maxDistance, distanceToEnd)
-				);
-				_mesh->setPosition(newPos);
-				if (!isFirstTile && distanceToEnd == maxDistance)
-				{
-					_isMoving = false;
-				}
-			}
-		}
-		if (!_isMoving)
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO);
-			positionNode(_movTo);
-		}
-	}
-	else if (_isAnimating && _startAnimationClock.timeSinceMark() > _movDurationMillis)
-	{
-		_isAnimating = false;
-		changeMesh(IrrlichtDisplayConst::PERSO);
-	}
-}
-
-void	IrrlichtDisplay::Player::rotateNode(Direction const & dir)
-{
-	_meshRot = { 0, (float)IrrlichtDisplay::getRotationDegrees(dir), 0 };
-	if (_mesh)
-	{
-		_mesh->setRotation(_meshRot);
-	}
-}
-
-void	IrrlichtDisplay::Player::positionNode(Point const & pos)
-{
-	_meshPos = getCenter(pos);
-	if (_mesh)
-	{
-		_mesh->setPosition(_meshPos);
-	}
-}
-
-void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path)
-{
+void IrrlichtDisplay::Egg::change_texture(irr::io::path const &path) {
 	if (_mesh)
 	{
 		_mesh->remove();
 	}
 	_mesh = nullptr;
-	auto * mesh = _sceneManager.getMesh(path);
-	if (mesh)
+	std::cout << "1" << std::endl;
+	auto *mesh = _sceneManager.getMesh(path);
+	std::cout << "2" << std::endl;
+	 if (mesh) {
+		 std::cout << "3" << std::endl;
+		 _mesh = _sceneManager.addMeshSceneNode(mesh);
+		 std::cout << "4" << std::endl;
+		 if (_mesh) {
+			 std::cout << "5" << std::endl;
+			 _mesh->setPosition(_meshPos);
+			 _mesh->setScale(IrrlichtDisplayConst::EGG_SCALE);
+			 _mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+			 _mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_IDX]);
+		 }
+	 }
+}
+
+void IrrlichtDisplay::Egg::create_fx(irr::core::vector3df pos, irr::core::vector3df scale) {
+
+	if (_fx_egg)
 	{
-		_mesh = _sceneManager.addAnimatedMeshSceneNode(mesh);
-		if (_mesh)
+		_fx_egg->remove();
+		_fx_egg = nullptr;
+	}
+	_fx_egg = _sceneManager.addVolumeLightSceneNode(0, -1, 32, 32, irr::video::SColor(0, 255, 255, 255), irr::video::SColor(0, 0, 0, 0));
+	if (_fx_egg)
+	{
+		_fx_egg->setScale(scale);
+		_fx_egg->setPosition(pos);
+		irr::core::array<irr::video::ITexture*> textures;
+
+		for (irr::s32 g=7; g > 0; --g)
 		{
-			_mesh->setPosition(_meshPos);
-			_mesh->setRotation(_meshRot);
-			_mesh->setScale(IrrlichtDisplayConst::PLAYER_SCALE);
-			_mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-			if (_teamIdx == 0)
-				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX]);
-			else if (_teamIdx == 1)
-				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX]);
-			else if (_teamIdx == 2)
-				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_GREEN_IDX]);
-			else if (_teamIdx == 3)
-				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW_IDX]);
-			else
-				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX]);
-			auto maxFrames = _mesh->getEndFrame();
-			if (_movDurationMillis > 0)
-			{
-				irr::f32 fps = (float)_timeUnit * maxFrames;
-				_mesh->setAnimationSpeed(fps);
-			}
+			irr::core::stringc tmp;
+			tmp = "./Ress/model/portal";
+			tmp += g;
+			tmp += ".bmp";
+			irr::video::ITexture* t = _driver->getTexture(tmp.c_str());
+			textures.push_back(t);
 		}
+		// create texture animator
+		irr::scene::ISceneNodeAnimator* glow = _sceneManager.createTextureAnimator(textures, 150);
+		_fx_egg->addAnimator(glow);
+		glow->drop();
 	}
 }
 
-void	IrrlichtDisplay::Player::animate(PlayerAnimationStyle const & how)
-{
-	_isAnimating = true;
-	_startAnimationClock.mark();
-	switch (how)
-	{
-		case INCANTATION:
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_HEADSPIN);
-			break;
-		}
-		case EGG_LAYING:
-		case DROP_RESOURCE:
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_DROP);
-			break;
-		}
-		case TAKE_RESOURCE:
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_TAKE);
-			break;
-		}
-		case PUSH_PLAYER:
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_KICK1);
-			break;
-		}
-		default:
-		case BROADCAST:
-		case NONE:
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO);
-			break;
-		}
-	}
-}
-
-void IrrlichtDisplay::Player::setDurationMillis(
-		long long movDurationMillis,
-		double timeUnit
-)
-{
-	_movDurationMillis = movDurationMillis;
-	_timeUnit = timeUnit;
-}
-
-irr::core::vector3df IrrlichtDisplay::Player::getCenter(Point const &pos) const noexcept
-{
-	irr::core::vector3df mesh = IrrlichtDisplay::getCenterPos(
-			pos, IrrlichtDisplayConst::PLAYER_Z
-	);
-	return {
-			mesh.X + _randomPos.getX(),
-			mesh.Y,
-			mesh.Z + _randomPos.getY()
-	};
-}
+///////egggggggg/////////////
