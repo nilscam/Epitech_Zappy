@@ -582,6 +582,13 @@ bool IrrlichtDisplay::create_sky()
 			_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD),
 			_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD)
 	);
+	/*_sceneManager->addSkyBoxSceneNode(_driver->getTexture("./Ress/model/sor_cwd/cwd_up.JPG"),
+			_driver->getTexture("./Ress/model/sor_cwd/cwd_dn.JPG"),
+			_driver->getTexture("./Ress/model/sor_cwd/cwd_lf.JPG"),
+			_driver->getTexture("./Ress/model/sor_cwd/cwd_rt.JPG"),
+			_driver->getTexture("./Ress/model/sor_cwd/cwd_bk.JPG"),
+	        _driver->getTexture("./Ress/model/sor_cwd/cwd_ft.JPG")
+	);*/
 	_driver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, true);
 	return true;
 }
