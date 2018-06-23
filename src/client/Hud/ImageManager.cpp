@@ -31,3 +31,15 @@ void ImageManager::setScaleImage(bool scale, int id)
 	}
 	std::cerr << "ImageManager::setScaleImage() can't find id " << id << "\n";
 }
+
+void ImageManager::setVisible(bool scale, int id)
+{
+	for (std::vector<Image>::iterator it = list.begin();
+	     it != list.end(); ++it) {
+		if ((*it).getId() == id) {
+			(*it).setVisible(scale);
+			return;
+		}
+	}
+	std::cerr << "ImageManager::setVisible() can't find id " << id << "\n";
+}
