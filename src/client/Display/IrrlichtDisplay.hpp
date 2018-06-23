@@ -65,7 +65,18 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	PERSO_HEADSPIN = "././Ress/model/perso/MD3/head_spin.MD3";
 	const irr::io::path	PERSO_DROP = "././Ress/model/perso/MD3/drop.MD3";
 	const irr::io::path	PERSO_TAKE = "././Ress/model/perso/MD3/take.MD3";
-	const irr::io::path	PERSO_FALL = "././Ress/model/perso/MD3/die.MD3";
+	const irr::io::path	PERSO_FALL = "././Ress/model/perso/MD3/fall_impact_kick.MD3";
+	const irr::io::path PERSO_IDLES[] = {
+		"././Ress/model/perso/MD3/idle1.MD3",
+		"././Ress/model/perso/MD3/idle2.MD3",
+		"././Ress/model/perso/MD3/idle3.MD3"
+	};
+	const irr::io::path PERSO_BACKFLIP = "././Ress/model/perso/MD3/backflip.MD3";
+	const irr::io::path PERSO_DIE = "././Ress/model/perso/MD3/die.MD3";
+	// const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/falling.MD3"; //! not working
+	const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/backflip.MD3";
+	const irr::io::path PERSO_FALL_IMPACT = "././Ress/model/perso/MD3/fall_impact_down.MD3";
+	const irr::io::path PERSO_FALL_GET_UP = "././Ress/model/perso/MD3/fall_get_up.MD3";
 
 	enum TexIdx {
 		TEXTURE_BASE_IDX,
@@ -90,17 +101,6 @@ namespace IrrlichtDisplayConst
 
 class IrrlichtDisplay: private IDisplay {
 public:
-
-	// class AnimationEndCallback : public irr::scene::IAnimationEndCallBack
-	// {
-	// 	AnimationEndCallback(irr::io::path const & afterAnimMesh);
-	// 	~AnimationEndCallback() override = default;
-	// 	void	OnAnimationEnd(IAnimatedMeshSceneNode * node) override
-	// 	{
-	// 		std::cout << "OnAnimationEnd" << std::endl;
-	// 		// ..
-	// 	}
-	// };
 
 	IrrlichtDisplay();
 	~IrrlichtDisplay() override;
@@ -173,6 +173,7 @@ public:
 			irr::core::vector3df pos,
 			irr::core::vector3df scale
 	);
+
 	/* Utils */
 	bool						isDeviceRunning(void);
 	irr::IrrlichtDevice			*getDevice(void) const;
@@ -187,6 +188,11 @@ public:
 		irr::core::vector3df from,
 		Direction const & dir,
 		float inc
+	);
+	static irr::core::vector2df		rotatePoint(
+		irr::core::vector2df const & center,
+		double angle,
+		irr::core::vector2df point
 	);
 
 private:
@@ -278,6 +284,9 @@ private:
 				Direction const & dir,
 				size_t level,
 				int teamIdx,
+				PlayerOrigin const & origin,
+				long long movDurationMillis,
+				double timeUnit,
 				irr::scene::ISceneManager & sceneManager,
 				std::map<int, irr::video::ITexture *> & textures
 		);
@@ -292,40 +301,67 @@ private:
 		void	loop(void);
 		void	animate(PlayerAnimationStyle const & how);
 		void 	setDurationMillis(long long movDurationMillis, double timeUnit);
+		void	fall(size_t height);
 
 	private:
 
-		irr::core::vector3df	getCenter(Point const & pos) const noexcept;
-		void	rotateNode(Direction const & dir);
-		void	positionNode(Point const & pos);
-		void	changeMesh(irr::io::path const & path);
+		void					animate(irr::io::path const & path) noexcept;
+		Point					generateRandomPos(void) const noexcept;
+		irr::core::vector3df	getTileCenter(Point const & mapPos) const noexcept;
+		irr::core::vector3df	getTileCenter(void) const noexcept;
+		irr::core::vector3df	getRotationDegrees(Direction const & dir) const noexcept;
+		void					setMeshPosition(
+			irr::core::vector3df const & pos,
+			bool force = false
+		);
+		void					setMeshRotation(
+			irr::core::vector3df const & rot,
+			bool force = false
+		);
+		void					loopMoving(void) noexcept;
+		void					loopFalling(void) noexcept;
+		void					loopAnimate(void) noexcept;
+		void					changeMesh(irr::io::path const & path) noexcept;
 
-		/* irrlicht */
-		irr::scene::ISceneManager &				_sceneManager;
-		std::map<int, irr::video::ITexture *> &	_textures;
-		irr::core::vector3df					_meshPos;
-		irr::core::vector3df					_meshRot;
+		/* Irrlicht */
+		irr::scene::ISceneManager &					_sceneManager;
+		std::map<int, irr::video::ITexture *> &		_textures;
 
-		/* data */
-		Point 									_randomPos;
-		size_t									_id;
-		Point									_pos;
-		Direction								_dir;
-		size_t									_level;
-		int										_teamIdx;
+		/* Mesh */
 		irr::scene::IAnimatedMeshSceneNode *	_mesh;
-		long long								_movDurationMillis;
-		double 									_timeUnit;
-		Clock									_startAnimationClock;
-		bool 									_isAnimating;
+		irr::io::path							_lastMeshPath;
+		irr::core::vector3df					_lastMeshRotation;
+		irr::core::vector3df					_lastMeshPosition;
 
-		/* movements */
-		bool		_isMoving;
-		Point		_movFrom;
-		Point		_movTo;
-		Direction	_movDir;
-		Clock		_movClock;
-		double 		_movLastPercentage;
+		/* Data */
+		Point		_randomPos;
+		Point		_mapPos;
+		size_t		_id;
+		Direction	_dir;
+		int			_teamIdx;
+
+		/* Animations */
+		bool			_isAnimating;
+		long long		_movDurationMillis;
+		double 			_timeUnit;
+		irr::io::path	_animationPath;
+		Clock			_startAnimationClock;
+
+		/* Movements */
+		bool					_isMoving;
+		bool					_movIsPushed;
+		Point					_movFrom;
+		Point					_movTo;
+		Direction				_movDir;
+		Clock					_movClock;
+		double 					_movLastPercentage;
+		irr::core::vector3df	_movInc;
+
+		/* Falling */
+		bool					_isFalling;
+		int						_fallHeight;
+		irr::core::vector3df	_fallInc;
+		Clock					_fallClock;
 
 	};
 
@@ -400,6 +436,9 @@ private:
 	void							remove_block(irr::scene::ISceneNode * node);
 	void							remove_mesh(irr::scene::IMeshSceneNode * mesh);
 
+	/* Camera */
+	void	setCamera(float distance, float height, irr::core::vector3df const & target);
+
 	/* Refresh */
 	void	setFoodTile(
 		std::shared_ptr<MapContent> & m,
@@ -445,6 +484,12 @@ private:
 	int										_followCam;
 	Clock									_antiSpamCam;
 	int										_zoomCam;
+
+	irr::core::vector3df	_cameraPosition;
+	irr::core::vector3df	_cameraTarget;
+	bool					_rotateCamera;
+	double					_cameraRotationDegrees;
+	Clock					_cameraRotationClock;
 
 };
 

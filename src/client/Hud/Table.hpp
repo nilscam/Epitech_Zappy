@@ -13,6 +13,7 @@
 #include <vector>
 #include <iostream>
 #include "Rectangle.hpp"
+#include "utils.hpp"
 
 class Table
 {
@@ -23,11 +24,13 @@ public:
 	void addCol(const wchar_t *name);
 	void addRow(const wchar_t *name);
 	
-	bool setValue(int col, int row, const std::string &value);
+	bool setValue(int col, int row, const std::string &value,
+		      irr::video::SColor color = irr::video::SColor(255, 30, 30, 30));
 	/* setValue in a cell from row and col nb */
 	
-	bool setValue(const std::string &colName, const std::string &rowName,
-		      const std::string &data);
+	bool setValue(const wchar_t *colName, const wchar_t *rowName,
+		      const wchar_t *data,
+		      irr::video::SColor color = irr::video::SColor(255, 30, 30, 30));
 	/* setValue in a cell from row and col name */
 
 	int getIdFromRow(const wchar_t * rowName);
@@ -40,9 +43,6 @@ public:
 	
 	void addTeamName(std::vector<std::string> list);
 	/* init the row from a list of name */
-
-	const wchar_t	*getWC(const char *str);
-	std::string		wcToString(const wchar_t *arr);
 private:
 	int _col;
 	int _row;

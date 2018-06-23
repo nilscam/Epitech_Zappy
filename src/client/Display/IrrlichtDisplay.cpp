@@ -13,7 +13,9 @@ IrrlichtDisplay::IrrlichtDisplay()
 	,	_camera(nullptr)
 	,	_isInit(false)
 	,	_followCam(IrrlichtDisplayConst::CLICK_ON_MAP)
-	,	_zoomCam(250)
+	,	_zoomCam(150)
+	,	_rotateCamera(true)
+	,	_cameraRotationDegrees(0)
 {
 	_antiSpamCam.mark();
 }
@@ -59,6 +61,13 @@ void	IrrlichtDisplay::loop(void)
 			auto & player = pair.second;
 			player->loop();
 		}
+	}
+	if (_rotateCamera && _cameraRotationClock.timeSinceMark() > 1)
+	{
+		_cameraRotationClock.mark();
+		_cameraRotationDegrees += 0.025;
+		if (_cameraRotationDegrees > 360)
+			_cameraRotationDegrees = 0;
 	}
 }
 
@@ -157,69 +166,63 @@ int		IrrlichtDisplay::getIdPlayerFollowCam(void) const
 void	IrrlichtDisplay::manageEvent()
 {
 	if (_receiver.IsKeyDown(irr::KEY_KEY_W))
-		_zoomCam -= 3;
+		_zoomCam -= 5;
 	else if(_receiver.IsKeyDown(irr::KEY_KEY_S))
-		_zoomCam += 3;
+		_zoomCam += 5;
 }
 
 void	IrrlichtDisplay::setCameraPos(Point const & size)
 {
-	float cameraX = (size.x() + 1) * IrrlichtDisplayConst::SIZE_MAP_TILE / 10;
-	float cameraY = (size.y() + 1) * IrrlichtDisplayConst::SIZE_MAP_TILE / 2;
-	float cameraZ = std::max(cameraX, cameraY) * 2;
+	Point mapSize = (size + 1) * IrrlichtDisplayConst::SIZE_MAP_TILE;
+	Point mapCenter = mapSize / 2;
+	float distance = std::max(mapSize.x(), mapSize.y()) * 0.8;
+	// float distance = _zoomCam;
+	float height = distance;
+	setCamera(
+		distance,
+		height,
+		{ (float)mapCenter.x(), 0, (float)mapCenter.y() }
+	);
+}
 
-	if (!_camera) {
-		_camera = _sceneManager->addCameraSceneNode(0, {cameraX - 400, cameraZ, cameraY}, { cameraX, 0, cameraY });
-		return;
+void	IrrlichtDisplay::setCamera(
+	float distance,
+	float height,
+	irr::core::vector3df const & target
+)
+{
+	_cameraTarget = target;
+	_cameraPosition = _cameraTarget;
+	_cameraPosition.X += distance;
+	_cameraPosition.Y += height;
+	if (_rotateCamera)
+	{
+		auto rotation = rotatePoint(
+			{ _cameraTarget.X, _cameraTarget.Z },
+			_cameraRotationDegrees,
+			{ _cameraPosition.X, _cameraPosition.Z }
+		);
+		_cameraPosition.X = rotation.X;
+		_cameraPosition.Z = rotation.Y;
 	}
-	_camera->setPosition(irr::core::vector3df(cameraX - 400, cameraZ, cameraY));
-	_camera->setTarget({ cameraX, 0, cameraY });
+	if (!_camera)
+	{
+		_camera = _sceneManager->addCameraSceneNode(0, _cameraPosition, _cameraTarget);
+	}
+	else
+	{
+		_camera->setPosition(_cameraPosition);
+		_camera->setTarget(_cameraTarget);
+	}
 }
 
 void	IrrlichtDisplay::setCameraOnPlayer(int id)
 {
-	if (!doesPlayerExist(id)) {
-		return;
+	if (doesPlayerExist(id))
+	{
+		auto player = getPlayer(id);
+		setCamera(_zoomCam, _zoomCam, player->getPosMesh());
 	}
-	auto player = getPlayer(id);
-	//Point posPlayer = player->getPos();
-	auto posPlayer = player->getPosMesh();
-	int movex = posPlayer.X;
-    int movey = posPlayer.Z;
-
-    //int permove = myPlayer.isMoving() ? static_cast<int>(myPlayer.getMovementPercentage()) / 2 : 0;
-    // int movex = (posPlayer.x() + 1) * 50;
-    // int movey = (posPlayer.y() + 1) * 50;
-	// std::cout << "movex:" << movex << " movey:" << movey << std::endl;
-	// std::cout << "vecx:" << vec.X << " vecy:" << vec.Y << " vecz:" << vec.Z << std::endl << std::endl;
-    // Direction::Dir_t dir = myPlayer.getCurrentDir().getDir();
-    // switch (dir) {
-    //     case Direction::Left:
-    //         movex -= permove;
-    //         break;
-    //     case Direction::Right:
-    //         movex += permove;
-    //         break;
-    //     case Direction::Up:
-    //         movey -= permove;
-    //         break;
-    //     case Direction::Down:
-    //         movey += permove;
-    //         break;
-    //     default:
-    //         break;
-    // }
-    irr::core::vector3df position(movex, 0, movey);
-
-    float cameraX = position.X;
-    float cameraY = position.Z;
-    float cameraZ = _zoomCam;
-	if (!_camera) {
-		_camera = _sceneManager->addCameraSceneNode(0, {cameraX -  _zoomCam, cameraZ, cameraY}, { cameraX, 0, cameraY });
-		return;
-	}
-	_camera->setPosition(irr::core::vector3df(cameraX - _zoomCam, cameraZ, cameraY));
-    _camera->setTarget({ cameraX, 0, cameraY });
 }
 
 irr::scene::ISceneNode *IrrlichtDisplay::create_block(
@@ -274,6 +277,7 @@ void IrrlichtDisplay::display(std::shared_ptr<GUI> gui)
 	{
 		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
 		_sceneManager->drawAll();
+		gui->isButtonPressed();
 		gui->draw();
 		_driver->endScene();
 	}
@@ -402,13 +406,15 @@ void	IrrlichtDisplay::addPlayer(
 	Direction const &dir,
 	size_t level,
 	std::string const &team,
-	__attribute__((unused)) const IDisplay::PlayerOrigin &origin
+	const IDisplay::PlayerOrigin &origin
 )
 {
 	killPlayer(id);
 	_idxPlayers.push_back(id);
 	_players[id] = std::make_shared<Player>(
-		id, pos, dir, level, getTeamIdx(team), *_sceneManager, _texture
+		id, pos, dir, level, getTeamIdx(team),
+		origin, getMovementDuration(), _timeUnit,
+		*_sceneManager, _texture
 	);
 }
 
@@ -665,6 +671,24 @@ irr::core::vector3df	IrrlichtDisplay::moveVector(
 	return from;
 }
 
+irr::core::vector2df	IrrlichtDisplay::rotatePoint(
+	irr::core::vector2df const & center,
+	double angle,
+	irr::core::vector2df point
+)
+{
+	angle = angle * M_PI / 180.0;
+	double s = sin(angle);
+	double c = cos(angle);
+	point.X -= center.X;
+	point.Y -= center.Y;
+	double x_rot = point.X * c - point.Y * s;
+	double y_rot = point.X * s + point.Y * c;
+	point.X = x_rot + center.X;
+	point.Y = y_rot + center.Y;
+	return point;
+}
+
 bool	IrrlichtDisplay::doesMapContentExist(Point const & pos) const noexcept
 {
 	int x = pos.getX();
@@ -677,194 +701,6 @@ std::shared_ptr<IrrlichtDisplay::MapContent>	IrrlichtDisplay::getMapContent(Poin
 	return _map[pos.getY()][pos.getX()];
 }
 
-IrrlichtDisplay::Player::Player(
-		size_t id,
-		Point const & pos,
-		Direction const & dir,
-		size_t level,
-		int teamIdx,
-		irr::scene::ISceneManager & sceneManager,
-		std::map<int, irr::video::ITexture *> & textures
-)
-	:	_sceneManager(sceneManager)
-	,	_textures(textures)
-	,	_randomPos(
-			{
-				Math::randomNumberBetween(
-					-(IrrlichtDisplayConst::SIZE_MAP_TILE / 4),
-					IrrlichtDisplayConst::SIZE_MAP_TILE / 4
-				),
-				Math::randomNumberBetween(
-					-(IrrlichtDisplayConst::SIZE_MAP_TILE / 4),
-					IrrlichtDisplayConst::SIZE_MAP_TILE / 4
-				)
-			}
-		)
-	,	_id(id)
-	,	_pos(pos)
-	,	_dir(dir)
-	,	_level(level)
-	,	_teamIdx(teamIdx)
-	,	_mesh(nullptr)
-	,	_movDurationMillis(1000)
-	,	_timeUnit(1)
-	,	_isAnimating(false)
-	,	_isMoving(false)
-	,	_movLastPercentage(-1)
-{
-	positionNode(pos);
-	rotateNode(dir);
-	changeMesh(IrrlichtDisplayConst::PERSO);
-}
-
-IrrlichtDisplay::Player::~Player()
-{
-	if (_mesh != nullptr)
-	{
-		_mesh->remove();
-	}
-}
-
-void	IrrlichtDisplay::Player::moveTo(Point const & pos)
-{
-	if (_pos != pos)
-	{
-		if (_movDurationMillis <= 0)
-		{
-			_isMoving = false;
-			positionNode(pos);
-		}
-		else
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_RUN);
-			_movDir = _dir;
-			_isMoving = true;
-			_movFrom = _pos;
-			_movTo = pos;
-			_movClock.mark();
-			_movLastPercentage = -1;
-		}
-		_pos = pos;
-	}
-}
-
-void	IrrlichtDisplay::Player::pushTo(Point const & pos, Direction const & dir)
-{
-	if (_pos != pos)
-	{
-		if (_movDurationMillis <= 0)
-		{
-			_isMoving = false;
-			positionNode(pos);
-		}
-		else
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_FALL);
-			_movDir = dir;
-			_isMoving = true;
-			_movFrom = _pos;
-			_movTo = pos;
-			_movClock.mark();
-			_movLastPercentage = -1;
-		}
-		_pos = pos;
-	}
-}
-
-void	IrrlichtDisplay::Player::setLevel(size_t level)
-{
-	_level = level;
-}
-
-void	IrrlichtDisplay::Player::setDir(Direction const & dir)
-{
-	_dir = dir;
-	rotateNode(dir);
-}
-
-Point	IrrlichtDisplay::Player::getPos(void) const noexcept
-{
-	return _pos;
-}
-
-irr::core::vector3df	IrrlichtDisplay::Player::getPosMesh(void) const noexcept
-{
-	return _mesh ? _mesh->getPosition() : getCenter(_pos);
-}
-
-void	IrrlichtDisplay::Player::loop(void)
-{
-	if (_mesh && _isMoving)
-	{
-		long long movMillis = _movClock.timeSinceMark();
-		if (movMillis >= _movDurationMillis)
-		{
-			_isMoving = false;
-		}
-		else
-		{
-			double movPercentage = movMillis * 100.0 / _movDurationMillis;
-			if (movPercentage != _movLastPercentage)
-			{
-				_movLastPercentage = movPercentage;
-				double maxDistance = IrrlichtDisplayConst::SIZE_MAP_TILE / 2;
-				Point movStart;
-				double distanceToEnd;
-				Direction movDir = _movDir;
-				bool isFirstTile = movPercentage <= 50.0;
-				if (isFirstTile)
-				{
-					movStart = _movFrom;
-					distanceToEnd = movPercentage * maxDistance / 50.0;
-				}
-				else
-				{
-					movStart = _movTo;
-					distanceToEnd = maxDistance - ((movPercentage - 50) * maxDistance / 50.0);
-					movDir.reverse();
-				}
-				irr::core::vector3df newPos = IrrlichtDisplay::moveVector(
-						getCenter(movStart),
-						movDir,
-						Math::clamp(0.0, maxDistance, distanceToEnd)
-				);
-				_mesh->setPosition(newPos);
-				if (!isFirstTile && distanceToEnd == maxDistance)
-				{
-					_isMoving = false;
-				}
-			}
-		}
-		if (!_isMoving)
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO);
-			positionNode(_movTo);
-		}
-	}
-	else if (_isAnimating && _startAnimationClock.timeSinceMark() > _movDurationMillis)
-	{
-		_isAnimating = false;
-		changeMesh(IrrlichtDisplayConst::PERSO);
-	}
-}
-
-void	IrrlichtDisplay::Player::rotateNode(Direction const & dir)
-{
-	_meshRot = { 0, (float)IrrlichtDisplay::getRotationDegrees(dir), 0 };
-	if (_mesh)
-	{
-		_mesh->setRotation(_meshRot);
-	}
-}
-
-void	IrrlichtDisplay::Player::positionNode(Point const & pos)
-{
-	_meshPos = getCenter(pos);
-	if (_mesh)
-	{
-		_mesh->setPosition(_meshPos);
-	}
-}
 ////////////////////////////////////// eggg/////////////////////////////////
 IrrlichtDisplay::Egg::Egg(size_t id,
 						  Point const & pos, irr::video::IVideoDriver * _driver,
@@ -941,100 +777,3 @@ void IrrlichtDisplay::Egg::create_fx(irr::core::vector3df pos, irr::core::vector
 }
 
 ///////egggggggg/////////////
-
-void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path)
-{
-	if (_mesh)
-	{
-		_mesh->remove();
-	}
-	_mesh = nullptr;
-	auto * mesh = _sceneManager.getMesh(path);
-	if (mesh)
-	{
-		_mesh = _sceneManager.addAnimatedMeshSceneNode(mesh);
-		if (_mesh)
-		{
-			_mesh->setPosition(_meshPos);
-			_mesh->setRotation(_meshRot);
-			_mesh->setScale(IrrlichtDisplayConst::PLAYER_SCALE);
-			_mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-			if (_teamIdx == 0)
-				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX]);
-			else if (_teamIdx == 1)
-				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX]);
-			else if (_teamIdx == 2)
-				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_GREEN_IDX]);
-			else if (_teamIdx == 3)
-				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW_IDX]);
-			else
-				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX]);
-			auto maxFrames = _mesh->getEndFrame();
-			if (_movDurationMillis > 0)
-			{
-				irr::f32 fps = (float)_timeUnit * maxFrames;
-				_mesh->setAnimationSpeed(fps);
-			}
-		}
-	}
-}
-
-void	IrrlichtDisplay::Player::animate(PlayerAnimationStyle const & how)
-{
-	_isAnimating = true;
-	_startAnimationClock.mark();
-	switch (how)
-	{
-		case INCANTATION:
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_HEADSPIN);
-			break;
-		}
-		case EGG_LAYING:
-		case DROP_RESOURCE:
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_DROP);
-			break;
-		}
-		case TAKE_RESOURCE:
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_TAKE);
-			break;
-		}
-		case PUSH_PLAYER:
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO_KICK1);
-			break;
-		}
-		default:
-		case BROADCAST:
-		case NONE:
-		{
-			changeMesh(IrrlichtDisplayConst::PERSO);
-			break;
-		}
-	}
-}
-
-void IrrlichtDisplay::Player::setDurationMillis(
-		long long movDurationMillis,
-		double timeUnit
-)
-{
-	_movDurationMillis = movDurationMillis;
-	_timeUnit = timeUnit;
-}
-
-irr::core::vector3df IrrlichtDisplay::Player::getCenter(Point const &pos) const noexcept
-{
-	irr::core::vector3df mesh = IrrlichtDisplay::getCenterPos(
-			pos, IrrlichtDisplayConst::PLAYER_Z
-	);
-	return {
-			mesh.X + _randomPos.getX(),
-			mesh.Y,
-			mesh.Z + _randomPos.getY()
-	};
-}
-
-

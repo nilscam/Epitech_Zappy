@@ -26,3 +26,8 @@ void Image::setScaleImage(bool scale)
 {
 	image->setScaleImage(scale);
 }
+
+void Image::setVisible(bool visible)
+{
+	image->setVisible(visible);
+}
