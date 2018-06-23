@@ -16,7 +16,12 @@ class ListBox
 public:
 	enum MSGtype {
 		DEFAULT,
-		SYSTEM
+		SYSTEM,
+		RED_TEAM,
+		BLUE_TEAM,
+		GREEN_TEAM,
+		YELLOW_TEAM,
+		OTHER_TEAM
 	};
 	ListBox(irr::gui::IGUIListBox *listBox, int id);
 	ListBox();
