@@ -8,30 +8,31 @@
 NAME	=	zappy_client
 MAIN	=	main.cpp
 SRC	=		Display/IrrlichtDisplay.cpp			\
-			Hud/Button.cpp						\
+			Display/IrrlichtDisplayPlayer.cpp		\
+			Hud/Button.cpp					\
 			Hud/ButtonManager.cpp				\
-			Hud/GUI.cpp							\
-			Hud/Image.cpp						\
+			Hud/GUI.cpp					\
+			Hud/Image.cpp					\
 			Hud/ImageManager.cpp				\
-			Hud/ListBox.cpp						\
-			Hud/main.cpp						\
-			Hud/Rectangle.cpp					\
-			Hud/ScrollBar.cpp					\
-			Hud/Table.cpp						\
-			Manager/Buffer.cpp					\
-			Manager/Manager.cpp					\
-			Manager/Map.cpp						\
-			Manager/Player.cpp					\
-			Manager/parseMe.cpp					\
-			Manager/Egg.cpp						\
-			reseau/Client.cpp					\
-			reseau/Select.cpp					\
-			ServerHandler/ChildHandler.cpp		\
-			ServerHandler/ServerHandler.cpp		\
-			Utils/Clock.cpp						\
-			Utils/Debug.cpp						\
-			Utils/Direction.cpp					\
-			Utils/Math.cpp						\
+			Hud/ListBox.cpp					\
+			Hud/main.cpp					\
+			Hud/Rectangle.cpp				\
+			Hud/ScrollBar.cpp				\
+			Hud/Table.cpp					\
+			Manager/Buffer.cpp				\
+			Manager/Manager.cpp				\
+			Manager/Map.cpp					\
+			Manager/Player.cpp				\
+			Manager/parseMe.cpp				\
+			Manager/Egg.cpp					\
+			reseau/Client.cpp				\
+			reseau/Select.cpp				\
+			ServerHandler/ChildHandler.cpp			\
+			ServerHandler/ServerHandler.cpp			\
+			Utils/Clock.cpp					\
+			Utils/Debug.cpp					\
+			Utils/Direction.cpp				\
+			Utils/Math.cpp					\
 			Utils/Point.cpp
 
 INC	=	-I include			\

@@ -72,7 +72,8 @@ namespace IrrlichtDisplayConst
 	};
 	const irr::io::path PERSO_BACKFLIP = "././Ress/model/perso/MD3/backflip.MD3";
 	const irr::io::path PERSO_DIE = "././Ress/model/perso/MD3/die.MD3";
-	const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/falling.MD3";
+	// const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/falling.MD3"; //! not working
+	const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/backflip.MD3";
 	const irr::io::path PERSO_FALL_IMPACT = "././Ress/model/perso/MD3/fall_impact_down.MD3";
 	const irr::io::path PERSO_FALL_GET_UP = "././Ress/model/perso/MD3/fall_get_up.MD3";
 
@@ -299,37 +300,60 @@ private:
 
 	private:
 
-		irr::core::vector3df	getCenter(Point const & pos) const noexcept;
-		void	rotateNode(Direction const & dir);
-		void	positionNode(Point const & pos);
-		void	changeMesh(irr::io::path const & path);
+		Point					generateRandomPos(void) const noexcept;
+		irr::core::vector3df	getTileCenter(Point const & mapPos) const noexcept;
+		irr::core::vector3df	getTileCenter(void) const noexcept;
+		irr::core::vector3df	getRotationDegrees(Direction const & dir) const noexcept;
+		void					setMeshPosition(
+			irr::core::vector3df const & pos,
+			bool force = false
+		);
+		void					setMeshRotation(
+			irr::core::vector3df const & rot,
+			bool force = false
+		);
+		void					loopMoving(void) noexcept;
+		void					loopFalling(void) noexcept;
+		void					loopAnimate(void) noexcept;
+		void					changeMesh(irr::io::path const & path) noexcept;
 
-		/* irrlicht */
-		irr::scene::ISceneManager &				_sceneManager;
-		std::map<int, irr::video::ITexture *> &	_textures;
-		irr::core::vector3df					_meshPos;
-		irr::core::vector3df					_meshRot;
+		/* Irrlicht */
+		irr::scene::ISceneManager &					_sceneManager;
+		std::map<int, irr::video::ITexture *> &		_textures;
 
-		/* data */
-		Point 									_randomPos;
-		size_t									_id;
-		Point									_pos;
-		Direction								_dir;
-		size_t									_level;
-		int										_teamIdx;
+		/* Mesh */
 		irr::scene::IAnimatedMeshSceneNode *	_mesh;
-		long long								_movDurationMillis;
-		double 									_timeUnit;
-		Clock									_startAnimationClock;
-		bool 									_isAnimating;
+		irr::io::path							_lastMeshPath;
+		irr::core::vector3df					_lastMeshRotation;
+		irr::core::vector3df					_lastMeshPosition;
 
-		/* movements */
-		bool		_isMoving;
-		Point		_movFrom;
-		Point		_movTo;
-		Direction	_movDir;
-		Clock		_movClock;
-		double 		_movLastPercentage;
+		/* Data */
+		Point		_randomPos;
+		Point		_mapPos;
+		size_t		_id;
+		Direction	_dir;
+		int			_teamIdx;
+
+		/* Animations */
+		bool			_isAnimating;
+		long long		_movDurationMillis;
+		double 			_timeUnit;
+		irr::io::path	_animationPath;
+		Clock			_startAnimationClock;
+
+		/* Movements */
+		bool					_isMoving;
+		bool					_movIsPushed;
+		Point					_movFrom;
+		Point					_movTo;
+		Direction				_movDir;
+		Clock					_movClock;
+		double 					_movLastPercentage;
+		irr::core::vector3df	_movInc;
+
+		/* Falling */
+		bool					_isFalling;
+		irr::core::vector3df	_fallInc;
 
 	};
 
