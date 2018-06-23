@@ -16,5 +16,4 @@ void	player_cmd_look(player_cmd_arg_t *args)
 	char *vision = look(args->server->map, args->player);
 
 	list_push_back(args->client->write_buff, vision);
-	printf("VISION COMPLETE\n");
 }

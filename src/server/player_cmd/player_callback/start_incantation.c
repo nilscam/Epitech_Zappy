@@ -33,7 +33,6 @@ void	spectate_callback_start_incantation(
 	char		buff[20000];
 	char		*tmp = buff;
 
-	printf("start_incantation\n");
 	tmp += sprintf(tmp, "pic %d %d %d %d", x, y, level, id);
 	map_it_players_at(map, (point_t){ x, y },
 		(map_it_pl_t)add_player_to_buff, level, id, &tmp);

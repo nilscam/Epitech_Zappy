@@ -17,9 +17,9 @@ bool	client_write(client_t *client)
 	data = list_pop_front(client->write_buff);
 	to_write = data ? strlen(data) : 0;
 	if (data && *data && to_write > 0) {
-		printf("data:[%s]\n", data);
-		DEBUG("write %lu bytes to fd %d", to_write, client->_fd);
 		wrote = write(client->_fd, data, to_write);
+		DEBUG("write %lu bytes to fd %d: '%.*s'", wrote, client->_fd,
+			wrote, data);
 		if (wrote < 0) {
 			return false;
 		} else if (wrote < to_write) {

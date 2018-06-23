@@ -65,7 +65,7 @@ void	IrrlichtDisplay::loop(void)
 	if (_rotateCamera && _cameraRotationClock.timeSinceMark() > 1)
 	{
 		_cameraRotationClock.mark();
-		_cameraRotationDegrees += 0.025;
+		_cameraRotationDegrees += 0.095;
 		if (_cameraRotationDegrees > 360)
 			_cameraRotationDegrees = 0;
 	}
@@ -95,7 +95,7 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::GREEN_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::GREEN_GEM);
 	_texture[IrrlichtDisplayConst::YELLOW_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YELLOW_GEM);
 	_texture[IrrlichtDisplayConst::BLUE_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::BLUE_GEM);
-	_texture[IrrlichtDisplayConst::YOSHI_EGG_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YOSHI_EGG);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG);
 	_texture[IrrlichtDisplayConst::FOOD_BASE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::FOOD_BASE);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_RED);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BLUE);
@@ -479,11 +479,14 @@ void IrrlichtDisplay::addEgg(size_t idEgg, size_t idPlayerFrom)
 		_eggs[idEgg] = std::make_shared<Egg>(
 			idEgg,
 			player->getPos(),
-			create_egg(
+			/*create_egg(
 					IrrlichtDisplayConst::YOSHI_EGG_IDX,
 					getRandomPos(pos, IrrlichtDisplayConst::EGG_Z),
 					IrrlichtDisplayConst::EGG_SCALE
-			)
+			)*/
+			_driver,
+			*_sceneManager,
+			_texture
 		);
 	}
 }
@@ -593,6 +596,11 @@ irr::IrrlichtDevice		*IrrlichtDisplay::getDevice(void) const
 	return _device;
 }
 
+irr::video::IVideoDriver	*IrrlichtDisplay::getDriver(void) const
+{
+	return _driver;
+}
+
 long long	IrrlichtDisplay::getMovementDuration(void) const noexcept
 {
 	return _timeUnit == 0 ? 0 : 1.0 / _timeUnit * 1E3;
@@ -697,3 +705,80 @@ std::shared_ptr<IrrlichtDisplay::MapContent>	IrrlichtDisplay::getMapContent(Poin
 {
 	return _map[pos.getY()][pos.getX()];
 }
+
+////////////////////////////////////// eggg/////////////////////////////////
+IrrlichtDisplay::Egg::Egg(size_t id,
+						  Point const & pos, irr::video::IVideoDriver * _driver,
+						  irr::scene::ISceneManager & sceneManager,
+						  std::map<int, irr::video::ITexture *> & textures)
+		:	_id(id)
+		,	_pos(pos)
+		,	_mesh(nullptr)
+		,	_driver(_driver)
+		,	_sceneManager(sceneManager)
+		,	_textures(textures)
+		,	_fx_egg(nullptr)
+
+{
+	positionNode(_pos);
+	create_fx(_meshPos, IrrlichtDisplayConst::EGG_FX_SCALE);
+	change_texture(IrrlichtDisplayConst::EGG_MESH);
+}
+
+void IrrlichtDisplay::Egg::positionNode(Point const & pos) {
+	_meshPos = IrrlichtDisplay::getRandomPos(pos, IrrlichtDisplayConst::EGG_Z);
+}
+void IrrlichtDisplay::Egg::change_texture(irr::io::path const &path) {
+	if (_mesh)
+	{
+		_mesh->remove();
+	}
+	_mesh = nullptr;
+	std::cout << "1" << std::endl;
+	auto *mesh = _sceneManager.getMesh(path);
+	std::cout << "2" << std::endl;
+	 if (mesh) {
+		 std::cout << "3" << std::endl;
+		 _mesh = _sceneManager.addMeshSceneNode(mesh);
+		 std::cout << "4" << std::endl;
+		 if (_mesh) {
+			 std::cout << "5" << std::endl;
+			 _mesh->setPosition(_meshPos);
+			 _mesh->setScale(IrrlichtDisplayConst::EGG_SCALE);
+			 _mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+			 _mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_IDX]);
+		 }
+	 }
+}
+
+void IrrlichtDisplay::Egg::create_fx(irr::core::vector3df pos, irr::core::vector3df scale) {
+
+	if (_fx_egg)
+	{
+		_fx_egg->remove();
+		_fx_egg = nullptr;
+	}
+	_fx_egg = _sceneManager.addVolumeLightSceneNode(0, -1, 32, 32, irr::video::SColor(0, 255, 255, 255), irr::video::SColor(0, 0, 0, 0));
+	if (_fx_egg)
+	{
+		_fx_egg->setScale(scale);
+		_fx_egg->setPosition(pos);
+		irr::core::array<irr::video::ITexture*> textures;
+
+		for (irr::s32 g=7; g > 0; --g)
+		{
+			irr::core::stringc tmp;
+			tmp = "./Ress/model/portal";
+			tmp += g;
+			tmp += ".bmp";
+			irr::video::ITexture* t = _driver->getTexture(tmp.c_str());
+			textures.push_back(t);
+		}
+		// create texture animator
+		irr::scene::ISceneNodeAnimator* glow = _sceneManager.createTextureAnimator(textures, 150);
+		_fx_egg->addAnimator(glow);
+		glow->drop();
+	}
+}
+
+///////egggggggg/////////////
