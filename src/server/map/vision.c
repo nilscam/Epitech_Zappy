@@ -131,26 +131,6 @@ char	*look_up(__attribute__((unused))map_t *this, __attribute__((unused))player_
 
 char	*look(map_t *this, player_t *player)
 {
-/*	char vision[1000000];
-	char *tmp = vision;
-	map_content_t *content;
-	bool space = false;
-
-	bzero(vision, 1000000);
-	for (int y = 0 ; y < this->size.y ; ++y) {
-		for (int x = 0  ; x < this->size.x ; ++x) {
-			tmp += sprintf(tmp, x == 0 ? "" : "\t|\t");
-			point_t pos = {x, y};
-			content = map_content_at(this, pos);
-			map_it_players_at(this, pos, tmp_add_player, &tmp, &space);
-			tmp = print_food(content, tmp, &space);
-			tmp = print_stones(content, tmp, y, &space);
-			space = false;
-		}
-		printf("line %d\n%s\n", y, vision);
-		bzero(vision, 1000000);
-		tmp = vision;
-	}*/
 	switch (player->dir) {
 	case DIR_LEFT:
 		return (look_left(this, player));

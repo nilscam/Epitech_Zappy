@@ -14,10 +14,11 @@ void	player_callback_send_format(
 	char	buff[20000];
 	char	*str;
 
-	printf("send_format '%s'\n", cb->description);
 	vsprintf(buff, cb->format, *args);
 	str = strdup(buff);
 	if (str) {
+		DEBUG("send_format to fd %d : '%s'",
+			client->fd, cb->description);
 		list_push_back(client->write_buff, str);
 	}
 }

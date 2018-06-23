@@ -48,7 +48,7 @@ void	player_cmd_broadcast(player_cmd_arg_t *args)
 
 	if (args->nb_args > 1) {
 		msg = args->cmd + strlen(args->c->cmd) + 1;
-		DEBUG("broadcast from %d: '%s'", args->player->id, msg);
+		DEBUG("broadcast from fd %d: '%s'", args->client->fd, msg);
 		list_it_all(map->players,
 			(list_it_fct_t)broadcast_to_player,
 			map, &from, args->player->id, msg);
