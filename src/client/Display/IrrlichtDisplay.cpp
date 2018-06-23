@@ -149,6 +149,11 @@ int	IrrlichtDisplay::getTeamClicked(std::list<int> idxPlayers)
 	return (IrrlichtDisplayConst::CLICK_ON_MAP);
 }
 
+int		IrrlichtDisplay::getIdPlayerFollowCam(void) const
+{
+	return (_followCam);
+}
+
 void	IrrlichtDisplay::manageEvent()
 {
 	if (_receiver.IsKeyDown(irr::KEY_KEY_W))

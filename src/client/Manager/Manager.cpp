@@ -15,6 +15,7 @@ Manager::Manager()
 	_char_read = 0;
 	_args = NULL;
 	_port = 4242;
+	_followCamPlayer = -2;
 	this->initReadCmd();
 }
 
@@ -135,6 +136,7 @@ void	Manager::spectateGame()
 				_display->display(_gui);
 				this->updateGUILevelPlayer();
 				this->updateGUITimeUnit();
+				this->manageCamOnPlayer();
 				//_display->getTeamClicked(_idxPlayers);
 			} else {
 				_stop = true;
@@ -143,6 +145,7 @@ void	Manager::spectateGame()
 		}
 	}
 	_display->deinit();
+	
 }
 void	Manager::readInFd(int fd)
 {
@@ -257,6 +260,28 @@ void	Manager::updateGUITimeUnit()
 	char str[20];
 	sprintf(str, "sst %d\n", freq);
 	_sendBuffer->Put(str);
+}
+
+void	Manager::manageCamOnPlayer()
+{
+	if (_followCamPlayer >= 0) {
+		// _gui->affPlayerInventory(_players[_followCamPlayer]->getNbFood(),
+		// 						_players[_followCamPlayer]->getNbStone1(),
+		// 						_players[_followCamPlayer]->getNbStone2(),
+		// 						_players[_followCamPlayer]->getNbStone3(),
+		// 						_players[_followCamPlayer]->getNbStone4(),
+		// 						_players[_followCamPlayer]->getNbStone5(),
+		// 						_players[_followCamPlayer]->getNbStone6());
+	}
+	auto playerFollowCam = _display->getIdPlayerFollowCam();
+	if (playerFollowCam != _followCamPlayer && playerFollowCam >= 0) {
+		char str[20];
+		sprintf(str, "pin %d\n", playerFollowCam);
+		_sendBuffer->Put(str);
+		_followCamPlayer = playerFollowCam;
+	} else if (playerFollowCam != _followCamPlayer && playerFollowCam < 0) {
+		//_gui->setVisibleInventory(false);
+	}
 }
 
 bool	Manager::msz()//! X Y\n || msz\n map size

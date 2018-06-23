@@ -26,7 +26,6 @@ public:
 
 	int		getPid(void) const noexcept;
 	void	setPid(int pid) noexcept;
-	bool	isRunning(void) const noexcept;
 	void	terminate(void) noexcept;
 
 private:

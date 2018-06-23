@@ -112,6 +112,7 @@ public:
 	int		getTeamClicked(std::list<int> idxPlayers);
 	void	setCameraPos(Point const & size);
 	void	setCameraOnPlayer(int id);
+	int		getIdPlayerFollowCam(void) const;
 	void	setTeams(std::vector<std::string> const & teams) override;
 	void	setTimeUnit(double unit) override;
 	void	display(void) override;

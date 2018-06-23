@@ -52,6 +52,7 @@ private:
 	void	freeArgs(void);
 	void	updateGUILevelPlayer();
 	void	updateGUITimeUnit();
+	void	manageCamOnPlayer();
 
 	bool	msz();//! X Y\n || msz\n map size
 	bool	bct();//! X Y q0 q1 q2 q3 q4 q5 q6\n || bct X Y\n content of a tile
@@ -100,6 +101,7 @@ private:
 	std::vector<std::string>						_teams;
 	int												_freq;
 	std::string										_winner;
+	int												_followCamPlayer;
 
 	bool						_stop;
 	int							_char_read;
