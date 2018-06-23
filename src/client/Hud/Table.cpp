@@ -37,11 +37,11 @@ void Table::addRow(const wchar_t* name)
 {
 	table->addRow(_row);
 	_rowName.push_back(name);
-	setValue(0, _row, this->wcToString(name));
+	setValue(0, _row, wchar_to_string(name));
 	_row += 1;
 }
 
-bool Table::setValue(int col, int row, const std::string &data)
+bool Table::setValue(int col, int row, const std::string & data, irr::video::SColor color)
 {
 
 	if (col < 0 || col > _col || row < 0 || row > _row) {	
@@ -49,18 +49,16 @@ bool Table::setValue(int col, int row, const std::string &data)
 			")\n";
 		return false;
 	} else {
-		const wchar_t *text = this->getWC(data.c_str());
-		table->setCellText(row - 1, col, text);
-		delete text;
+		table->setCellText(row - 1, col, char_to_wchar(data.c_str()), color);
 		return true;
 	}
 }
 
-bool Table::setValue(const std::string &colName, const std::string &rowName,
-		     const std::string &data)
+bool Table::setValue(const wchar_t *colName, const wchar_t *rowName,
+		     const wchar_t *data, irr::video::SColor color)
 {
-	int col = getIdFromCol(this->getWC(colName.c_str()));
-	int row = getIdFromRow(this->getWC(rowName.c_str()));
+	int col = getIdFromCol(colName);
+	int row = getIdFromRow(rowName);
 
 	std::cout << col << " " << row << "\n";
 	if (col < 0 || col > _col || row < 0 || row > _row) {	
@@ -68,12 +66,9 @@ bool Table::setValue(const std::string &colName, const std::string &rowName,
 			")\n";
 		return false;
 	} else {
-		const wchar_t *text = this->getWC(data.c_str());
-		table->setCellText(row - 1, col, text);
-		delete text;
+		table->setCellText(row - 1, col, data, color);
 		return true;
-	}
-	
+	}	
 }
 
 int Table::getIdFromCol(const wchar_t *colName)
@@ -146,25 +141,8 @@ void Table::initTable()
 void Table::addTeamName(std::vector<std::string> list)
 {
 	for (auto it = list.begin(); it != list.end(); ++it) {
-		const wchar_t *text = this->getWC(it->c_str());
+		const wchar_t *text = char_to_wchar((*it).c_str());
 		addRow(text);
 		delete text;
 	}
-}
-
-const wchar_t *Table::getWC(const char *str)
-{
-    const size_t cSize = strlen(str) + 1;
-    wchar_t* wc = new wchar_t[cSize];
-    mbstowcs(wc, str, cSize);
-    return (wc);
-}
-
-std::string	Table::wcToString(const wchar_t *arr)
-{
-	int	size = wcslen(arr);
-	char *str = (char *)malloc(size + 1);
-	memset(str, 0, size);
-	wcstombs(str, arr, size);
-	return (std::string(str));
 }

@@ -44,7 +44,7 @@ static const player_cmd_t	PLAYER_CMDS[] = {
 		"Incantation", "start incantation" }
 };
 static const player_cmd_t	DEFAULT_PLAYER_CMD = {
-	"", spectate_cmd_error, NULL, 0, 0, "ko", "ko"
+	"", player_cmd_error, NULL, 0, 0, "ko", "ko"
 };
 static const player_cmd_t	SPECTATOR_CMDS[] = {
 	{ "msz", spectate_cmd_map_size, NULL, 0, 0,
@@ -71,7 +71,7 @@ static const player_cmd_t	SPECTATOR_CMDS[] = {
 		"egg", "position of all eggs" }
 };
 static const player_cmd_t	DEFAULT_SPECTATOR_CMD = {
-	"", player_cmd_error, NULL, 0, 0, "ko", "ko"
+	"", spectate_cmd_error, NULL, 0, 0, "ko", "ko"
 };
 
 static const size_t	MAX_ANONYMOUS_CMDS = SIZE_ARRAY(ANONYMOUS_CMDS);
@@ -121,7 +121,8 @@ static void	client_callback_cmd(player_cmd_arg_t *args)
 {
 	const player_cmd_t	*c = args->c;
 
-	DEBUG("calling pl %s - %s", c->prototype, c->description);
+	DEBUG("calling callback to fd %d : %s - %s",
+		args->client->_fd, c->prototype, c->description);
 	c->fct(args);
 	free_tab(args->args);
 	SAFE_FREE(args->cmd);
@@ -144,7 +145,8 @@ static void	call_client_cmd(player_cmd_arg_t *args)
 		player_set_is_busy_callback(player,
 			(pl_callback_t)client_callback_cmd, args_cp);
 	} else {
-		DEBUG("calling %s - %s", c->prototype, c->description);
+		DEBUG("calling to %d : %s - %s (exec=%d)",
+			args->client->_fd, c->prototype, c->description, exec);
 		if (exec)
 			c->fct(args);
 		free_tab(args->args);

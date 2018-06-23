@@ -25,19 +25,9 @@ void	ChildHandler::setPid(int pid) noexcept
 	_pid = pid;
 }
 
-bool	ChildHandler::isRunning(void) const noexcept
-{
-	if (_pid < 0)
-	{
-		return false;
-	}
-	while (waitpid(-1, NULL, WNOHANG) > 0);
-	return (kill(_pid, 0) == 0);
-}
-
 void	ChildHandler::terminate(void) noexcept
 {
-	if (isRunning())
+	if (_pid >= 0)
 	{
 		kill(_pid, SIGINT);
 		waitpid(_pid, NULL, 0);
