@@ -18,8 +18,9 @@ bool	client_write(client_t *client)
 	to_write = data ? strlen(data) : 0;
 	if (data && *data && to_write > 0) {
 		wrote = write(client->_fd, data, to_write);
-		DEBUG("write %lu bytes to fd %d: '%.*s'", wrote, client->_fd,
-			wrote, data);
+		DEBUG("write %lu bytes to fd %d:", wrote, client->_fd,
+			wrote);
+		DEBUGW(data, wrote);
 		if (wrote < 0) {
 			return false;
 		} else if (wrote < to_write) {

@@ -16,9 +16,14 @@
 # define _DEBUG_FD	1
 # define _DEBUG_FORMAT	"Debug: [%s:%d - %s]: "
 # define _DEBUG_ARGS	__FILE__, __LINE__, __func__
-# define DEBUG(f, ...)	debug(_DEBUG_FD, _DEBUG_FORMAT, _DEBUG_ARGS); \
+# define DEBUG(f, ...)	do { debug(_DEBUG_FD, _DEBUG_FORMAT, _DEBUG_ARGS); \
 			debug(_DEBUG_FD, f, ##__VA_ARGS__); \
-			debug(_DEBUG_FD, "\n")
+			debug(_DEBUG_FD, "\n"); \
+			} while (0)
+# define DEBUGW(f, s)	do { debug(_DEBUG_FD, _DEBUG_FORMAT, _DEBUG_ARGS); \
+			write(_DEBUG_FD, f, s); \
+			debug(_DEBUG_FD, "\n"); \
+			} while (0)
 
 /*	debug.c		*/
 void	debug(const int fd, const char *format, ...);
