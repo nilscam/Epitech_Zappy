@@ -7,28 +7,32 @@
 
 #include "GUI.hpp"
 
-GUI::GUI(irr::IrrlichtDevice *dev)
+GUI::GUI(irr::IrrlichtDevice *dev, irr::video::IVideoDriver *driv)
 {
 	device = dev;
 	env = device->getGUIEnvironment();
 	scene = device->getSceneManager();
-	driver = device->getVideoDriver();
+	driver = driv;
 	tableId = 0;
 	listBoxId = 0;
 	buttonId = 0;
 	imageId = 0;
 	this->setFont(PATH_TO_RES GLOBAL_FONT);
-	this->createListBox(Rectangle(LISTBOX_X, LISTBOX_Y, LISTBOX_X2, LISTBOX_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
-	this->createTable(Rectangle(TABLE_X, TABLE_Y, TABLE_X2, TABLE_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
-	this->createScrollbar(Rectangle(SCROLL_X, SCROLL_Y, SCROLL_X2, SCROLL_Y2), driver->getTexture(PATH_TO_RES));
 	this->addMenu(Rectangle(MENU_X, MENU_Y, MENU_X2, MENU_Y2));
-	scrollBar.setPos(2);
-	_posScrollBar = 2;
-	device->setResizable(false);
 }
 
 GUI::~GUI()
 {
+}
+
+void	GUI::launchGui()
+{
+	this->createListBox(Rectangle(LISTBOX_X, LISTBOX_Y, LISTBOX_X2, LISTBOX_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
+	this->createTable(Rectangle(TABLE_X, TABLE_Y, TABLE_X2, TABLE_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
+	this->createScrollbar(Rectangle(SCROLL_X, SCROLL_Y, SCROLL_X2, SCROLL_Y2), driver->getTexture(PATH_TO_RES));
+	scrollBar.setPos(2);
+	_posScrollBar = 2;
+	device->setResizable(false);
 }
 
 void GUI::draw() const

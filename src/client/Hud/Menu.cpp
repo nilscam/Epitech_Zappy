@@ -137,6 +137,12 @@ void Menu::server_open()
 	isOptionsOpen = false;
 	isCreditsOpen = false;
 	isServerLaunch = false;
+	_btn->setVisible(false, ADD_TEAM1);
+	_btn->setVisible(false, ADD_TEAM2);
+	_btn->setVisible(false, ADD_TEAM3);
+	_btn->setVisible(false, ADD_TEAM4);
+	_btn->setVisible(false, LAUNCH_GAME);
+
 	_img->setVisible(true, MENU_SRV_PANEL);
 	_btn->setVisible(true, SRV_FIRST_OK);
 	_srv->setVisible(true, EditBox::PORT);
@@ -194,7 +200,6 @@ void Menu::server_second_ok()
 	_srv->setVisible(false, EditBox::NAME2);
 	_srv->setVisible(false, EditBox::NAME3);
 	_srv->setVisible(false, EditBox::NAME4);	
-	_srv->srvClient->printAllTeam();
 
 	_btn->setVisible(true, LAUNCH_GAME);		
 	_btn->setVisible(true, ADD_TEAM1);
@@ -222,16 +227,10 @@ void Menu::server_second_ok()
 	auto height = atoi(wchar_to_string(_srv->height).c_str());
 	auto client = atoi(wchar_to_string(_srv->client).c_str());
 	auto freq = atoi(wchar_to_string(_srv->freq).c_str());
-	// std::vector<std::string>	vec;
-	// std::cout << "SIZE:" << _srv->srvClient->team.size() << std::endl;
-	// std::cout << "NB SIZE:" << _srv->srvClient->nb.size() << std::endl;
-	// for(auto it = _srv->srvClient->team.begin(); it != _srv->srvClient->team.end(); ++it) {
-	// 	std::wcout << "Team: " << *it << std::endl;
-	// 	vec.push_back(wchar_to_string(*it));
-	// }
 	auto vec = _srv->srvClient->getVectorTeam();
 	
 	_serverHandler->startServer(width, height, port, vec, client, freq);
+	sleep(1);
 	isServerLaunch = true;
 	/* EXECUTE SERVER */
 }
@@ -271,7 +270,6 @@ void Menu::launch_game()
 	_btn->setVisible(false, ADD_TEAM3);
 	_btn->setVisible(false, ADD_TEAM4);
 	_btn->setVisible(false, LAUNCH_GAME);
-	_srv->srvClient->printAllPlayer();
 
 	for(size_t i = 0; i < _srv->srvClient->team.size(); i++) {
 		auto nbLaunch = _srv->srvClient->nb[i];

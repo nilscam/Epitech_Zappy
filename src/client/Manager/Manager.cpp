@@ -21,7 +21,7 @@ Manager::Manager()
 	if (!_display->init()) {
 		throw std::runtime_error("Error init lib\n");
 	}
-	_gui = std::make_shared<GUI>(_display->getDevice());
+	_gui = std::make_shared<GUI>(_display->getDevice(), _display->getDriver());
 }
 
 bool	Manager::init()
@@ -40,18 +40,14 @@ bool	Manager::init(const char *ip, int port)
 
 bool	Manager::initServer()
 {
-	Clock refresh;
-	refresh.mark();
+	_display->setMapSize({5, 5});
 	_gui->menu.server_open();
 	while (!_gui->menu.isServerLaunch) {
 		_display->loop();
-		if (refresh.timeSinceMark() > 20) {
-			if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
-				_display->display(_gui);
-			} else {
-				exit(0);
-			}
-			refresh.mark();
+		if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
+			_display->display(_gui);
+		} else {
+			exit(0);
 		}
 	}
 	std::cout << _gui->getPort() << std::endl;
@@ -64,6 +60,7 @@ bool	Manager::initServer()
 
 Manager::~Manager()
 {
+	_display->deinit();
 }
 
 int		Manager::connectClient(const char *ip, int port)
@@ -106,6 +103,7 @@ void	Manager::spectateGame()
 	Clock refresh;
 	refresh.mark();
 	_stop = false;
+	_gui->launchGui();
 	while (!_stop)
 	{
 		Select select;
@@ -134,7 +132,7 @@ void	Manager::spectateGame()
 			_stop = true;
 		}
 		_display->loop();
-		if (refresh.timeSinceMark() > 20) {
+		if (refresh.timeSinceMark() > 1) {
 			if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
 				_display->display(_gui);
 				this->updateGUILevelPlayer();
@@ -147,8 +145,6 @@ void	Manager::spectateGame()
 			refresh.mark();
 		}
 	}
-	_display->deinit();
-	
 }
 void	Manager::readInFd(int fd)
 {
@@ -413,10 +409,6 @@ bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
 			_display->movePlayer(idxPlayer, pos);
 			_players[idxPlayer]->setPos(pos);
 		}
-		_gui->addListBoxMessage(
-			"Player #" + std::to_string(idxPlayer) + " Move",
-			getColorForTeam(_players[idxPlayer]->getNameTeam())
-		);
 	}
 	return (true);
 }

@@ -62,8 +62,10 @@
 class GUI
 {
 public:
-	GUI(irr::IrrlichtDevice *device);
+	GUI(irr::IrrlichtDevice *device, irr::video::IVideoDriver *driv);
 	~GUI();
+
+	void	launchGui();
 
 	void addListBoxMessage(const std::string &str, /* Add a string to the chat */
 			       ListBox::MSGtype = ListBox::DEFAULT);
