@@ -277,6 +277,7 @@ void IrrlichtDisplay::display(std::shared_ptr<GUI> gui)
 	{
 		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
 		_sceneManager->drawAll();
+		gui->isButtonPressed();
 		gui->draw();
 		_driver->endScene();
 	}

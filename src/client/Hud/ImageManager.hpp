@@ -19,7 +19,8 @@ public:
 	ImageManager();
 	~ImageManager();
 	void addImage(Image img);
-	void setScaleImage(bool scale, int id);	
+	void setScaleImage(bool scale, int id);
+	void setVisible(bool visible, int id);
 private:
 	std::vector<Image> list;	
 };
