@@ -100,7 +100,7 @@ void	anonymous_cmd_anonymous(player_cmd_arg_t *a)
 			team_remove_player(team);
 			kill_anonymous(a);
 		}
-	} else {
+	} else if (!player) {
 		kill_anonymous(a);
 	}
 }
