@@ -33,7 +33,9 @@ IrrlichtDisplay::Player::Player(
 	,	_animationPath(IrrlichtDisplayConst::PERSO)
 	,	_isMoving(false)
 	,	_isFalling(false)
-{}
+{
+	fall(200);
+}
 
 IrrlichtDisplay::Player::~Player()
 {
@@ -147,36 +149,31 @@ void	IrrlichtDisplay::Player::loop(void)
 
 void	IrrlichtDisplay::Player::animate(PlayerAnimationStyle const & how)
 {
-	_isAnimating = true;
-	_startAnimationClock.mark();
 	switch (how)
 	{
 		case INCANTATION:
 		{
-			_animationPath = IrrlichtDisplayConst::PERSO_HEADSPIN;
+			animate(IrrlichtDisplayConst::PERSO_HEADSPIN);
 			break;
 		}
 		case EGG_LAYING:
 		case DROP_RESOURCE:
 		{
-			_animationPath = IrrlichtDisplayConst::PERSO_DROP;
+			animate(IrrlichtDisplayConst::PERSO_DROP);
 			break;
 		}
 		case TAKE_RESOURCE:
 		{
-			_animationPath = IrrlichtDisplayConst::PERSO_TAKE;
+			animate(IrrlichtDisplayConst::PERSO_TAKE);
 			break;
 		}
 		case PUSH_PLAYER:
 		{
-			_animationPath = IrrlichtDisplayConst::PERSO_KICK1;
+			animate(IrrlichtDisplayConst::PERSO_KICK1);
 			break;
 		}
 		default:
-		{
-			_isAnimating = false;
-			break;
-		}
+		{}
 	}
 }
 
@@ -187,6 +184,19 @@ void 	IrrlichtDisplay::Player::setDurationMillis(
 {
 	_movDurationMillis = movDurationMillis;
 	_timeUnit = timeUnit;
+}
+
+void	IrrlichtDisplay::Player::fall(size_t height)
+{
+	_isFalling = true;
+	_fallHeight = height;
+}
+
+void	IrrlichtDisplay::Player::animate(irr::io::path const & path) noexcept
+{
+	_isAnimating = true;
+	_startAnimationClock.mark();
+	_animationPath = path;
 }
 
 Point	IrrlichtDisplay::Player::generateRandomPos(void) const noexcept
@@ -306,7 +316,20 @@ void	IrrlichtDisplay::Player::loopMoving(void) noexcept
 
 void	IrrlichtDisplay::Player::loopFalling(void) noexcept
 {
-	// todo
+	if (_isFalling)
+	{
+		if (_fallClock.timeSinceMark() > 2)
+		{
+			_fallClock.mark();
+			_fallHeight -= 2;
+		}
+		if (_fallHeight <= 0)
+		{
+			animate(IrrlichtDisplayConst::PERSO_FALL_IMPACT);
+			_isFalling = false;
+		}
+		_fallInc = { 0, (float)_fallHeight, 0 };
+	}
 }
 
 void	IrrlichtDisplay::Player::loopAnimate(void) noexcept
@@ -314,6 +337,10 @@ void	IrrlichtDisplay::Player::loopAnimate(void) noexcept
 	if (_isAnimating && _startAnimationClock.timeSinceMark() > _movDurationMillis)
 	{
 		_isAnimating = false;
+		if (_animationPath == IrrlichtDisplayConst::PERSO_FALL_IMPACT)
+		{
+			animate(IrrlichtDisplayConst::PERSO_FALL_GET_UP);
+		}
 	}
 }
 

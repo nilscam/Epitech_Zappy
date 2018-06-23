@@ -297,9 +297,11 @@ private:
 		void	loop(void);
 		void	animate(PlayerAnimationStyle const & how);
 		void 	setDurationMillis(long long movDurationMillis, double timeUnit);
+		void	fall(size_t height);
 
 	private:
 
+		void					animate(irr::io::path const & path) noexcept;
 		Point					generateRandomPos(void) const noexcept;
 		irr::core::vector3df	getTileCenter(Point const & mapPos) const noexcept;
 		irr::core::vector3df	getTileCenter(void) const noexcept;
@@ -353,7 +355,9 @@ private:
 
 		/* Falling */
 		bool					_isFalling;
+		int						_fallHeight;
 		irr::core::vector3df	_fallInc;
+		Clock					_fallClock;
 
 	};
 
