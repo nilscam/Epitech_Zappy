@@ -90,17 +90,6 @@ namespace IrrlichtDisplayConst
 class IrrlichtDisplay: private IDisplay {
 public:
 
-	// class AnimationEndCallback : public irr::scene::IAnimationEndCallBack
-	// {
-	// 	AnimationEndCallback(irr::io::path const & afterAnimMesh);
-	// 	~AnimationEndCallback() override = default;
-	// 	void	OnAnimationEnd(IAnimatedMeshSceneNode * node) override
-	// 	{
-	// 		std::cout << "OnAnimationEnd" << std::endl;
-	// 		// ..
-	// 	}
-	// };
-
 	IrrlichtDisplay();
 	~IrrlichtDisplay() override;
 
@@ -172,6 +161,7 @@ public:
 			irr::core::vector3df pos,
 			irr::core::vector3df scale
 	);
+
 	/* Utils */
 	bool						isDeviceRunning(void);
 	irr::IrrlichtDevice			*getDevice(void) const;
@@ -186,6 +176,11 @@ public:
 		irr::core::vector3df from,
 		Direction const & dir,
 		float inc
+	);
+	static irr::core::vector2df		rotatePoint(
+		irr::core::vector2df const & center,
+		double angle,
+		irr::core::vector2df point
 	);
 
 private:
@@ -388,6 +383,9 @@ private:
 	void							remove_block(irr::scene::ISceneNode * node);
 	void							remove_mesh(irr::scene::IMeshSceneNode * mesh);
 
+	/* Camera */
+	void	setCamera(float distance, float height, irr::core::vector3df const & target);
+
 	/* Refresh */
 	void	setFoodTile(
 		std::shared_ptr<MapContent> & m,
@@ -433,6 +431,12 @@ private:
 	int										_followCam;
 	Clock									_antiSpamCam;
 	int										_zoomCam;
+
+	irr::core::vector3df	_cameraPosition;
+	irr::core::vector3df	_cameraTarget;
+	bool					_rotateCamera;
+	double					_cameraRotationDegrees;
+	Clock					_cameraRotationClock;
 
 };
 
