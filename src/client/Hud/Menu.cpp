@@ -16,9 +16,11 @@ Menu::Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv)
 	_img = img;
 	_btn = btn;
 	_srv = srv;
-        isMenuOpen = false;
+	isMenuOpen = false;
 	isOptionsOpen = false;
 	isCreditsOpen = false;
+	isServerLaunch = false;
+	needToExit = false;
 }
 
 Menu::~Menu()
@@ -131,6 +133,10 @@ void Menu::credits_open()
 
 void Menu::server_open()
 {
+	isMenuOpen = false;
+	isOptionsOpen = false;
+	isCreditsOpen = false;
+	isServerLaunch = false;
 	_img->setVisible(true, MENU_SRV_PANEL);
 	_btn->setVisible(true, SRV_FIRST_OK);
 	_srv->setVisible(true, EditBox::PORT);
@@ -165,14 +171,14 @@ void Menu::server_first_ok()
 	std::wcout << "FREQ : [" << _srv->freq << "]\n";
 	std::wcout << "TEAM : [" << _srv->team << "]\n";
 
-	_srv->srvClient.setNbTeam(_srv->team);
+	_srv->srvClient->setNbTeam(_srv->team);
 	_btn->setVisible(true, SRV_SECOND_OK);
 	_srv->setVisible(true, EditBox::NAME1);
-	if (_srv->srvClient.getNbTeam() >= 2)
+	if (_srv->srvClient->getNbTeam() >= 2)
 		_srv->setVisible(true, EditBox::NAME2);
-	if (_srv->srvClient.getNbTeam() >= 3)
+	if (_srv->srvClient->getNbTeam() >= 3)
 		_srv->setVisible(true, EditBox::NAME3);
-	if (_srv->srvClient.getNbTeam() >= 4)
+	if (_srv->srvClient->getNbTeam() >= 4)
 		_srv->setVisible(true, EditBox::NAME4);
 }
 
@@ -188,56 +194,73 @@ void Menu::server_second_ok()
 	_srv->setVisible(false, EditBox::NAME2);
 	_srv->setVisible(false, EditBox::NAME3);
 	_srv->setVisible(false, EditBox::NAME4);	
-	_srv->srvClient.printAllTeam();
+	_srv->srvClient->printAllTeam();
 
 	_btn->setVisible(true, LAUNCH_GAME);		
 	_btn->setVisible(true, ADD_TEAM1);
-	_btn->setText(_srv->srvClient.updateClient(SrvClient::TEAM1),
+	_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM1),
 		      ADD_TEAM1);
-	if (_srv->srvClient.getNbTeam() >= 2) {
+	if (_srv->srvClient->getNbTeam() >= 2) {
 		_btn->setVisible(true, ADD_TEAM2);
-		_btn->setText(_srv->srvClient.updateClient(SrvClient::TEAM2),
+		_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM2),
 			      ADD_TEAM2);
 	}
-	if (_srv->srvClient.getNbTeam() >= 3) {
+	if (_srv->srvClient->getNbTeam() >= 3) {
 		_btn->setVisible(true, ADD_TEAM3);
-		_btn->setText(_srv->srvClient.updateClient(SrvClient::TEAM3),
+		_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM3),
 			      ADD_TEAM3);		
 	}
-	if (_srv->srvClient.getNbTeam() >= 4) {
+	if (_srv->srvClient->getNbTeam() >= 4) {
 		_btn->setVisible(true, ADD_TEAM4);
-		_btn->setText(_srv->srvClient.updateClient(SrvClient::TEAM4),
+		_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM4),
 			      ADD_TEAM4);
 	}
 
+	_serverHandler = std::make_shared<ServerHandler>();
+	auto port = atoi(wchar_to_string(_srv->port).c_str());
+	auto width = atoi(wchar_to_string(_srv->width).c_str());
+	auto height = atoi(wchar_to_string(_srv->height).c_str());
+	auto client = atoi(wchar_to_string(_srv->client).c_str());
+	auto freq = atoi(wchar_to_string(_srv->freq).c_str());
+	// std::vector<std::string>	vec;
+	// std::cout << "SIZE:" << _srv->srvClient->team.size() << std::endl;
+	// std::cout << "NB SIZE:" << _srv->srvClient->nb.size() << std::endl;
+	// for(auto it = _srv->srvClient->team.begin(); it != _srv->srvClient->team.end(); ++it) {
+	// 	std::wcout << "Team: " << *it << std::endl;
+	// 	vec.push_back(wchar_to_string(*it));
+	// }
+	auto vec = _srv->srvClient->getVectorTeam();
+	
+	_serverHandler->startServer(width, height, port, vec, client, freq);
+	isServerLaunch = true;
 	/* EXECUTE SERVER */
 }
 
 void Menu::add_team1()
 {
-	_srv->srvClient.addPlayer(SrvClient::TEAM1);
-	_btn->setText(_srv->srvClient.updateClient(SrvClient::TEAM1),
+	_srv->srvClient->addPlayer(SrvClient::TEAM1);
+	_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM1),
 		      ADD_TEAM1);
 }
 
 void Menu::add_team2()
 {
-	_srv->srvClient.addPlayer(SrvClient::TEAM2);
-	_btn->setText(_srv->srvClient.updateClient(SrvClient::TEAM2),
+	_srv->srvClient->addPlayer(SrvClient::TEAM2);
+	_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM2),
 		      ADD_TEAM2);
 }
 
 void Menu::add_team3()
 {
-	_srv->srvClient.addPlayer(SrvClient::TEAM3);
-	_btn->setText(_srv->srvClient.updateClient(SrvClient::TEAM3),
+	_srv->srvClient->addPlayer(SrvClient::TEAM3);
+	_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM3),
 		      ADD_TEAM3);
 }
 
 void Menu::add_team4()
 {
-	_srv->srvClient.addPlayer(SrvClient::TEAM4);		
-	_btn->setText(_srv->srvClient.updateClient(SrvClient::TEAM4),
+	_srv->srvClient->addPlayer(SrvClient::TEAM4);		
+	_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM4),
 		      ADD_TEAM4);
 }
 
@@ -248,8 +271,13 @@ void Menu::launch_game()
 	_btn->setVisible(false, ADD_TEAM3);
 	_btn->setVisible(false, ADD_TEAM4);
 	_btn->setVisible(false, LAUNCH_GAME);
-	_srv->srvClient.printAllPlayer();
+	_srv->srvClient->printAllPlayer();
 
+	for(size_t i = 0; i < _srv->srvClient->team.size(); i++) {
+		auto nbLaunch = _srv->srvClient->nb[i];
+		auto str = wchar_to_string(_srv->srvClient->team[i]);
+		_serverHandler->addAi(str, nbLaunch);
+	}
 	/* EXECUTE ALL IA */
 }
 
@@ -259,6 +287,16 @@ void Menu::next_song()
 
 void Menu::exit()
 {
+	needToExit = true;
 	std::cout << "Exit\n";
 }
 
+int		Menu::getPort() const
+{
+	return atoi(wchar_to_string(_srv->port).c_str());
+}
+
+bool	Menu::getExit() const
+{
+	return needToExit;
+}

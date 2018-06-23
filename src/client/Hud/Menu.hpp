@@ -13,8 +13,11 @@
 #include "ImageManager.hpp"
 #include "ButtonManager.hpp"
 #include "ServPanel.hpp"
+#include "ServerHandler.hpp"
+#include "utils.hpp"
 #include "EID.hpp"
 #include <iostream>
+#include <memory>
 
 class Menu
 {
@@ -41,13 +44,18 @@ public:
 	void launch_game();
 	void next_song();
 	void exit();
+	int		getPort() const;
+	bool		getExit() const;
 	bool isMenuOpen;
 	bool isOptionsOpen;
 	bool isCreditsOpen;
+	bool	isServerLaunch;
+	bool	needToExit;
 private:
 	ImageManager *_img;
 	ButtonManager *_btn;
 	ServPanel *_srv;
+	std::shared_ptr<ServerHandler>	_serverHandler;
 };
 
 #endif

@@ -14,14 +14,6 @@ SrvClient::SrvClient()
 SrvClient::~SrvClient()
 {
 }
-	
-std::string SrvClient::wchar_to_string(const wchar_t *str)
-{
-	char *newer = (char *)malloc(100);
-	memset(newer, 0, 99);
-	wcstombs(newer, str, 99);
-	return std::string(newer);
-}
 
 void SrvClient::setNbTeam(const wchar_t *str)
 {
@@ -112,7 +104,7 @@ const wchar_t *SrvClient::updateClient(SrvClient::ID id)
 	for (std::vector<const wchar_t *>::iterator it = team.begin();
 	     it != team.end(); ++it) {
 		if (count == id) {
-			str = wchar_to_string((*it));
+			str = wchar_to_string(*it);
 		}
 		count += 1;
 	}
@@ -139,4 +131,13 @@ const wchar_t *SrvClient::updateClient(SrvClient::ID id)
 	return olivier;
 }
 
+std::vector<std::string>	SrvClient::getVectorTeam()
+{
+	std::vector<std::string> vec;
+	for(auto it = this->team.begin(); it != this->team.end(); ++it) {
+		std::wcout << "Team: " << *it << std::endl;
+		vec.push_back(wchar_to_string(*it));
+	}
+	return (vec);
+}
 

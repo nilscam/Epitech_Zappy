@@ -13,6 +13,7 @@
 #include "SrvClient.hpp"
 #include <iostream>
 #include <vector>
+#include <memory>
 
 class ServPanel
 {
@@ -31,7 +32,7 @@ public:
 	const wchar_t *freq;
 	const wchar_t *team;
 
-	SrvClient srvClient;
+	std::shared_ptr<SrvClient> srvClient;
 private:
 	std::vector<EditBox> list;
 };

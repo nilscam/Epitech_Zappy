@@ -17,6 +17,11 @@ Manager::Manager()
 	_port = 4242;
 	_followCamPlayer = -2;
 	this->initReadCmd();
+	_display = std::make_unique<IrrlichtDisplay>();
+	if (!_display->init()) {
+		throw std::runtime_error("Error init lib\n");
+	}
+	_gui = std::make_shared<GUI>(_display->getDevice());
 }
 
 bool	Manager::init()
@@ -35,17 +40,25 @@ bool	Manager::init(const char *ip, int port)
 
 bool	Manager::initServer()
 {
-	++_port;
-	std::cout << "PORT:" << _port << std::endl;
-	_serverHandler = std::make_unique<ServerHandler>();
-	_serverHandler->startServer(5, 5, _port,
-		{ "red", "blue", "green", "yellow" }, 12, 5
-	);
-	sleep(1);
-	if (!this->connectClient(std::string("127.0.0.1").c_str(), _port)) {
+	Clock refresh;
+	refresh.mark();
+	_gui->menu.server_open();
+	while (!_gui->menu.isServerLaunch) {
+		_display->loop();
+		if (refresh.timeSinceMark() > 20) {
+			if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
+				_display->display(_gui);
+			} else {
+				exit(0);
+			}
+			refresh.mark();
+		}
+	}
+	std::cout << _gui->getPort() << std::endl;
+	if (!this->connectClient(std::string("127.0.0.1").c_str(), _gui->getPort())) {
+		std::cout << "failed to connect" <<std::endl;
 		return (false);
 	}
-	_serverHandler->addAiAllTeams(2);
 	return (true);
 }
 
@@ -91,16 +104,6 @@ int		Manager::connectClient(const char *ip, int port)
 void	Manager::spectateGame()
 {
 	Clock refresh;
-	// * baptiste
-	std::cout << "A" << std::endl;
-	// _display = std::make_unique<IrrlichtDisplay>();
-	_display = std::make_unique<IrrlichtDisplay>();
-	std::cout << "B" << std::endl;
-	if (!_display->init()) {
-		return;
-	}
-	_gui = std::make_shared<GUI>(_display->getDevice());
-
 	refresh.mark();
 	_stop = false;
 	while (!_stop)
@@ -132,7 +135,7 @@ void	Manager::spectateGame()
 		}
 		_display->loop();
 		if (refresh.timeSinceMark() > 20) {
-			if (_display->isDeviceRunning()) {
+			if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
 				_display->display(_gui);
 				this->updateGUILevelPlayer();
 				this->updateGUITimeUnit();

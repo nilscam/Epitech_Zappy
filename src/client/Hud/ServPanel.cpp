@@ -9,6 +9,7 @@
 
 ServPanel::ServPanel()
 {
+	srvClient = std::make_shared<SrvClient>();
 }
 
 ServPanel::~ServPanel()
@@ -47,7 +48,7 @@ void ServPanel::setString(int id)
 				team = (*it).getText();
 			else if (id == EditBox::NAME1 || id == EditBox::NAME2 ||
 				 id == EditBox::NAME3 || id == EditBox::NAME4)
-				srvClient.addClient((*it).getText());
+				srvClient->addClient((*it).getText());
 			return;
 		}			
 	}

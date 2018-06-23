@@ -37,11 +37,11 @@ void Table::addRow(const wchar_t* name)
 {
 	table->addRow(_row);
 	_rowName.push_back(name);
-	setValue(0, _row, name);
+	setValue(0, _row, wchar_to_string(name));
 	_row += 1;
 }
 
-bool Table::setValue(int col, int row, const wchar_t *data, irr::video::SColor color)
+bool Table::setValue(int col, int row, const std::string & data, irr::video::SColor color)
 {
 
 	if (col < 0 || col > _col || row < 0 || row > _row) {	
@@ -49,7 +49,7 @@ bool Table::setValue(int col, int row, const wchar_t *data, irr::video::SColor c
 			")\n";
 		return false;
 	} else {
-		table->setCellText(row - 1, col, data, color);
+		table->setCellText(row - 1, col, char_to_wchar(data.c_str()), color);
 		return true;
 	}
 }
@@ -138,10 +138,11 @@ void Table::initTable()
 	addCol(L"Level 8");
 }
 
-void Table::addTeamName(std::vector<const wchar_t *> list)
+void Table::addTeamName(std::vector<std::string> list)
 {
-	for (std::vector<const wchar_t *>::iterator it = list.begin();
-	     it != list.end(); ++it) {
-		addRow((*it));
+	for (auto it = list.begin(); it != list.end(); ++it) {
+		const wchar_t *text = char_to_wchar((*it).c_str());
+		addRow(text);
+		delete text;
 	}
 }

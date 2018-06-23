@@ -13,6 +13,7 @@
 #include <vector>
 #include <iostream>
 #include "Rectangle.hpp"
+#include "utils.hpp"
 
 class Table
 {
@@ -23,7 +24,7 @@ public:
 	void addCol(const wchar_t *name);
 	void addRow(const wchar_t *name);
 	
-	bool setValue(int col, int row, const wchar_t *value,
+	bool setValue(int col, int row, const std::string &value,
 		      irr::video::SColor color = irr::video::SColor(255, 30, 30, 30));
 	/* setValue in a cell from row and col nb */
 	
@@ -40,7 +41,7 @@ public:
 	void initTable();
 	/* init the column */
 	
-	void addTeamName(std::vector<const wchar_t *> list);
+	void addTeamName(std::vector<std::string> list);
 	/* init the row from a list of name */
 private:
 	int _col;

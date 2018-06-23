@@ -13,11 +13,18 @@ GUI::GUI(irr::IrrlichtDevice *dev)
 	env = device->getGUIEnvironment();
 	scene = device->getSceneManager();
 	driver = device->getVideoDriver();
-	
 	tableId = 0;
 	listBoxId = 0;
 	buttonId = 0;
 	imageId = 0;
+	this->setFont(PATH_TO_RES GLOBAL_FONT);
+	this->createListBox(Rectangle(LISTBOX_X, LISTBOX_Y, LISTBOX_X2, LISTBOX_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
+	this->createTable(Rectangle(TABLE_X, TABLE_Y, TABLE_X2, TABLE_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
+	this->createScrollbar(Rectangle(SCROLL_X, SCROLL_Y, SCROLL_X2, SCROLL_Y2), driver->getTexture(PATH_TO_RES));
+	this->addMenu(Rectangle(MENU_X, MENU_Y, MENU_X2, MENU_Y2));
+	scrollBar.setPos(2);
+	_posScrollBar = 2;
+	device->setResizable(false);
 }
 
 GUI::~GUI()
@@ -51,6 +58,14 @@ ListBox GUI::addListBox(Rectangle rect)
 	listBoxId += 1;
 	listBox = ListBox(listBx, listBoxId);
 	return listBox;
+}
+
+ScrollBar GUI::addScrollBar(Rectangle rect)
+{
+	auto scrollBr = env->addScrollBar(true, rect.get());
+	scrollBarId += 1;
+	scrollBar = ScrollBar(scrollBr, scrollBarId);
+	return scrollBar;
 }
 
 Button GUI::addButton(Rectangle rect, Button::Action action,
@@ -98,9 +113,20 @@ void GUI::createListBox(Rectangle rect, irr::video::ITexture *texture, int id)
 	imageManager.setScaleImage(true, getLastImageId());
 }
 
-void GUI::addListBoxMessage(const wchar_t *str, ListBox::MSGtype type)
+void GUI::createScrollbar(Rectangle rect, irr::video::ITexture *texture, int id)
 {
-	listBox.addText(str, type);
+	addImage(rect, texture, id);
+	Rectangle scrollbarRect(rect.getX() + 100, rect.getY() + 20,
+			      rect.getX2() - 100, rect.getY2() - 20);
+	auto scroll = addScrollBar(scrollbarRect);
+	imageManager.setScaleImage(true, getLastImageId());
+}
+
+void GUI::addListBoxMessage(const std::string &str, ListBox::MSGtype type)
+{
+	const wchar_t *text = char_to_wchar(str.c_str());
+	listBox.addText(text, type);
+	delete text;
 }
 
 int GUI::getLastImageId() const
@@ -129,17 +155,17 @@ EditBox GUI::addEditBox(const wchar_t *str, const wchar_t *preview,
 void GUI::initMenu(int x, int y, int x2, int y2)
 {
 	addImage(Rectangle(x, y, x2, y2),
-		 driver->getTexture(RESSOURCE PANEL_PNG), MENU_PANEL);
+		 driver->getTexture(PATH_TO_RES PANEL_PNG), MENU_PANEL);
 	addImage(Rectangle(x - 4, y - 20, x2 + 4, y2 - 500),
-		 driver->getTexture(RESSOURCE HEADER_PNG), MENU_HEADER);
+		 driver->getTexture(PATH_TO_RES HEADER_PNG), MENU_HEADER);
 	addImage(Rectangle(x - 130, y - 60, x2 + 120, y2 - 440),
-		 driver->getTexture(RESSOURCE MENU_TITLE_PNG),
+		 driver->getTexture(PATH_TO_RES MENU_TITLE_PNG),
 		 MENU_MENU_TEXT);
 	addImage(Rectangle(x - 160, y - 60, x2 + 90, y2 - 440),
-		 driver->getTexture(RESSOURCE OPTIONS_TITLE_PNG),
+		 driver->getTexture(PATH_TO_RES OPTIONS_TITLE_PNG),
 		 MENU_OPTIONS_TEXT);
 	addImage(Rectangle(x - 130, y - 60, x2 + 120, y2 - 440),
-		 driver->getTexture(RESSOURCE CREDITS_TITLE_PNG),
+		 driver->getTexture(PATH_TO_RES CREDITS_TITLE_PNG),
 		 MENU_CREDITS_TEXT);
 	
 	addButton(Rectangle(x + 90, y + 175, x2 - 90, y2 - 405),
@@ -156,17 +182,17 @@ void GUI::initMenu(int x, int y, int x2, int y2)
 	addButton(Rectangle(x + 90, y + 475, x2 - 90, y2 - 105),
 		  Button::CREDITS_CANCEL,
 		  L"Cancel", MENU_BTN_CANCEL_CREDITS);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       MENU_BTN_CREDITS);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       MENU_BTN_OPTIONS);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       MENU_BTN_EXIT);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       MENU_BTN_CANCEL_MENU);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       MENU_BTN_CANCEL_OPTIONS);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       MENU_BTN_CANCEL_CREDITS);
 	buttonManager.setScaleImage(true, MENU_BTN_OPTIONS);
 	buttonManager.setScaleImage(true, MENU_BTN_CREDITS);
@@ -210,15 +236,15 @@ void GUI::initClient()
 		  Button::LAUNCH_GAME, L"Start",
 		  LAUNCH_GAME);
 	
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       LAUNCH_GAME);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       ADD_TEAM1);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       ADD_TEAM2);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       ADD_TEAM3);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       ADD_TEAM4);
 
 	buttonManager.setVisible(false, LAUNCH_GAME);
@@ -251,7 +277,7 @@ void GUI::initSrv2(int x, int y, int x2, int y2)
 	addButton(Rectangle(x + 520, y + 470,  x2 - 600, y2 - 180),
 		  Button::SRV_SECOND_OK, L"Ok", SRV_SECOND_OK);
 	buttonManager.setScaleImage(true, SRV_SECOND_OK);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			      SRV_SECOND_OK);	
 	buttonManager.setVisible(false, SRV_SECOND_OK);	
 	servPanel.setVisible(false, EditBox::NAME1);
@@ -263,21 +289,21 @@ void GUI::initSrv2(int x, int y, int x2, int y2)
 void GUI::initSrv1(int x, int y, int x2, int y2)
 {
 	addImage(Rectangle(x, y, x2, y2),
-		 driver->getTexture(RESSOURCE SRV_PANEL_PNG),
+		 driver->getTexture(PATH_TO_RES SRV_PANEL_PNG),
 		 MENU_SRV_PANEL);
-	addEditBox(L"Port", L"127.0.0.1",
+	addEditBox(L"Port", L"4242",
 		   Rectangle(x + 250, y + 180, x2 - 700, y2 - 490),
 		   EditBox::PORT);
-	addEditBox(L"Width", L"20",
+	addEditBox(L"Width", L"5",
 		   Rectangle(x + 250, y + 310, x2 - 700, y2 - 360),
 		   EditBox::WIDTH);
-	addEditBox(L"Height", L"20",
+	addEditBox(L"Height", L"5",
 		   Rectangle(x + 250, y + 440, x2 - 700, y2 - 230),
 		   EditBox::HEIGHT);
 	addEditBox(L"Client", L"12",
 		   Rectangle(x + 620, y + 180, x2 - 330, y2 - 490),
 		   EditBox::CLIENT);
-	addEditBox(L"Freq", L"100",
+	addEditBox(L"Freq", L"5",
 		   Rectangle(x + 620, y + 310, x2 - 330, y2 - 360),
 		   EditBox::FREQ);
 	addEditBox(L"Team", L"4",
@@ -289,7 +315,7 @@ void GUI::initSrv1(int x, int y, int x2, int y2)
 	imageManager.setScaleImage(true, MENU_SRV_PANEL);
 	imageManager.setVisible(false, MENU_SRV_PANEL);
 	buttonManager.setScaleImage(true, SRV_FIRST_OK);
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			      SRV_FIRST_OK);	
 	buttonManager.setVisible(false, SRV_FIRST_OK);	
 	servPanel.setVisible(false, EditBox::PORT);
@@ -313,7 +339,7 @@ Menu GUI::addMenu(Rectangle rect)
 	addButton(Rectangle(1650, 730, 1750, 780),
 		  Button::MENU_OPEN, L"Menu", OPEN_MENU);
 
-	buttonManager.setImage(driver->getTexture(RESSOURCE BTN_PNG),
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       OPEN_MENU);
 	
 	buttonManager.setScaleImage(true, OPEN_MENU);
@@ -330,4 +356,16 @@ Menu GUI::addMenu(Rectangle rect)
 void GUI::isButtonPressed()
 {
 	menu.isButtonPressed();
+}
+
+bool	GUI::scrollBarPosChanged()
+{
+	bool	hasChanged = scrollBar.getPos() != _posScrollBar;
+	_posScrollBar = scrollBar.getPos();
+	return (hasChanged);
+}
+
+int		GUI::getPort() const
+{
+	return menu.getPort();
 }

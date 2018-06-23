@@ -10,16 +10,18 @@ MAIN	=	main.cpp
 SRC	=		Display/IrrlichtDisplay.cpp			\
 			Hud/Button.cpp						\
 			Hud/ButtonManager.cpp				\
+			Hud/EditBox.cpp						\
 			Hud/GUI.cpp							\
 			Hud/Image.cpp						\
 			Hud/ImageManager.cpp				\
 			Hud/ListBox.cpp						\
-			Hud/main.cpp						\
+			Hud/Menu.cpp						\
 			Hud/Rectangle.cpp					\
 			Hud/ScrollBar.cpp					\
 			Hud/ServPanel.cpp					\
 			Hud/SrvClient.cpp					\
 			Hud/Table.cpp						\
+			Hud/utils.cpp						\
 			Manager/Buffer.cpp					\
 			Manager/Manager.cpp					\
 			Manager/Map.cpp						\

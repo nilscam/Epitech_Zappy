@@ -13,6 +13,7 @@
 #include "Table.hpp"
 #include "ListBox.hpp"
 #include "ButtonManager.hpp"
+#include "ScrollBar.hpp"
 #include "ImageManager.hpp"
 #include "ServPanel.hpp"
 #include "Menu.hpp"
@@ -29,6 +30,11 @@
 #define TABLE_X2 1825 /* Param for table rectangle */
 #define TABLE_Y2 955
 
+#define SCROLL_X 1300
+#define SCROLL_Y 100
+#define SCROLL_X2 1825 /* Param for SCROLL rectangle */
+#define SCROLL_Y2 150
+
 #define MENU_X 730
 #define MENU_Y 220
 #define MENU_X2 1180 /* Param for all menu components */
@@ -39,7 +45,7 @@
 #define SRV_X2 1600
 #define SRV_Y2 800
 
-#define RESSOURCE "../Res/"
+#define PATH_TO_RES "./Ress/hud/"
 
 #define GLOBAL_FONT "font.xml"
 
@@ -59,12 +65,15 @@ public:
 	GUI(irr::IrrlichtDevice *device);
 	~GUI();
 
-	void addListBoxMessage(const wchar_t *str, /* Add a string to the chat */
+	void addListBoxMessage(const std::string &str, /* Add a string to the chat */
 			       ListBox::MSGtype = ListBox::DEFAULT);
 	
 	void createTable(Rectangle rect, irr::video::ITexture *texture, /* Create the table with a panel.png and coressponding enum*/
 			 int id = -1);
 	void createListBox(Rectangle rect, irr::video::ITexture *texture, /* Create the chat with a panel.png and coressponding enum*/
+			   int id = -1);
+
+	void createScrollbar(Rectangle rect, irr::video::ITexture *texture, /* Create the chat with a panel.png and coressponding enum*/
 			   int id = -1);
 
 	Image addImage(Rectangle rect, irr::video::ITexture *texture,
@@ -75,6 +84,7 @@ public:
 			 const wchar_t *str= L"Unknown", int id = -1);
 	EditBox addEditBox(const wchar_t *title, const wchar_t *prev,
 			   Rectangle rect, int id);
+	ScrollBar addScrollBar(Rectangle rect);
 	Menu addMenu(Rectangle rect);
 	void isButtonPressed();
 	
@@ -92,11 +102,15 @@ public:
 	
 	void setTableVisible(bool visible);
 	void setListBoxVisible(bool visible);
+
+	bool	scrollBarPosChanged();
+	int		getPort() const;
 	
 	ButtonManager buttonManager;
 	ImageManager imageManager;
 	Table table;
 	ListBox listBox;
+	ScrollBar	scrollBar;
 
 	ServPanel servPanel;
 	Menu menu;
@@ -110,6 +124,8 @@ private:
 	int listBoxId;
 	int buttonId;
 	int imageId;
+	int	_posScrollBar;
+	int scrollBarId;
 
 };
 
