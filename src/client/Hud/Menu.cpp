@@ -12,12 +12,13 @@ Menu::Menu()
 }
 
 Menu::Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv,
-	SoundManager *snd)
+	   SoundManager *snd, StaticTextManager *txt)
 {
 	_img = img;
 	_btn = btn;
 	_srv = srv;
 	_snd = snd;
+	_txt = txt;
 	isMenuOpen = false;
 	isOptionsOpen = false;
 	isCreditsOpen = false;
@@ -42,6 +43,11 @@ void Menu::test(int id)
 
 void Menu::menu_open()
 {
+	/* FOR CYRIL 
+	show_inventory();
+	hide_inventory();
+	update_inventory({"12", "13", "20", "31", "42", "20", "12"}); */
+
 	if (!isMenuOpen && !isOptionsOpen && !isCreditsOpen) {
 		isMenuOpen = true;
 		_btn->setVisible(true, MENU_BTN_OPTIONS);
@@ -285,6 +291,69 @@ void Menu::add_team4()
 	_srv->srvClient->addPlayer(SrvClient::TEAM4);		
 	_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM4),
 		      ADD_TEAM4);
+}
+
+void Menu::hide_inventory()
+{
+	_img->setVisible(false, INVENTORY_PANEL);
+	_img->setVisible(false, INV_IMG_1);
+	_img->setVisible(false, INV_IMG_2);
+	_img->setVisible(false, INV_IMG_3);
+	_img->setVisible(false, INV_IMG_4);
+	_img->setVisible(false, INV_IMG_5);
+	_img->setVisible(false, INV_IMG_6);
+	_img->setVisible(false, INV_IMG_7);
+	_txt->setVisible(false, INV_VALUE_1);
+	_txt->setVisible(false, INV_VALUE_2);
+	_txt->setVisible(false, INV_VALUE_3);
+	_txt->setVisible(false, INV_VALUE_4);
+	_txt->setVisible(false, INV_VALUE_5);
+	_txt->setVisible(false, INV_VALUE_6);
+	_txt->setVisible(false, INV_VALUE_7);
+}
+
+void Menu::show_inventory()
+{
+	_img->setVisible(true, INVENTORY_PANEL);
+	_img->setVisible(true, INV_IMG_1);
+	_img->setVisible(true, INV_IMG_2);
+	_img->setVisible(true, INV_IMG_3);
+	_img->setVisible(true, INV_IMG_4);
+	_img->setVisible(true, INV_IMG_5);
+	_img->setVisible(true, INV_IMG_6);
+	_img->setVisible(true, INV_IMG_7);
+	_txt->setVisible(true, INV_VALUE_1);
+	_txt->setVisible(true, INV_VALUE_2);
+	_txt->setVisible(true, INV_VALUE_3);
+	_txt->setVisible(true, INV_VALUE_4);
+	_txt->setVisible(true, INV_VALUE_5);
+	_txt->setVisible(true, INV_VALUE_6);
+	_txt->setVisible(true, INV_VALUE_7);
+}
+
+void Menu::update_inventory(std::vector<std::string> string)
+{
+	int count = 0;
+	
+	for (std::vector<std::string>::iterator it = string.begin();
+	     it != string.end(); ++it) {
+		if (count == 0) {
+			_txt->setText((*it).c_str(), INV_VALUE_1);
+		} else if (count == 1) {
+			_txt->setText((*it).c_str(), INV_VALUE_2);
+		} else if (count == 2) {
+			_txt->setText((*it).c_str(), INV_VALUE_3);
+		} else if (count == 3) {
+			_txt->setText((*it).c_str(), INV_VALUE_4);
+		} else if (count == 4) {
+			_txt->setText((*it).c_str(), INV_VALUE_5);
+		} else if (count == 5) {
+			_txt->setText((*it).c_str(), INV_VALUE_6);
+		} else if (count == 6) {
+			_txt->setText((*it).c_str(), INV_VALUE_7);
+		}
+		count += 1;
+	}
 }
 
 void Menu::launch_game()

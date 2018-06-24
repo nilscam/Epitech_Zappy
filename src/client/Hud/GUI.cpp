@@ -83,11 +83,25 @@ Button GUI::addButton(Rectangle rect, Button::Action action,
 	return butt;
 }
 
-Image GUI::addImage(Rectangle rect, irr::video::ITexture *texture, int id)
+StaticText GUI::addStaticText(Rectangle rect, int id)
+{
+	irr::gui::IGUIStaticText *text = env->addStaticText(L"Blank",
+							    rect.get());
+	StaticText texte(text, id);
+	staticTextManager.addStaticText(texte);
+	return texte;
+}
+
+Image GUI::addImage(Rectangle rect, irr::video::ITexture *texture, int id,
+		    const wchar_t *str)
 {
 	irr::gui::IGUIImage *image = env->addImage(rect.get());
+
 	image->setImage(texture);
 	image->setUseAlphaChannel(true);
+	if (str) {
+		image->setToolTipText(str);
+	}
 	imageId += 1;
 	Image img(image, id == -1 ? imageId : id);
 	imageManager.addImage(img);
@@ -156,6 +170,7 @@ EditBox GUI::addEditBox(const wchar_t *str, const wchar_t *preview,
 	servPanel.addEditBox(box);
 	return box;
 }
+
 
 void GUI::initMenu(int x, int y, int x2, int y2)
 {
@@ -270,6 +285,87 @@ void GUI::initClient()
 	buttonManager.setScaleImage(true, ADD_TEAM3);
 	buttonManager.setScaleImage(true, ADD_TEAM4);
 }
+
+void GUI::initInventory(int x, int y, int x2, int y2)
+{
+	(void)x;
+	(void)y;
+	(void)x2;
+	(void)y2;
+
+	addImage(Rectangle(30, 30, 530, 230),
+		 driver->getTexture(PATH_TO_RES PANEL_PNG),
+		 INVENTORY_PANEL);
+	imageManager.setScaleImage(true, INVENTORY_PANEL);
+	imageManager.setVisible(true, INVENTORY_PANEL);
+	
+	addImage(Rectangle(130, 100, 190, 160),
+		 driver->getTexture(PATH_TO_RES FOOD_PNG),
+		 INV_IMG_1, L"Food");
+	addImage(Rectangle(220, 60, 280, 120),
+		 driver->getTexture(PATH_TO_RES LINEMATE_PNG),
+		 INV_IMG_2, L"Linemate");
+	addImage(Rectangle(300, 60, 360, 120),
+		 driver->getTexture(PATH_TO_RES DERAUMERE_PNG),
+		 INV_IMG_3, L"Deraumere");
+	addImage(Rectangle(380, 60, 440, 120),
+		 driver->getTexture(PATH_TO_RES SIBUR_PNG),
+		 INV_IMG_4, L"Sibur");
+	addImage(Rectangle(220, 140, 280, 200),
+		 driver->getTexture(PATH_TO_RES MENDIANE_PNG),
+		 INV_IMG_5, L"Mendiane");
+	addImage(Rectangle(300, 140, 360, 200),
+		 driver->getTexture(PATH_TO_RES PHIRAS_PNG),
+		 INV_IMG_6, L"Phiras");
+	addImage(Rectangle(380, 140, 440, 200),
+		 driver->getTexture(PATH_TO_RES THYSTAME_PNG),
+		 INV_IMG_7, L"Thystame");
+
+	imageManager.setScaleImage(true, INV_IMG_1);
+	imageManager.setScaleImage(true, INV_IMG_2);
+	imageManager.setScaleImage(true, INV_IMG_3);
+	imageManager.setScaleImage(true, INV_IMG_4);
+	imageManager.setScaleImage(true, INV_IMG_5);
+	imageManager.setScaleImage(true, INV_IMG_6);
+	imageManager.setScaleImage(true, INV_IMG_7);
+	
+	addStaticText(Rectangle(180, 150, 230, 210), INV_VALUE_1);
+	staticTextManager.setText("0", INV_VALUE_1);
+
+	addStaticText(Rectangle(270, 100, 330, 160), INV_VALUE_2);
+	staticTextManager.setText("0", INV_VALUE_2);
+
+	addStaticText(Rectangle(350, 100, 410, 160), INV_VALUE_3);
+	staticTextManager.setText("0", INV_VALUE_3);
+
+	addStaticText(Rectangle(430, 100, 490, 160), INV_VALUE_4);
+	staticTextManager.setText("0", INV_VALUE_4);
+
+	addStaticText(Rectangle(270, 180, 330, 240), INV_VALUE_5);
+	staticTextManager.setText("0", INV_VALUE_5);
+
+	addStaticText(Rectangle(350, 180, 410, 240), INV_VALUE_6);
+	staticTextManager.setText("0", INV_VALUE_6);
+
+	addStaticText(Rectangle(430, 180, 490, 240), INV_VALUE_7);
+	staticTextManager.setText("0", INV_VALUE_7);
+
+	imageManager.setVisible(false, INVENTORY_PANEL);
+	imageManager.setVisible(false, INV_IMG_1);
+	imageManager.setVisible(false, INV_IMG_2);
+	imageManager.setVisible(false, INV_IMG_3);
+	imageManager.setVisible(false, INV_IMG_4);
+	imageManager.setVisible(false, INV_IMG_5);
+	imageManager.setVisible(false, INV_IMG_6);
+	imageManager.setVisible(false, INV_IMG_7);
+	staticTextManager.setVisible(false, INV_VALUE_1);
+	staticTextManager.setVisible(false, INV_VALUE_2);
+	staticTextManager.setVisible(false, INV_VALUE_3);
+	staticTextManager.setVisible(false, INV_VALUE_4);
+	staticTextManager.setVisible(false, INV_VALUE_5);
+	staticTextManager.setVisible(false, INV_VALUE_6);
+	staticTextManager.setVisible(false, INV_VALUE_7);
+}
 	
 
 void GUI::initSrv2(int x, int y, int x2, int y2)
@@ -348,6 +444,8 @@ Menu GUI::addMenu(Rectangle rect)
 	initSrv1(SRV_X, SRV_Y, SRV_X2, SRV_Y2);
 	initSrv2(SRV_X, SRV_Y, SRV_X2, SRV_Y2);
 	initClient();
+	initInventory(0, 0, 0, 0);
+	
 	addButton(Rectangle(1650, 730, 1750, 780),
 		  Button::MENU_OPEN, L"Menu", OPEN_MENU);
 	addButton(Rectangle(1530, 730, 1630, 780),
@@ -365,7 +463,8 @@ Menu GUI::addMenu(Rectangle rect)
 	buttonManager.setVisible(true, NEXT_SONG);
 	
 	initMenu(x, y, x2, y2);
-	menu = Menu(&imageManager, &buttonManager, &servPanel, &soundManager);	
+	menu = Menu(&imageManager, &buttonManager, &servPanel, &soundManager,
+		    &staticTextManager);	
 
 	return menu;
 }

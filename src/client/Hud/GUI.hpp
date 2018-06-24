@@ -15,6 +15,7 @@
 #include "ButtonManager.hpp"
 #include "ScrollBar.hpp"
 #include "ImageManager.hpp"
+#include "StaticTextManager.hpp"
 #include "ServPanel.hpp"
 #include "Menu.hpp"
 #include "EID.hpp"
@@ -58,6 +59,13 @@
 #define OPTIONS_TITLE_PNG "options.png"
 #define CREDITS_TITLE_PNG "credits.png"
 
+#define FOOD_PNG "inventory/food.png"
+#define LINEMATE_PNG "inventory/linemate.png"
+#define DERAUMERE_PNG "inventory/deraumere.png"
+#define SIBUR_PNG "inventory/sibur.png"
+#define MENDIANE_PNG "inventory/mendiane.png"
+#define PHIRAS_PNG "inventory/phiras.png"
+#define THYSTAME_PNG "inventory/thystame.png"
 
 class GUI
 {
@@ -79,13 +87,14 @@ public:
 			   int id = -1);
 
 	Image addImage(Rectangle rect, irr::video::ITexture *texture,
-		       int id = -1);
+		       int id = -1, const wchar_t *str = NULL);
 	Table addTable(Rectangle rect);
 	ListBox addListBox(Rectangle rect);
 	Button addButton(Rectangle rect, Button::Action action,
 			 const wchar_t *str= L"Unknown", int id = -1);
 	EditBox addEditBox(const wchar_t *title, const wchar_t *prev,
 			   Rectangle rect, int id);
+	StaticText addStaticText(Rectangle rect, int id = -1);
 	ScrollBar addScrollBar(Rectangle rect);
 	Menu addMenu(Rectangle rect);
 	void isButtonPressed();
@@ -101,6 +110,7 @@ public:
 	void initSrv1(int x, int y, int x2, int y2);
 	void initSrv2(int x, int y, int x2, int y2);
 	void initClient();
+	void initInventory(int x, int y, int x2, int y2);
 	
 	void setTableVisible(bool visible);
 	void setListBoxVisible(bool visible);
@@ -114,6 +124,7 @@ public:
 	ButtonManager buttonManager;
 	ImageManager imageManager;
 	SoundManager soundManager;
+	StaticTextManager staticTextManager;
 	Table table;
 	ListBox listBox;
 	ScrollBar	scrollBar;
