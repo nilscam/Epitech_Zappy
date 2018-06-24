@@ -25,6 +25,7 @@ t_server	*init_struct_server(map_t *map, double f)
 
 	if (!this || !map || !INIT(ZCLOCK, this->zclock))
 		return (NULL);
+	this->turn = 0;
 	this->_fd_server = -1;
 	this->map = map;
 	this->f = f;
