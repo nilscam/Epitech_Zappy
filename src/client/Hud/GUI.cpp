@@ -239,6 +239,13 @@ void GUI::initClient()
 	addButton(Rectangle(1535, 730, 1635, 780),
 		  Button::LAUNCH_GAME, L"Start",
 		  LAUNCH_GAME);
+	addButton(Rectangle(1650, 670, 1750, 720),
+		  Button::CHANGE_SKYBOX, L"SkyBox",
+		  CHANGE_SKYBOX);
+	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
+			CHANGE_SKYBOX);
+	buttonManager.setScaleImage(true, CHANGE_SKYBOX);
+	buttonManager.setVisible(true, CHANGE_SKYBOX);
 	
 	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       LAUNCH_GAME);

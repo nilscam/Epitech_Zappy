@@ -53,12 +53,38 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	TEXTURE_YOSHI_EGG_BROWN = "./Ress/model/Egg/Yoshi_egg_brown.png";
 	const irr::io::path	GEM_MESH = "./Ress/model/PowerGem/gem.dae";
 	const irr::io::path	EGG_MESH = "./Ress/model/Egg/YoshiEgg.obj";
+
 	const irr::io::path	SKY_UP = "./Ress/model/irrlicht2_up.jpg";
 	const irr::io::path	SKY_DOWN = "./Ress/model/irrlicht2_dn.jpg";
 	const irr::io::path	SKY_LEFT = "./Ress/model/irrlicht2_lf.jpg";
 	const irr::io::path	SKY_RIGHT = "./Ress/model/irrlicht2_rt.jpg";
 	const irr::io::path	SKY_FORWARD = "./Ress/model/irrlicht2_ft.jpg";
 	const irr::io::path	SKY_BACKWARD = "./Ress/model/irrlicht2_bk.jpg";
+	const irr::io::path SKY_UP1 = "./Ress/model/sor_cwd/cwd_up.JPG";
+	const irr::io::path SKY_DOWN1 = "./Ress/model/sor_cwd/cwd_dn.JPG";
+	const irr::io::path SKY_LEFT1 = "./Ress/model/sor_cwd/cwd_lf.JPG";
+	const irr::io::path SKY_RIGHT1 = "./Ress/model/sor_cwd/cwd_rt.JPG";
+	const irr::io::path SKY_FORWARD1 = "./Ress/model/sor_cwd/cwd_bk.JPG";
+	const irr::io::path SKY_BACKWARD1 = "./Ress/model/sor_cwd/cwd_ft.JPG";
+	const irr::io::path SKY_UP2 = "./Ress/model/skybox/mp_met/met_up.tga";
+	const irr::io::path SKY_DOWN2 = "./Ress/model/skybox/mp_met/met_dn.tga";
+	const irr::io::path SKY_LEFT2 = "./Ress/model/skybox/mp_met/met_lf.tga";
+	const irr::io::path SKY_RIGHT2 = "./Ress/model/skybox/mp_met/met_rt.tga";
+	const irr::io::path SKY_FORWARD2 = "./Ress/model/skybox/mp_met/met_bk.tga";
+	const irr::io::path SKY_BACKWARD2 = "./Ress/model/skybox/mp_met/met_ft.tga";
+	const irr::io::path SKY_UP3 = "./Ress/model/skybox/mp_seeingred/seeingred_up.tga";
+	const irr::io::path SKY_DOWN3 = "./Ress/model/skybox/mp_seeingred/seeingred_dn.tga";
+	const irr::io::path SKY_LEFT3 = "./Ress/model/skybox/mp_seeingred/seeingred_lf.tga";
+	const irr::io::path SKY_RIGHT3 = "./Ress/model/skybox/mp_seeingred/seeingred_rt.tga";
+	const irr::io::path SKY_FORWARD3 = "./Ress/model/skybox/mp_seeingred/seeingred_bk.tga";
+	const irr::io::path SKY_BACKWARD3 = "./Ress/model/skybox/mp_seeingred/seeingred_ft.tga";
+	const irr::io::path SKY_UP4 = "./Ress/model/skybox/sb_strato/stratosphere_up.tga";
+	const irr::io::path SKY_DOWN4 = "./Ress/model/skybox/sb_strato/stratosphere_dn.tga";
+	const irr::io::path SKY_LEFT4 = "./Ress/model/skybox/sb_strato/stratosphere_lf.tga";
+	const irr::io::path SKY_RIGHT4 = "./Ress/model/skybox/sb_strato/stratosphere_rt.tga";
+	const irr::io::path SKY_FORWARD4 = "./Ress/model/skybox/sb_strato/stratosphere_bk.tga";
+	const irr::io::path SKY_BACKWARD4 = "./Ress/model/skybox/sb_strato/stratosphere_ft.tga";
+
 	const irr::io::path 	PERSO = "./Ress/model/perso/perso.dae";
 	const irr::io::path	TEXTURE_PERSO_RED = "./Ress/model/perso/texture_perso_1.png";
 	const irr::io::path	TEXTURE_PERSO_BLUE = "./Ress/model/perso/texture_perso_2.png";
@@ -110,7 +136,37 @@ namespace IrrlichtDisplayConst
 		TEXTURE_PERSO_BLUE_IDX,
 		TEXTURE_PERSO_GREEN_IDX,
 		TEXTURE_PERSO_YELLOW_IDX,
-		TEXTURE_PERSO_BROWN_IDX
+		TEXTURE_PERSO_BROWN_IDX,
+		SKY_UP_IDX,
+		SKY_DOWN_IDX,
+		SKY_LEFT_IDX,
+		SKY_RIGHT_IDX,
+		SKY_FORWARD_IDX,
+		SKY_BACKWARD_IDX,
+		SKY_UP1_IDX,
+		SKY_DOWN1_IDX,
+		SKY_LEFT1_IDX,
+		SKY_RIGHT1_IDX,
+		SKY_FORWARD1_IDX,
+		SKY_BACKWARD1_IDX,
+		SKY_UP2_IDX,
+		SKY_DOWN2_IDX,
+		SKY_LEFT2_IDX,
+		SKY_RIGHT2_IDX,
+		SKY_FORWARD2_IDX,
+		SKY_BACKWARD2_IDX,
+		SKY_UP3_IDX,
+		SKY_DOWN3_IDX,
+		SKY_LEFT3_IDX,
+		SKY_RIGHT3_IDX,
+		SKY_FORWARD3_IDX,
+		SKY_BACKWARD3_IDX,
+		SKY_UP4_IDX,
+		SKY_DOWN4_IDX,
+		SKY_LEFT4_IDX,
+		SKY_RIGHT4_IDX,
+		SKY_FORWARD4_IDX,
+		SKY_BACKWARD4_IDX
 	};
 
 	struct FoodTexture
@@ -216,7 +272,7 @@ public:
 	/* Init */
 	bool							initTexture();
 	irr::scene::ICameraSceneNode	*create_camera();
-	bool 							create_sky();
+	bool 							create_sky(int idSkyBox);
 	irr::scene::ISceneNode			*create_block(
 		int texture,
 		irr::core::vector3df pos,
