@@ -17,6 +17,8 @@ Manager::Manager()
 	_args = NULL;
 	_port = 4242;
 	_followCamPlayer = -2;
+	_lastSkyBox = 0;
+	_timeSinceBegin = 0;
 	this->initReadCmd();
 	_display = std::make_unique<IrrlichtDisplay>();
 	if (!_display->init()) {
@@ -47,6 +49,7 @@ bool	Manager::initServer()
 		_display->loop();
 		if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
 			_display->display(_gui);
+			this->manageSkyBox();
 		} else {
 			_needToExit = true;
 			return (true);
@@ -149,11 +152,13 @@ void	Manager::spectateGame()
 			this->updateGUILevelPlayer();
 			this->updateGUITimeUnit();
 			this->manageCamOnPlayer();
+			this->manageSkyBox();
 			//_display->getTeamClicked(_idxPlayers);
 		} else {
 			_stop = true;
 		}
 	}
+	_client->disconnect();
 }
 bool	Manager::needToExit(void) const noexcept
 {
@@ -208,6 +213,7 @@ void	Manager::initReadCmd()
 	_cmd["suc"] = std::bind(&Manager::suc, this);
 	_cmd["sbp"] = std::bind(&Manager::sbp, this);
 	_cmd["egg"] = std::bind(&Manager::egg, this);
+	_cmd["time"] = std::bind(&Manager::time, this);
 }
 
 void	Manager::freeArgs()
@@ -287,13 +293,21 @@ void	Manager::manageCamOnPlayer()
 	}
 	auto playerFollowCam = _display->getIdPlayerFollowCam();
 	if (playerFollowCam != _followCamPlayer && playerFollowCam >= 0) {
-		std::cout << "ASK INVENTORY" << std::endl;
 		char str[20];
 		sprintf(str, "pin %d\n", playerFollowCam);
 		_sendBuffer->Put(str);
 		_followCamPlayer = playerFollowCam;
 	} else if (playerFollowCam != _followCamPlayer && playerFollowCam < 0) {
 		//_gui->setVisibleInventory(false);
+		_followCamPlayer = playerFollowCam;
+	}
+}
+
+void	Manager::manageSkyBox()
+{
+	if (_gui->menu.idSkyBox != _lastSkyBox) {
+		_lastSkyBox = _gui->menu.idSkyBox;
+		_display->create_sky(_lastSkyBox);
 	}
 }
 
@@ -359,7 +373,7 @@ bool	Manager::tna()//! N\n * nbr_teams || tna\n name of all the teams
 	}
 	_teams.emplace_back(std::string(_args[1]));
 	_display->setTeams(_teams);
-	_gui->table.addTeamName({{_teams.back()}});
+	_gui->table.addTeamName({{_teams.back()}}, _teams.size() - 1);
 	_gui->addListBoxMessage(
 		"New team Connected : " + _teams.back(),
 		getColorForTeam(_teams.back())
@@ -424,10 +438,11 @@ bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
 			_display->movePlayer(idxPlayer, pos);
 			_players[idxPlayer]->setPos(pos);
 		}
-		std::string	str("Player #");
-		str.append(std::to_string(idxPlayer));
-		str.append(" Move");
-		_gui->addListBoxMessage(str);
+		// _gui->addListBoxMessage(
+		// 	"Player #" + std::to_string(idxPlayer)
+		// 	+ " Move",
+		// 	getColorForTeam(_players[idxPlayer]->getNameTeam())
+		// );
 	}
 	return (true);
 }
@@ -898,5 +913,14 @@ bool	Manager::egg()// e X Y
 	_display->addEgg(eggNumber, idxPlayer);
 	_display->setPlayerAction(
 			idxPlayer, IDisplay::PlayerAnimationStyle::EGG_LAYING);
+	return (true);
+}
+
+bool	Manager::time()// t \n time since beginning of the game
+{
+	if (!_args[1]) {
+		return (false);
+	}
+	_timeSinceBegin = atoi(_args[1]);
 	return (true);
 }

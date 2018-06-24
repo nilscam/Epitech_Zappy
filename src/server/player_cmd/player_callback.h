@@ -60,7 +60,8 @@ typedef enum
 	CB_TIME_UNIT_MODIF,
 	CB_EJECT,
 	CB_EGG_POSITION,
-	CB_TIME
+	CB_TIME,
+	CB_ELEVATION_FAILED
 }	callback_type_t;
 
 struct client_callback_s

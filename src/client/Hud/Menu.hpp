@@ -15,6 +15,7 @@
 #include "ServPanel.hpp"
 #include "ServerHandler.hpp"
 #include "SoundManager.hpp"
+#include "StaticTextManager.hpp"
 #include "utils.hpp"
 #include "EID.hpp"
 #include <iostream>
@@ -25,7 +26,7 @@ class Menu
 public:
 	Menu();
 	Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv,
-		SoundManager *snd);
+	     SoundManager *snd, StaticTextManager *txt);
 	~Menu();
 	void server_open();
 	void server_first_ok();
@@ -46,15 +47,22 @@ public:
 	void launch_game();
 	void next_song();
 	void exit();
+	void hide_inventory();
+	void show_inventory();
+	void update_inventory(std::vector<std::string> str);
 	std::shared_ptr<ServerHandler>	getServerHandler(void) const noexcept;
 	int		getPort() const;
 	bool		getExit() const;
+	void	nextSkyBox();
+
 	bool isMenuOpen;
 	bool isOptionsOpen;
 	bool isCreditsOpen;
 	bool	isServerLaunch;
 	bool	needToExit;
+	int		idSkyBox;
 private:
+	StaticTextManager *_txt;
 	ImageManager *_img;
 	ButtonManager *_btn;
 	ServPanel *_srv;

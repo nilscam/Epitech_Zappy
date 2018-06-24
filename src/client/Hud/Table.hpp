@@ -22,15 +22,16 @@ public:
 	Table();
 	~Table();
 	void addCol(const wchar_t *name);
-	void addRow(const wchar_t *name);
+	void addRow(const wchar_t *name,
+				irr::video::SColor color = irr::video::SColor(255, 30, 30, 30));
 	
 	bool setValue(int col, int row, const std::string &value,
-		      irr::video::SColor color = irr::video::SColor(255, 30, 30, 30));
+				irr::video::SColor color = irr::video::SColor(255, 30, 30, 30));
 	/* setValue in a cell from row and col nb */
 	
 	bool setValue(const wchar_t *colName, const wchar_t *rowName,
-		      const wchar_t *data,
-		      irr::video::SColor color = irr::video::SColor(255, 30, 30, 30));
+				const wchar_t *data,
+				irr::video::SColor color = irr::video::SColor(255, 30, 30, 30));
 	/* setValue in a cell from row and col name */
 
 	int getIdFromRow(const wchar_t * rowName);
@@ -41,7 +42,7 @@ public:
 	void initTable();
 	/* init the column */
 	
-	void addTeamName(std::vector<std::string> list);
+	void addTeamName(std::vector<std::string> list, int idxTeam);
 	/* init the row from a list of name */
 private:
 	int _col;

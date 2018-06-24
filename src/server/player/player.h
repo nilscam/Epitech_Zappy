@@ -49,6 +49,7 @@ typedef struct elevation_tab_s
 bool	elevation_can_elevate(int level, int nb_of_players, int *stones);
 void	player_elevate(player_t *self);
 elevation_tab_t	*get_elevation_at_level(int level);
+void	consume_inventory_elevation(inventory_t *inv, int level);
 
 /* player_food.c */
 bool	player_is_dead_of_hunger(player_t *self);
