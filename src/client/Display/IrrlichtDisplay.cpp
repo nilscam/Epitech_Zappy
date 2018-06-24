@@ -819,3 +819,38 @@ void IrrlichtDisplay::Egg::create_fx(irr::core::vector3df pos, irr::core::vector
 }
 
 ///////egggggggg/////////////
+
+////particule///
+
+void		created_fire(float x, float y, irr::video::IVideoDriver *driver, irr::scene::ISceneManager *sceneManager)
+{
+	irr::scene::IParticleSystemSceneNode* ps =
+			sceneManager->addParticleSystemSceneNode(false);
+
+	irr::scene::IParticleEmitter* em = ps->createBoxEmitter(
+			irr::core::aabbox3d<irr::f32>(-10,0,-10,10,1,10), // emitter size
+			irr::core::vector3df(0.0f,0.06f,0.0f),   // initial direction
+			25, 40,                             // emit rate
+			irr::video::SColor(0,255,255,255),       // darkest color
+			irr::video::SColor(0,255,255,255),       // brightest color
+			800,1500,30,                         // min and max age, angle
+			irr::core::dimension2df(10.f,10.f),         // min size
+			irr::core::dimension2df(20.f,20.f));        // max size
+
+	ps->setEmitter(em); // this grabs the emitter
+	em->drop(); // so we can drop it here without deleting it
+
+	irr::scene::IParticleAffector* paf = ps->createFadeOutParticleAffector();
+
+	ps->addAffector(paf); // same goes for the affector
+	paf->drop();
+
+	ps->setPosition(irr::core::vector3df(x, 27.5, y));
+	ps->setScale(irr::core::vector3df(2,2,2));
+	ps->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	ps->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
+	ps->setMaterialTexture(0, driver->getTexture("./Ress/model/particlewhite.bmp"));
+	ps->setMaterialType(irr::video::EMT_TRANSPARENT_ADD_COLOR);
+}
+
+/////particule ////
