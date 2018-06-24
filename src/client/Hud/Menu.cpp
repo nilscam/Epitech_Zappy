@@ -11,11 +11,13 @@ Menu::Menu()
 {
 }
 
-Menu::Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv)
+Menu::Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv,
+	SoundManager *snd)
 {
 	_img = img;
 	_btn = btn;
 	_srv = srv;
+	_snd = snd;
 	isMenuOpen = false;
 	isOptionsOpen = false;
 	isCreditsOpen = false;
@@ -230,7 +232,7 @@ void Menu::server_second_ok()
 	auto vec = _srv->srvClient->getVectorTeam();
 	
 	_serverHandler->startServer(width, height, port, vec, client, freq);
-	sleep(1);
+	sleep(3);
 	isServerLaunch = true;
 	/* EXECUTE SERVER */
 }
@@ -281,6 +283,8 @@ void Menu::launch_game()
 
 void Menu::next_song()
 {
+	_snd->playNextMusic();
+	std::cout << "Next music !" << "\n";
 }
 
 void Menu::exit()

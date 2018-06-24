@@ -23,6 +23,7 @@ SRC	=	Display/IrrlichtDisplay.cpp			\
 		Hud/SrvClient.cpp				\
 		Hud/Table.cpp					\
 		Hud/utils.cpp					\
+		Hud/SoundManager.cpp				\
 		Manager/Buffer.cpp				\
 		Manager/Manager.cpp				\
 		Manager/Map.cpp					\
@@ -45,13 +46,14 @@ INC	=	-I include			\
 		-I Manager			\
 		-I reseau			\
 		-I ServerHandler	\
-		-I Utils
+		-I Utils		\
+		-I lib/include
 F	=	-W -Wall -Werror -Wextra
 
 NAM_OBJ	=	$(MAIN:.cpp=.o)
 OBJ	=	$(SRC:.cpp=.o)
 
-LIB		=	-lIrrlicht -lGL -lXxf86vm -lXext -lX11
+LIB		= -lIrrlicht -lGL -lXxf86vm -lXext -lX11 -L lib -lIrrKlang lib/libIrrKlang.so
 
 G++	=	g++ -std=c++14 -g3 -o
 
