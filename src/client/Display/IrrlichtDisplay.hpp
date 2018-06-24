@@ -448,6 +448,7 @@ private:
 		Clock					_deadClock;
 
 		/* Idle */
+		bool					_isIdle;
 		long long				_timeNextIdle;
 		Clock					_idleClock;
 
