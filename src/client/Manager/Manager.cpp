@@ -18,6 +18,7 @@ Manager::Manager()
 	_port = 4242;
 	_followCamPlayer = -2;
 	_lastSkyBox = 0;
+	_timeSinceBegin = 0;
 	this->initReadCmd();
 	_display = std::make_unique<IrrlichtDisplay>();
 	if (!_display->init()) {
@@ -212,6 +213,7 @@ void	Manager::initReadCmd()
 	_cmd["suc"] = std::bind(&Manager::suc, this);
 	_cmd["sbp"] = std::bind(&Manager::sbp, this);
 	_cmd["egg"] = std::bind(&Manager::egg, this);
+	_cmd["time"] = std::bind(&Manager::time, this);
 }
 
 void	Manager::freeArgs()
@@ -371,7 +373,7 @@ bool	Manager::tna()//! N\n * nbr_teams || tna\n name of all the teams
 	}
 	_teams.emplace_back(std::string(_args[1]));
 	_display->setTeams(_teams);
-	_gui->table.addTeamName({{_teams.back()}});
+	_gui->table.addTeamName({{_teams.back()}}, _teams.size() - 1);
 	_gui->addListBoxMessage(
 		"New team Connected : " + _teams.back(),
 		getColorForTeam(_teams.back())
@@ -911,5 +913,14 @@ bool	Manager::egg()// e X Y
 	_display->addEgg(eggNumber, idxPlayer);
 	_display->setPlayerAction(
 			idxPlayer, IDisplay::PlayerAnimationStyle::EGG_LAYING);
+	return (true);
+}
+
+bool	Manager::time()// t \n time since beginning of the game
+{
+	if (!_args[1]) {
+		return (false);
+	}
+	_timeSinceBegin = atoi(_args[1]);
 	return (true);
 }
