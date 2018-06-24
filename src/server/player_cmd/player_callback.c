@@ -96,6 +96,12 @@ static const client_callback_t	CLIENT_CALLBACKS[] = {
 		"eject: %d\n",
 		"<direction>",
 		"Ejected from direction"
+	},
+	{
+		CB_ELEVATION_FAILED, player_callback_send_format,
+		"Elevation failed\n",
+		"",
+		"Elevation failed"
 	}
 };
 
