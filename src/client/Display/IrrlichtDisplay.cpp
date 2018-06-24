@@ -118,7 +118,11 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::YOSHI_EGG_GREEN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_GREEN);
 	_texture[IrrlichtDisplayConst::YOSHI_EGG_YELLOW_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_YELLOW);
 	_texture[IrrlichtDisplayConst::YOSHI_EGG_BROWN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_BROWN);
-	_texture[IrrlichtDisplayConst::FOOD_BASE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::FOOD_BASE);
+	for (size_t i = 0; i < sizeof(IrrlichtDisplayConst::FOODS) / sizeof(*IrrlichtDisplayConst::FOODS); ++i)
+	{
+		auto const & food = IrrlichtDisplayConst::FOODS[i];
+		_texture[food.idx] = this->_driver->getTexture(food.base);
+	}
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_RED);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BLUE);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_GREEN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_GREEN);
@@ -324,12 +328,14 @@ void	IrrlichtDisplay::setFoodTile(
 	int after = content._food;
 	while (before < after)
 	{
+		auto const & food = getRandomFood();
 		m->foods().push_back(
 			std::make_shared<Food>(
-				create_food(
-						IrrlichtDisplayConst::FOOD_BASE_IDX,
-					getRandomPos(pos, IrrlichtDisplayConst::FOOD_Z),
-					IrrlichtDisplayConst::FOOD_SCALE
+				create_mesh(
+					food.idx,
+					getRandomPos(pos, food.z),
+					food.scale,
+					food.mesh
 				)
 			)
 		);
@@ -544,15 +550,6 @@ irr::scene::IMeshSceneNode *	IrrlichtDisplay::create_egg(
 	return (create_mesh(texture, pos, scale, IrrlichtDisplayConst::EGG_MESH));
 }
 
-irr::scene::IMeshSceneNode *IrrlichtDisplay::create_food(
-	int texture,
-	irr::core::vector3df pos,
-	irr::core::vector3df scale
-)
-{
-	return (create_mesh(texture, pos, scale, IrrlichtDisplayConst::FOOD_MESH));
-}
-
 irr::scene::IMeshSceneNode *IrrlichtDisplay::create_mesh(
 	int texture,
 	irr::core::vector3df pos,
@@ -716,6 +713,13 @@ irr::core::vector2df	IrrlichtDisplay::rotatePoint(
 	point.X = x_rot + center.X;
 	point.Y = y_rot + center.Y;
 	return point;
+}
+
+IrrlichtDisplayConst::FoodTexture	IrrlichtDisplay::getRandomFood(void)
+{
+	int max = sizeof(IrrlichtDisplayConst::FOODS) / sizeof(*IrrlichtDisplayConst::FOODS);
+	int r = Math::randomNumberBetween(0, max - 1);
+	return IrrlichtDisplayConst::FOODS[r];
 }
 
 bool	IrrlichtDisplay::doesMapContentExist(Point const & pos) const noexcept

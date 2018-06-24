@@ -51,9 +51,7 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	TEXTURE_YOSHI_EGG_GREEN = "./Ress/model/Egg/Yoshi_egg_green.png";
 	const irr::io::path	TEXTURE_YOSHI_EGG_YELLOW = "./Ress/model/Egg/Yoshi_egg_yellow.png";
 	const irr::io::path	TEXTURE_YOSHI_EGG_BROWN = "./Ress/model/Egg/Yoshi_egg_brown.png";
-	const irr::io::path	FOOD_BASE = "./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png";
 	const irr::io::path	GEM_MESH = "./Ress/model/PowerGem/gem.dae";
-	const irr::io::path	FOOD_MESH = "./Ress/model/Food/Watermelon/Watermelon.obj";
 	const irr::io::path	EGG_MESH = "./Ress/model/Egg/YoshiEgg.obj";
 	const irr::io::path	SKY_UP = "./Ress/model/irrlicht2_up.jpg";
 	const irr::io::path	SKY_DOWN = "./Ress/model/irrlicht2_dn.jpg";
@@ -102,12 +100,71 @@ namespace IrrlichtDisplayConst
 		YOSHI_EGG_GREEN_IDX,
 		YOSHI_EGG_YELLOW_IDX,
 		YOSHI_EGG_BROWN_IDX,
-		FOOD_BASE_IDX,
+		FOOD_BASE_IDX_1,
+		FOOD_BASE_IDX_2,
+		FOOD_BASE_IDX_3,
+		FOOD_BASE_IDX_4,
+		FOOD_BASE_IDX_5,
+		FOOD_BASE_IDX_6,
 		TEXTURE_PERSO_RED_IDX,
 		TEXTURE_PERSO_BLUE_IDX,
 		TEXTURE_PERSO_GREEN_IDX,
 		TEXTURE_PERSO_YELLOW_IDX,
 		TEXTURE_PERSO_BROWN_IDX
+	};
+
+	struct FoodTexture
+	{
+		irr::io::path			base;
+		irr::io::path			mesh;
+		TexIdx					idx;
+		float					z;
+		irr::core::vector3df	scale;
+	};
+
+	const FoodTexture FOODS[] = {
+		{
+			"./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png",
+			"./Ress/model/Food/Watermelon/Watermelon.obj",
+			FOOD_BASE_IDX_1,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		},
+		{
+			"./Ress/model/Food/Banana/Texture/Banana Texture.png",
+			"./Ress/model/Food/Banana/Banana.obj",
+			FOOD_BASE_IDX_2,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		},
+		{
+			"./Ress/model/Food/Carrot/Texture/Carrot Texture.png",
+			"./Ress/model/Food/Carrot/Carrot.obj",
+			FOOD_BASE_IDX_3,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		},
+		{
+			"./Ress/model/Food/Green Pepper/Texture/Green Pepper Texture.png",
+			"./Ress/model/Food/Green Pepper/Green Pepper.obj",
+			FOOD_BASE_IDX_4,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		},
+		{
+			"./Ress/model/Food/Melon/Texture/Melon Texture.png",
+			"./Ress/model/Food/Melon/Melon.obj",
+			FOOD_BASE_IDX_5,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		},
+		{
+			"./Ress/model/Food/Onion/Texture/Onion Texture.png",
+			"./Ress/model/Food/Onion/Onion.obj",
+			FOOD_BASE_IDX_6,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		}
 	};
 
 }
@@ -165,11 +222,6 @@ public:
 		irr::core::vector3df pos,
 		irr::core::vector3df scale
 	);
-	irr::scene::IMeshSceneNode		*create_food(
-		int texture,
-		irr::core::vector3df pos,
-		irr::core::vector3df scale
-	);
 	irr::scene::IMeshSceneNode		*create_mesh(
 		int texture,
 		irr::core::vector3df pos,
@@ -208,6 +260,7 @@ public:
 		double angle,
 		irr::core::vector2df point
 	);
+	static IrrlichtDisplayConst::FoodTexture	getRandomFood(void);
 
 private:
 
