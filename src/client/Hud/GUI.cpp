@@ -31,8 +31,8 @@ void	GUI::launchGui()
 	this->createTable(Rectangle(TABLE_X, TABLE_Y, TABLE_X2, TABLE_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
 	this->createScrollbar(Rectangle(SCROLL_X, SCROLL_Y, SCROLL_X2, SCROLL_Y2), driver->getTexture(PATH_TO_RES));
 	
-	scrollBar.setPos(2);
-	_posScrollBar = 2;
+	scrollBar.setPos(1);
+	_posScrollBar = 1;
 	device->setResizable(false);
 }
 
@@ -315,7 +315,7 @@ void GUI::initSrv1(int x, int y, int x2, int y2)
 	addEditBox(L"Client", L"12",
 		   Rectangle(x + 620, y + 180, x2 - 330, y2 - 490),
 		   EditBox::CLIENT);
-	addEditBox(L"Freq", L"5",
+	addEditBox(L"Freq", L"1",
 		   Rectangle(x + 620, y + 310, x2 - 330, y2 - 360),
 		   EditBox::FREQ);
 	addEditBox(L"Team", L"4",
