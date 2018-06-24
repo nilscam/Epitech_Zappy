@@ -327,6 +327,8 @@ private:
 		void					loopFalling(void) noexcept;
 		void					loopAnimate(void) noexcept;
 		void					changeMesh(irr::io::path const & path) noexcept;
+		long long				generateRandomTimeIdle(void) const noexcept;
+		irr::io::path			randomIdle(void) const noexcept;
 
 		/* Irrlicht */
 		irr::scene::ISceneManager &					_sceneManager;
@@ -372,6 +374,10 @@ private:
 		bool					_isDying;
 		bool					_isDead;
 		Clock					_deadClock;
+
+		/* Idle */
+		long long				_timeNextIdle;
+		Clock					_idleClock;
 
 	};
 

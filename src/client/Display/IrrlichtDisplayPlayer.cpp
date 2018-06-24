@@ -37,7 +37,7 @@ IrrlichtDisplay::Player::Player(
 	,	_isMoving(false)
 	,	_isFalling(false)
 	,	_isDying(false)
-	,	_isDead(false)
+	,	_timeNextIdle(0)
 {
 	switch (origin)
 	{
@@ -156,8 +156,6 @@ void	IrrlichtDisplay::Player::loop(void)
 	else if (_isFalling)
 	{
 		changeMesh(IrrlichtDisplayConst::PERSO_FALLING);
-		// changeMesh(IrrlichtDisplayConst::PERSO_FALL_IMPACT);
-		// changeMesh(IrrlichtDisplayConst::PERSO_FALL_GET_UP);
 	}
 	else if (_isMoving)
 	{
@@ -168,7 +166,16 @@ void	IrrlichtDisplay::Player::loop(void)
 	}
 	else
 	{
-		changeMesh(IrrlichtDisplayConst::PERSO);
+		if (_idleClock.timeSinceMark() >= _timeNextIdle)
+		{
+			_timeNextIdle = generateRandomTimeIdle();
+			_idleClock.mark();
+			changeMesh(randomIdle());
+			if (_mesh)
+			{
+				_mesh->setLoopMode(false);
+			}
+		}
 	}
 }
 
@@ -365,7 +372,7 @@ void	IrrlichtDisplay::Player::loopFalling(void) noexcept
 			_fallClock.mark();
 			_fallHeight -= 2;
 		}
-		if (_fallHeight <= 0)
+		if (_fallHeight <= 10)
 		{
 			animate(IrrlichtDisplayConst::PERSO_FALL_IMPACT);
 			_isFalling = false;
@@ -419,10 +426,26 @@ void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path) noexcept
 		{
 			_mesh->setLoopMode(false);
 		}
-		else if (_movDurationMillis > 0)
+		else if (_timeUnit > 0)
 		{
 			irr::f32 fps = (float)_timeUnit * maxFrames;
 			_mesh->setAnimationSpeed(fps);
 		}
+		else
+		{
+			_mesh->setAnimationSpeed(maxFrames / 2);
+		}
 	}
+}
+
+long long	IrrlichtDisplay::Player::generateRandomTimeIdle(void) const noexcept
+{
+	return Math::randomNumberBetween(1000, 5000);
+}
+
+irr::io::path	IrrlichtDisplay::Player::randomIdle(void) const noexcept
+{
+	int max = sizeof(IrrlichtDisplayConst::PERSO_IDLES) / sizeof(*IrrlichtDisplayConst::PERSO_IDLES);
+	int r = Math::randomNumberBetween(0, max - 1);
+	return IrrlichtDisplayConst::PERSO_IDLES[r];
 }
