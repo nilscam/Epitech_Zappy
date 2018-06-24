@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import commands
+import random
 import ai
 
 class IAManager(ai.ai):
@@ -35,21 +36,24 @@ class IAManager(ai.ai):
         self.castCmd("Look\n")
         self.takeAllItem()
 
-    def exploreStep(self):
-        #Broadcast
+    def exploreStep(self, mode):
         self.broadcastInfos()
-        #Look
         self.castCmd("Look\n")
-        #inventory
         self.castCmd("Inventory\n")
-        #takeAllItem
         self.takeAllItem()
-        #Oriente
-        vectorTurn = self.orienteRegroupIncantation()
-        for dir in vectorTurn:
-            self.castCmd(dir + "\n")
-        #Move
-        self.castCmd("Forward\n")
+
+        if mode == 'explore':
+            vectorTurn = random.choice([['Left'], ['Right'], [], ['Left', 'Left']])
+            for dir in vectorTurn:
+                self.castCmd(dir + "\n")
+            self.castCmd("Forward\n")
+
+        elif mode == 'group':
+            vectorTurn = self.orienteRegroupIncantation()
+            for dir in vectorTurn:
+                self.castCmd(dir + "\n")
+            if self.shouldIMove():
+                self.castCmd("Forward\n")
 
     def reGroup(self):
         if self.canStartIncante():
@@ -60,14 +64,14 @@ class IAManager(ai.ai):
                 self.waitServerEvent()
         else:
             # remplacer ça par les règles de Paint
-            self.exploreStep()
+            self.exploreStep('group')
 
     def play(self):
         while self.level < 8:
             if self.canIncante():
                 self.reGroup()
             else:
-                self.exploreStep()
+                self.exploreStep('explore')
 
     def broadcastInfos(self):
         # on envoie le nom de team + son id + son level + son inventaire
@@ -115,26 +119,19 @@ class IAManager(ai.ai):
 
     def interpreteCmd(self, cmdResponse):
         # modifier les variables de l'ia en fonction du message
-        try:
-            command = cmdResponse['cmd'].split()[0]
-            response = cmdResponse['response']
-            if command == 'Connect_nbr' and self.Connect_nbr():
-                self.castCmd("Fork\n")
-            elif command in ['Forward', 'Left', 'Right', 'Eject', 'Fork']:
-                getattr(self, command)()
-            elif command in ['Look', 'Inventory', 'Incantation']:
-                getattr(self, command)(response)
-            elif command in ['Set', 'Take']:
-                getattr(self, command)(response, cmdResponse['cmd'].split()[1])
-            elif command == 'Broadcast':
-                #print ('broadcast with success')
-                pass
-        except:
-            print ("ERROR")
-            print (self.cmdManager.savecmdBuffer)
-            print (self.cmdManager.saveresponseBuffer)
-            print (self.cmdManager.cmdBuffer)
-            exit(84)
+        command = cmdResponse['cmd'].split()[0]
+        response = cmdResponse['response']
+        if command == 'Connect_nbr' and self.Connect_nbr():
+            self.castCmd("Fork\n")
+        elif command in ['Forward', 'Left', 'Right', 'Eject', 'Fork']:
+            getattr(self, command)()
+        elif command in ['Look', 'Inventory', 'Incantation']:
+            getattr(self, command)(response)
+        elif command in ['Set', 'Take']:
+            getattr(self, command)(response, cmdResponse['cmd'].split()[1])
+        elif command == 'Broadcast':
+            #print ('broadcast with success')
+            pass
 
     # prend un exemplaire de chaque item dispo sur la case
     def takeAllItem(self):

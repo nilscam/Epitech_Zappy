@@ -218,6 +218,31 @@ class ai:
 
         return self.nbTurn[self.orientation][dirToChoose]
 
+    # return True or False if i should move for regroup
+    def shouldIMove(self):
+        nbTotalPlayer = len(self.listIncantationsDir)
+        nbPlayerWithMe = 1
+        biggestId = 0
+        isBiggestWithMe = False
+
+        for player in self.listIncantationsDir:
+            if player['direction'] == 0:
+                nbPlayerWithMe += 1
+                if player['id'] > biggestId:
+                    isBiggestWithMe = True
+                    biggestId = player['id']
+            else:
+                if player['id'] > biggestId:
+                    isBiggestWithMe = False
+                    biggestId = player['id']
+
+        if nbPlayerWithMe > nbTotalPlayer:
+            return False
+        elif nbTotalPlayer == nbPlayerWithMe:
+            return isBiggestWithMe
+        else:
+            return True
+
     # return True if i can incante with all others players of my lv, False otherwise
     def canIncante(self):
         full_inventory = {
