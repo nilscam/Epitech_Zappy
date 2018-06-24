@@ -9,6 +9,7 @@
 #define IMAGE_HPP
 
 #include "include.hpp"
+#include <iostream>
 
 class Image
 {
@@ -18,6 +19,7 @@ public:
 	int getId() const;
 	void setScaleImage(bool scale);
 	void setVisible(bool vsibile);
+	void setText(const wchar_t *str);
 private:
 	int _id;
 	irr::gui::IGUIImage *image;	

@@ -22,6 +22,11 @@ int Image::getId() const
 	return _id;
 }
 
+void Image::setText(const wchar_t *str)
+{
+	image->setToolTipText(str);
+}
+
 void Image::setScaleImage(bool scale)
 {
 	image->setScaleImage(scale);
