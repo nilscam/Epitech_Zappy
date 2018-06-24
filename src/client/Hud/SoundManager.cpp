@@ -10,6 +10,7 @@
 SoundManager::SoundManager()
 {
 	_engine = irrklang::createIrrKlangDevice();
+	sounds[MENU_OK] = std::string(PATH_TO_SOUNDS) + "menu-ok.mp3";
 	sounds[SOUND_POP] = std::string(PATH_TO_SOUNDS) + "yoshi_yosh.mp3";
 	sounds[SOUND_INVOCATION] = std::string(PATH_TO_SOUNDS) + "yoshi_invocation.mp3";
 	sounds[SOUND_YOSHI_KICK] = std::string(PATH_TO_SOUNDS) + "yoshi_kick.mp3";

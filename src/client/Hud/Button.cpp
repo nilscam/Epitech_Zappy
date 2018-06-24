@@ -24,6 +24,7 @@ void Button::pressed(Menu *menu)
 {
 	bool isPressed = button->isPressed();
 	if (isPressed && !_active) {
+		menu->_snd->playSound(SoundManager::Sound::MENU_OK);
 		_active = true;
 		if (_action == TEST)
 			menu->test(_id);

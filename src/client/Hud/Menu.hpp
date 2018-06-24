@@ -61,12 +61,13 @@ public:
 	bool	isServerLaunch;
 	bool	needToExit;
 	int		idSkyBox;
+	SoundManager *_snd;
+	
 private:
 	StaticTextManager *_txt;
 	ImageManager *_img;
 	ButtonManager *_btn;
 	ServPanel *_srv;
-	SoundManager *_snd;
 	std::shared_ptr<ServerHandler>	_serverHandler;
 };
 
