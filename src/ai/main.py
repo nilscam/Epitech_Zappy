@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
+try:
+    from manager import IAManager
+except:
+    from src.ai.manager import IAManager
+
 import sys
-from manager import IAManager
 
 def eprint(*args, **kwargs):
         print(*args, file=sys.stderr, **kwargs)

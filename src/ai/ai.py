@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
-import utils
+try:
+    from utils import *
+except:
+    from src.ai.utils import smoothDir
+
 import random
 
 class inventory:
@@ -204,8 +208,8 @@ class ai:
             actualDir[0] += self.optimizeDir[self.optimizeDirRelativ[self.orientation][player['direction']]][0]
             actualDir[1] += self.optimizeDir[self.optimizeDirRelativ[self.orientation][player['direction']]][1]
 
-        actualDir[0] = utils.smoothDir(actualDir[0])
-        actualDir[1] = utils.smoothDir(actualDir[1])
+        actualDir[0] = smoothDir(actualDir[0])
+        actualDir[1] = smoothDir(actualDir[1])
 
         # technique de la croix
         dirToChoose = 'UP'

@@ -1,19 +1,24 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
-import commands
-import random
-import ai
+try:
+    import commands
+    import ai
+except:
+    from src.ai.ai import ai
+    from src.ai.commands import commands
 
-class IAManager(ai.ai):
+import random
+
+class IAManager(ai):
 
     def __init__(self, port, name, ip):
-        self.cmdManager = commands.commands(port, ip)
+        self.cmdManager = commands(port, ip)
         print('command init')
         welcome = self.cmdManager.getWelcome(name)
         self.team = name
         self.nbClients = welcome[0]
-        ai.ai.__init__(self, *list(map(int, welcome[1].split())))
+        ai.__init__(self, *list(map(int, welcome[1].split())))
 
         # play firsts moves optimized
         self.firstStep()

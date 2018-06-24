@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
-import network
+try:
+    import network
+except:
+    from src.ai.network import network
 
 class commands:
 
@@ -9,7 +12,7 @@ class commands:
         self.cmdBuffer = []
         self.savecmdBuffer = []
         self.saveresponseBuffer = []
-        self.networkManager = network.network(port, ip)
+        self.networkManager = network(port, ip)
 
     def getWelcome(self, teamname):
         welcome = self.networkManager.getServerMessages()
