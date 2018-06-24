@@ -112,6 +112,7 @@ public:
 	
 	ButtonManager buttonManager;
 	ImageManager imageManager;
+	SoundManager soundManager;
 	Table table;
 	ListBox listBox;
 	ScrollBar	scrollBar;
