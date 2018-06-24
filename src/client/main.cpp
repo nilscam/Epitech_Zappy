@@ -12,9 +12,9 @@ int test_hud();
 int	main(int ac, char **av)
 {
 	try {
-		if (ac == 2) {
+		if (ac == 3) {
 			auto man = std::make_shared<Manager>();
-			if (man->init(std::string("127.0.0.1").c_str(), atoi(av[1]))) {
+			if (man->init(av[1], atoi(av[2]))) {
 				man->spectateGame();
 			}
 		} else if (ac == 1) {
