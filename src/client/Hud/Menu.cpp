@@ -191,9 +191,15 @@ void Menu::server_first_ok()
 void Menu::server_second_ok()
 {
 	_srv->setString(EditBox::NAME1);
-	_srv->setString(EditBox::NAME2);
-	_srv->setString(EditBox::NAME3);
-	_srv->setString(EditBox::NAME4);
+	if (_srv->srvClient->getNbTeam() >= 2) {
+		_srv->setString(EditBox::NAME2);
+	}
+	if (_srv->srvClient->getNbTeam() >= 3) {
+		_srv->setString(EditBox::NAME3);
+	}
+	if (_srv->srvClient->getNbTeam() >= 4) {
+		_srv->setString(EditBox::NAME4);
+	}
 	_btn->setVisible(false, SRV_SECOND_OK);
 	_img->setVisible(false, MENU_SRV_PANEL);
 	_srv->setVisible(false, EditBox::NAME1);
@@ -201,22 +207,18 @@ void Menu::server_second_ok()
 	_srv->setVisible(false, EditBox::NAME3);
 	_srv->setVisible(false, EditBox::NAME4);	
 
-	_btn->setVisible(true, LAUNCH_GAME);		
-	_btn->setVisible(true, ADD_TEAM1);
+	
 	_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM1),
 		      ADD_TEAM1);
 	if (_srv->srvClient->getNbTeam() >= 2) {
-		_btn->setVisible(true, ADD_TEAM2);
 		_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM2),
 			      ADD_TEAM2);
 	}
 	if (_srv->srvClient->getNbTeam() >= 3) {
-		_btn->setVisible(true, ADD_TEAM3);
 		_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM3),
 			      ADD_TEAM3);		
 	}
 	if (_srv->srvClient->getNbTeam() >= 4) {
-		_btn->setVisible(true, ADD_TEAM4);
 		_btn->setText(_srv->srvClient->updateClient(SrvClient::TEAM4),
 			      ADD_TEAM4);
 	}
@@ -228,10 +230,29 @@ void Menu::server_second_ok()
 	auto client = atoi(wchar_to_string(_srv->client).c_str());
 	auto freq = atoi(wchar_to_string(_srv->freq).c_str());
 	auto vec = _srv->srvClient->getVectorTeam();
-	
-	_serverHandler->startServer(width, height, port, vec, client, freq);
-	sleep(1);
-	isServerLaunch = true;
+	std::cout << "Starting server to port " << port << std::endl;
+	bool started = _serverHandler->startServer(width, height, port, vec, client, freq);
+	if (!started)
+	{
+		std::cout << "Failed to start server" << std::endl;
+		server_open();
+	}
+	else
+	{
+		std::cout << "Server listening to port " << port << std::endl;
+		isServerLaunch = true;
+		_btn->setVisible(true, LAUNCH_GAME);		
+		_btn->setVisible(true, ADD_TEAM1);
+		if (_srv->srvClient->getNbTeam() >= 2) {
+			_btn->setVisible(true, ADD_TEAM2);
+		}
+		if (_srv->srvClient->getNbTeam() >= 3) {
+			_btn->setVisible(true, ADD_TEAM3);
+		}
+		if (_srv->srvClient->getNbTeam() >= 4) {
+			_btn->setVisible(true, ADD_TEAM4);
+		}
+	}
 	/* EXECUTE SERVER */
 }
 

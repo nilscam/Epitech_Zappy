@@ -16,8 +16,8 @@
 class Client
 {
 public:
-	Client() = default;
-	virtual ~Client() = default;
+	Client();
+	virtual ~Client();
 
 	int			connectServer(const char *ip, int port);
 	void		disconnect(void);

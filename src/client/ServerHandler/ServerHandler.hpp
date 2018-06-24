@@ -33,7 +33,7 @@ public:
 	ServerHandler & operator=(ServerHandler const & rhs) = delete;
 	ServerHandler & operator=(ServerHandler && rhs) = delete;
 
-	void	startServer(
+	bool	startServer(
 		int width, int height, unsigned short port,
 		std::vector<std::string> const & teams,
 		int playerPerTeam, double freq

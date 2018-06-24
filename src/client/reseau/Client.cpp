@@ -7,10 +7,20 @@
 
 #include "Client.hpp"
 
+Client::Client()
+	:	_fd_server(-1)
+{}
+
+Client::~Client()
+{
+	this->disconnect();
+}
+
 int			Client::connectServer(const char *ip, int port)
 {
 	int			fd;
 
+	this->disconnect();
 	fd = this->create_socket();
 	if (fd == -1 || this->connect_socket(ip, port, fd) == -1)
 		return (-1);
