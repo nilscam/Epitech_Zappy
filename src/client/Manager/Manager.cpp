@@ -283,13 +283,13 @@ void	Manager::updateGUITimeUnit()
 void	Manager::manageCamOnPlayer()
 {
 	if (_followCamPlayer >= 0) {
-		// _gui->affPlayerInventory(_players[_followCamPlayer]->getNbFood(),
-		// 						_players[_followCamPlayer]->getNbStone1(),
-		// 						_players[_followCamPlayer]->getNbStone2(),
-		// 						_players[_followCamPlayer]->getNbStone3(),
-		// 						_players[_followCamPlayer]->getNbStone4(),
-		// 						_players[_followCamPlayer]->getNbStone5(),
-		// 						_players[_followCamPlayer]->getNbStone6());
+		_gui->menu.update_inventory({std::to_string(_players[_followCamPlayer]->getNbFood()),
+								std::to_string(_players[_followCamPlayer]->getNbStone1()),
+								std::to_string(_players[_followCamPlayer]->getNbStone2()),
+								std::to_string(_players[_followCamPlayer]->getNbStone3()),
+								std::to_string(_players[_followCamPlayer]->getNbStone4()),
+								std::to_string(_players[_followCamPlayer]->getNbStone5()),
+								std::to_string(_players[_followCamPlayer]->getNbStone6())});
 	}
 	auto playerFollowCam = _display->getIdPlayerFollowCam();
 	if (playerFollowCam != _followCamPlayer && playerFollowCam >= 0) {
@@ -297,9 +297,10 @@ void	Manager::manageCamOnPlayer()
 		sprintf(str, "pin %d\n", playerFollowCam);
 		_sendBuffer->Put(str);
 		_followCamPlayer = playerFollowCam;
+		_gui->menu.show_inventory();
 	} else if (playerFollowCam != _followCamPlayer && playerFollowCam < 0) {
-		//_gui->setVisibleInventory(false);
 		_followCamPlayer = playerFollowCam;
+		_gui->menu.hide_inventory();
 	}
 }
 

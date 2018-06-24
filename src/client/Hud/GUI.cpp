@@ -32,7 +32,7 @@ void	GUI::launchGui()
 {
 	this->createListBox(Rectangle(LISTBOX_X, LISTBOX_Y, LISTBOX_X2, LISTBOX_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
 	this->createTable(Rectangle(TABLE_X, TABLE_Y, TABLE_X2, TABLE_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
-	
+	this->showTimer();
 	scrollBar.setPos(1);
 	_posScrollBar = 1;
 	device->setResizable(false);
