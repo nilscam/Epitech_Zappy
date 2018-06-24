@@ -49,11 +49,14 @@ public:
 	std::shared_ptr<ServerHandler>	getServerHandler(void) const noexcept;
 	int		getPort() const;
 	bool		getExit() const;
+	void	nextSkyBox();
+
 	bool isMenuOpen;
 	bool isOptionsOpen;
 	bool isCreditsOpen;
 	bool	isServerLaunch;
 	bool	needToExit;
+	int		idSkyBox;
 private:
 	ImageManager *_img;
 	ButtonManager *_btn;

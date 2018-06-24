@@ -17,6 +17,7 @@ Manager::Manager()
 	_args = NULL;
 	_port = 4242;
 	_followCamPlayer = -2;
+	_lastSkyBox = 0;
 	this->initReadCmd();
 	_display = std::make_unique<IrrlichtDisplay>();
 	if (!_display->init()) {
@@ -47,6 +48,7 @@ bool	Manager::initServer()
 		_display->loop();
 		if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
 			_display->display(_gui);
+			this->manageSkyBox();
 		} else {
 			_needToExit = true;
 			return (true);
@@ -149,11 +151,13 @@ void	Manager::spectateGame()
 			this->updateGUILevelPlayer();
 			this->updateGUITimeUnit();
 			this->manageCamOnPlayer();
+			this->manageSkyBox();
 			//_display->getTeamClicked(_idxPlayers);
 		} else {
 			_stop = true;
 		}
 	}
+	_client->disconnect();
 }
 bool	Manager::needToExit(void) const noexcept
 {
@@ -287,13 +291,21 @@ void	Manager::manageCamOnPlayer()
 	}
 	auto playerFollowCam = _display->getIdPlayerFollowCam();
 	if (playerFollowCam != _followCamPlayer && playerFollowCam >= 0) {
-		std::cout << "ASK INVENTORY" << std::endl;
 		char str[20];
 		sprintf(str, "pin %d\n", playerFollowCam);
 		_sendBuffer->Put(str);
 		_followCamPlayer = playerFollowCam;
 	} else if (playerFollowCam != _followCamPlayer && playerFollowCam < 0) {
 		//_gui->setVisibleInventory(false);
+		_followCamPlayer = playerFollowCam;
+	}
+}
+
+void	Manager::manageSkyBox()
+{
+	if (_gui->menu.idSkyBox != _lastSkyBox) {
+		_lastSkyBox = _gui->menu.idSkyBox;
+		_display->create_sky(_lastSkyBox);
 	}
 }
 
@@ -424,6 +436,11 @@ bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
 			_display->movePlayer(idxPlayer, pos);
 			_players[idxPlayer]->setPos(pos);
 		}
+		// _gui->addListBoxMessage(
+		// 	"Player #" + std::to_string(idxPlayer)
+		// 	+ " Move",
+		// 	getColorForTeam(_players[idxPlayer]->getNameTeam())
+		// );
 	}
 	return (true);
 }

@@ -38,7 +38,8 @@ public:
 		ADD_TEAM3,
 		ADD_TEAM4,
 		LAUNCH_GAME,
-		NEXT_SONG
+		NEXT_SONG,
+		CHANGE_SKYBOX
 	};
 	Button(irr::gui::IGUIButton *butt, Button::Action action, int id);
 	~Button();
