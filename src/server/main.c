@@ -46,6 +46,8 @@ static int	start_server_loop(t_server *server)
 		if (can_simulate_game(server)) {
 			handle_players_action(server);
 			handle_eggs_action(server);
+			clients_callback(CB_TIME,
+				server->spectators_clients, ++server->turn);
 		}
 	}
 	clients_callback(CB_END_OF_GAME, server->spectators_clients,

@@ -76,6 +76,7 @@ SRC	=	big_buff/big_buff.c					\
 		player_cmd/player_cmd/right.c				\
 		player_cmd/player_cmd/set_obj_down.c			\
 		player_cmd/player_cmd/take.c				\
+		player_cmd/player_cmd/time_cmd.c			\
 		player_cmd/player_cmd/time_unit_mod.c			\
 		player_cmd/player_cmd/time_unit.c			\
 		player_cmd/player_callback.c				\

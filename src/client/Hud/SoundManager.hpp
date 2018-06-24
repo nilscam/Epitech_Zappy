@@ -8,7 +8,7 @@
 #ifndef SOUNDMANAGER_HPP
 #define SOUNDMANAGER_HPP
 
-#define PATH_TO_SOUND "./Ress/hud/"
+#define PATH_TO_SOUND "./Ress/musics/"
 
 #include "include.hpp"
 #include <iostream>

@@ -249,6 +249,12 @@ static const client_callback_t	SPECTATOR_CALLBACKS[] = {
 		"egg %d %d %d\n",
 		"<egg_nb> <X> <Y>",
 		"position of an egg"
+	},
+	{
+		CB_TIME, player_callback_send_format,
+		"time %d\n",
+		"<time>",
+		"current simulation turn"
 	}
 };
 
