@@ -298,3 +298,8 @@ bool	Menu::getExit() const
 {
 	return needToExit;
 }
+
+std::shared_ptr<ServerHandler>	Menu::getServerHandler(void) const noexcept
+{
+	return _serverHandler;
+}

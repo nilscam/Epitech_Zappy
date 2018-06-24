@@ -373,3 +373,8 @@ int		GUI::getPort() const
 {
 	return menu.getPort();
 }
+
+std::shared_ptr<ServerHandler>	GUI::getServerHandler(void) const noexcept
+{
+	return menu.getServerHandler();
+}

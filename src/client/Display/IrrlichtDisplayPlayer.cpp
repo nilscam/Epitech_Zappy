@@ -255,6 +255,11 @@ size_t	IrrlichtDisplay::Player::getId(void) const noexcept
 	return _id;
 }
 
+int		IrrlichtDisplay::Player::getTeamIdx(void) const noexcept
+{
+	return _teamIdx;
+}
+
 void	IrrlichtDisplay::Player::animate(irr::io::path const & path) noexcept
 {
 	_isAnimating = true;

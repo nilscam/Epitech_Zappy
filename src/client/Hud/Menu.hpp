@@ -44,6 +44,7 @@ public:
 	void launch_game();
 	void next_song();
 	void exit();
+	std::shared_ptr<ServerHandler>	getServerHandler(void) const noexcept;
 	int		getPort() const;
 	bool		getExit() const;
 	bool isMenuOpen;

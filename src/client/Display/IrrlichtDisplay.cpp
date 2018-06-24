@@ -113,7 +113,11 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::GREEN_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::GREEN_GEM);
 	_texture[IrrlichtDisplayConst::YELLOW_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YELLOW_GEM);
 	_texture[IrrlichtDisplayConst::BLUE_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::BLUE_GEM);
-	_texture[IrrlichtDisplayConst::YOSHI_EGG_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_RED_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_RED);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_BLUE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_BLUE);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_GREEN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_GREEN);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_YELLOW_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_YELLOW);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_BROWN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_BROWN);
 	_texture[IrrlichtDisplayConst::FOOD_BASE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::FOOD_BASE);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_RED);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BLUE);
@@ -490,6 +494,7 @@ void IrrlichtDisplay::addEgg(size_t idEgg, size_t idPlayerFrom)
 		auto const & pos = player->getPos();
 		_eggs[idEgg] = std::make_shared<Egg>(
 			idEgg,
+			player->getTeamIdx(),
 			player->getPos(),
 			/*create_egg(
 					IrrlichtDisplayConst::YOSHI_EGG_IDX,
@@ -726,7 +731,7 @@ std::shared_ptr<IrrlichtDisplay::MapContent>	IrrlichtDisplay::getMapContent(Poin
 }
 
 ////////////////////////////////////// eggg/////////////////////////////////
-IrrlichtDisplay::Egg::Egg(size_t id,
+IrrlichtDisplay::Egg::Egg(size_t id, int teamIdx,
 						  Point const & pos, irr::video::IVideoDriver * _driver,
 						  irr::scene::ISceneManager & sceneManager,
 						  std::map<int, irr::video::ITexture *> & textures)
@@ -737,7 +742,7 @@ IrrlichtDisplay::Egg::Egg(size_t id,
 		,	_sceneManager(sceneManager)
 		,	_textures(textures)
 		,	_fx_egg(nullptr)
-
+		,	_teamIdx(teamIdx)
 {
 	positionNode(_pos);
 	create_fx(_meshPos, IrrlichtDisplayConst::EGG_FX_SCALE);
@@ -765,7 +770,16 @@ void IrrlichtDisplay::Egg::change_texture(irr::io::path const &path) {
 			 _mesh->setPosition(_meshPos);
 			 _mesh->setScale(IrrlichtDisplayConst::EGG_SCALE);
 			 _mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-			 _mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_IDX]);
+			if (_teamIdx == 0)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_RED_IDX]);
+			else if (_teamIdx == 1)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_BLUE_IDX]);
+			else if (_teamIdx == 2)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_GREEN_IDX]);
+			else if (_teamIdx == 3)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_YELLOW_IDX]);
+			else
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_BROWN_IDX]);
 		 }
 	 }
 }

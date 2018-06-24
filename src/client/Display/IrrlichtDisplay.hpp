@@ -46,7 +46,11 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	GREEN_GEM = "./Ress/model/Gem1/Green.png";
 	const irr::io::path	YELLOW_GEM = "./Ress/model/Gem1/Yellow.png";
 	const irr::io::path	BLUE_GEM = "./Ress/model/Gem1/Blue.png";
-	const irr::io::path	TEXTURE_YOSHI_EGG = "./Ress/model/Egg/YoshSS00.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG_RED = "./Ress/model/Egg/Yoshi_egg_red.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG_BLUE = "./Ress/model/Egg/Yoshi_egg_blue.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG_GREEN = "./Ress/model/Egg/Yoshi_egg_green.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG_YELLOW = "./Ress/model/Egg/Yoshi_egg_yellow.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG_BROWN = "./Ress/model/Egg/Yoshi_egg_brown.png";
 	const irr::io::path	FOOD_BASE = "./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png";
 	const irr::io::path	GEM_MESH = "./Ress/model/PowerGem/gem.dae";
 	const irr::io::path	FOOD_MESH = "./Ress/model/Food/Watermelon/Watermelon.obj";
@@ -93,7 +97,11 @@ namespace IrrlichtDisplayConst
 		GREEN_GEM_IDX,
 		YELLOW_GEM_IDX,
 		BLUE_GEM_IDX,
-		YOSHI_EGG_IDX,
+		YOSHI_EGG_RED_IDX,
+		YOSHI_EGG_BLUE_IDX,
+		YOSHI_EGG_GREEN_IDX,
+		YOSHI_EGG_YELLOW_IDX,
+		YOSHI_EGG_BROWN_IDX,
 		FOOD_BASE_IDX,
 		TEXTURE_PERSO_RED_IDX,
 		TEXTURE_PERSO_BLUE_IDX,
@@ -311,6 +319,7 @@ private:
 		void	kill(void);
 		bool	isDead(void) const noexcept;
 		size_t	getId(void) const noexcept;
+		int		getTeamIdx(void) const noexcept;
 
 	private:
 
@@ -401,7 +410,7 @@ private:
 	{
 	public:
 
-		Egg(size_t id, Point const & pos,
+		Egg(size_t id, int teamIdx, Point const & pos,
 			irr::video::IVideoDriver * _driver,
 			irr::scene::ISceneManager & sceneManager,
 			std::map<int, irr::video::ITexture *> & textures);
@@ -430,6 +439,7 @@ private:
 		irr::scene::ISceneManager &				_sceneManager;
 		std::map<int, irr::video::ITexture *> &	_textures;
 		irr::scene::IVolumeLightSceneNode * 		_fx_egg;
+		int											_teamIdx;
 	};
 
 	class MapContent

@@ -107,6 +107,8 @@ public:
 
 	bool	scrollBarPosChanged();
 	int		getPort() const;
+
+	std::shared_ptr<ServerHandler>	getServerHandler(void) const noexcept;
 	
 	ButtonManager buttonManager;
 	ImageManager imageManager;
