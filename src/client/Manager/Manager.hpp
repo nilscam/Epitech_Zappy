@@ -56,6 +56,7 @@ private:
 	void	manageCamOnPlayer();
 	ListBox::MSGtype	getColorForTeam(std::string const & name) const noexcept;
 	void	manageSkyBox();
+	void	manageTimeSinceBegin();
 
 	bool	msz();//! X Y\n || msz\n map size
 	bool	bct();//! X Y q0 q1 q2 q3 q4 q5 q6\n || bct X Y\n content of a tile
@@ -104,10 +105,12 @@ private:
 	std::list<int>									_idxEggs;
 	std::vector<std::string>						_teams;
 	int												_freq;
-	int												_timeSinceBegin;
 	std::string										_winner;
 	int												_followCamPlayer;
 	int												_lastSkyBox;
+	int												_timeSinceBegin;
+	Clock											_refreshTour;
+	Clock											_updateTour;
 
 	bool						_stop;
 	int							_char_read;

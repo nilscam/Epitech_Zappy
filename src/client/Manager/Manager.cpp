@@ -117,6 +117,8 @@ int		Manager::connectClient(const char *ip, int port)
 }
 void	Manager::spectateGame()
 {
+	_refreshTour.mark();
+	_updateTour.mark();
 	_stop = false;
 	_gui->launchGui();
 	while (!_stop)
@@ -153,6 +155,7 @@ void	Manager::spectateGame()
 			this->updateGUITimeUnit();
 			this->manageCamOnPlayer();
 			this->manageSkyBox();
+			this->manageTimeSinceBegin();
 			//_display->getTeamClicked(_idxPlayers);
 		} else {
 			_stop = true;
@@ -172,7 +175,6 @@ void	Manager::readInFd(int fd)
 		_args = NULL;
 		return;
 	}
-	std::cout << "RCV:" << buffer << std::endl;
 	_readBuffer->Put(buffer);
 	free(buffer);
 }
@@ -309,6 +311,27 @@ void	Manager::manageSkyBox()
 	if (_gui->menu.idSkyBox != _lastSkyBox) {
 		_lastSkyBox = _gui->menu.idSkyBox;
 		_display->create_sky(_lastSkyBox);
+	}
+}
+
+void	Manager::manageTimeSinceBegin()
+{
+	if (_updateTour.timeSinceMark() > 1000) {
+		char str[6];
+		sprintf(str, "time\n");
+		_sendBuffer->Put(str);
+		_updateTour.mark();
+	}
+	double towait;
+	if (_freq == 0) {
+		towait = 1 / (_freq + 1) * 1E3;
+	} else {
+		towait = 1 / _freq * 1E3;
+	}
+	if (_refreshTour.timeSinceMark() > towait) {
+		++_timeSinceBegin;
+		_gui->updateTimer(_timeSinceBegin);
+		_refreshTour.mark();
 	}
 }
 
