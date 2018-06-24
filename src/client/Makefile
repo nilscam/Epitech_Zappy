@@ -53,7 +53,7 @@ F	=	-W -Wall -Werror -Wextra
 NAM_OBJ	=	$(MAIN:.cpp=.o)
 OBJ	=	$(SRC:.cpp=.o)
 
-LIB		= -lIrrlicht -lGL -lXxf86vm -lXext -lX11 -L lib -lIrrKlang lib/libIrrKlang.so
+LIB		= -lIrrlicht -lGL -lXxf86vm -lXext -lX11 lib/libIrrKlang.so
 
 G++	=	g++ -std=c++14 -g3 -o
 

@@ -284,16 +284,6 @@ void IrrlichtDisplay::setTimeUnit(double unit)
 	}
 }
 
-void IrrlichtDisplay::display(void)
-{
-	if (_isInit && _device && _device->run())
-	{
-		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
-		_sceneManager->drawAll();
-		_driver->endScene();
-	}
-}
-
 void IrrlichtDisplay::display(std::shared_ptr<GUI> gui)
 {
 	this->manageEvent();

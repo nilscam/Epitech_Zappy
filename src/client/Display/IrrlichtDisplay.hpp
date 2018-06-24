@@ -186,7 +186,7 @@ public:
 	int		getIdPlayerFollowCam(void) const;
 	void	setTeams(std::vector<std::string> const & teams) override;
 	void	setTimeUnit(double unit) override;
-	void	display(void) override;
+	void	display(std::shared_ptr<GUI> gui) override;
 	void	setMapTile(
 		Point const & pos,
 		Map::MapCase const & content
@@ -210,8 +210,6 @@ public:
 		size_t id,
 		PlayerAnimationStyle const & what
 	) override;
-
-	void	display(std::shared_ptr<GUI> gui);
 
 	/* Init */
 	bool							initTexture();

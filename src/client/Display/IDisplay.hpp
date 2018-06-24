@@ -14,6 +14,9 @@
 
 #include <vector>
 #include <string>
+#include <memory>
+
+class GUI;
 
 class IDisplay
 {
@@ -43,7 +46,7 @@ public:
 
 	/* Runtime */
 	virtual void	setTimeUnit(double unit) = 0;
-	virtual void	display(void) = 0;
+	virtual void	display(std::shared_ptr<GUI> gui) = 0;
 	virtual void	setMapTile(
 		Point const & pos,
 		Map::MapCase const & content

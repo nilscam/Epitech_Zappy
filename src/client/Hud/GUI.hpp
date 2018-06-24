@@ -109,6 +109,7 @@ public:
 	int		getPort() const;
 
 	std::shared_ptr<ServerHandler>	getServerHandler(void) const noexcept;
+	void	playSound(SoundManager::Sound sound);
 	
 	ButtonManager buttonManager;
 	ImageManager imageManager;

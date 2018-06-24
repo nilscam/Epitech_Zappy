@@ -385,3 +385,8 @@ std::shared_ptr<ServerHandler>	GUI::getServerHandler(void) const noexcept
 {
 	return menu.getServerHandler();
 }
+
+void	GUI::playSound(SoundManager::Sound sound)
+{
+	soundManager.playSound(sound);
+}
