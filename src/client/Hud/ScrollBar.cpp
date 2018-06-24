@@ -22,6 +22,11 @@ ScrollBar::~ScrollBar()
 {
 }
 
+void ScrollBar::setVisible(bool visible)
+{
+	_scrollBar->setVisible(visible);
+}
+
 void	ScrollBar::setPos(int pos)
 {
 	_scrollBar->setPos(pos);

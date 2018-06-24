@@ -7,6 +7,8 @@
 
 #include "GUI.hpp"
 
+// CYRIL updateTimer(timer) // showTimer();
+
 GUI::GUI(irr::IrrlichtDevice *dev, irr::video::IVideoDriver *driv)
 {
 	device = dev;
@@ -19,6 +21,7 @@ GUI::GUI(irr::IrrlichtDevice *dev, irr::video::IVideoDriver *driv)
 	imageId = 0;
 	this->setFont(PATH_TO_RES GLOBAL_FONT);
 	this->addMenu(Rectangle(MENU_X, MENU_Y, MENU_X2, MENU_Y2));
+	menu.next_song();
 }
 
 GUI::~GUI()
@@ -29,7 +32,6 @@ void	GUI::launchGui()
 {
 	this->createListBox(Rectangle(LISTBOX_X, LISTBOX_Y, LISTBOX_X2, LISTBOX_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
 	this->createTable(Rectangle(TABLE_X, TABLE_Y, TABLE_X2, TABLE_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
-	this->createScrollbar(Rectangle(SCROLL_X, SCROLL_Y, SCROLL_X2, SCROLL_Y2), driver->getTexture(PATH_TO_RES));
 	
 	scrollBar.setPos(1);
 	_posScrollBar = 1;
@@ -134,11 +136,13 @@ void GUI::createListBox(Rectangle rect, irr::video::ITexture *texture, int id)
 
 void GUI::createScrollbar(Rectangle rect, irr::video::ITexture *texture, int id)
 {
-	addImage(rect, texture, id);
+	(void)texture;
+	(void)id;
+//	addImage(rect, texture, id);
 	Rectangle scrollbarRect(rect.getX() + 100, rect.getY() + 20,
 			      rect.getX2() - 100, rect.getY2() - 20);
 	auto scroll = addScrollBar(scrollbarRect);
-	imageManager.setScaleImage(true, getLastImageId());
+//	imageManager.setScaleImage(true, getLastImageId());
 }
 
 void GUI::addListBoxMessage(const std::string &str, ListBox::MSGtype type)
@@ -170,7 +174,6 @@ EditBox GUI::addEditBox(const wchar_t *str, const wchar_t *preview,
 	servPanel.addEditBox(box);
 	return box;
 }
-
 
 void GUI::initMenu(int x, int y, int x2, int y2)
 {
@@ -365,8 +368,7 @@ void GUI::initInventory(int x, int y, int x2, int y2)
 	staticTextManager.setVisible(false, INV_VALUE_5);
 	staticTextManager.setVisible(false, INV_VALUE_6);
 	staticTextManager.setVisible(false, INV_VALUE_7);
-}
-	
+}	
 
 void GUI::initSrv2(int x, int y, int x2, int y2)
 {
@@ -434,6 +436,49 @@ void GUI::initSrv1(int x, int y, int x2, int y2)
 	servPanel.setVisible(false, EditBox::TEAM);
 }
 
+void GUI::initTimer(int x, int y, int x2, int y2)
+{
+	(void)x;
+	(void)y;
+	(void)x2;
+	(void)y2;
+	
+	addImage(Rectangle(1282, 30, 1850, 140),
+		 driver->getTexture(PATH_TO_RES PANEL_PNG),
+		 TIMER_PANEL);
+	imageManager.setScaleImage(true, TIMER_PANEL);	
+	
+	addStaticText(Rectangle(1400, 60, 1600, 150), TIMER_TEXT_1);
+	staticTextManager.setText("f = 0", TIMER_TEXT_1);
+
+	addStaticText(Rectangle(1680, 60, 1800, 150), TIMER_TEXT_2);      
+	staticTextManager.setText("0", TIMER_TEXT_2);
+
+	createScrollbar(Rectangle(SCROLL_X, SCROLL_Y, SCROLL_X2,
+				  SCROLL_Y2), driver->getTexture(PATH_TO_RES));
+	imageManager.setVisible(false, TIMER_PANEL);	
+	staticTextManager.setVisible(false, TIMER_TEXT_1);
+	staticTextManager.setVisible(false, TIMER_TEXT_2);
+	scrollBar.setVisible(false);
+
+}
+
+void GUI::showTimer()
+{
+	imageManager.setVisible(true, TIMER_PANEL);	
+	staticTextManager.setVisible(true, TIMER_TEXT_1);
+	staticTextManager.setVisible(true, TIMER_TEXT_2);
+	scrollBar.setVisible(true);
+
+}
+
+void GUI::updateTimer(int value)
+{
+	staticTextManager.setText((std::string("f = ") + std::to_string(scrollBar.getPos())).c_str(), TIMER_TEXT_1);
+	staticTextManager.setText((std::string(std::to_string(value))).c_str(), TIMER_TEXT_2);
+}
+
+
 Menu GUI::addMenu(Rectangle rect)
 {
 	int x = rect.getX();
@@ -445,6 +490,7 @@ Menu GUI::addMenu(Rectangle rect)
 	initSrv2(SRV_X, SRV_Y, SRV_X2, SRV_Y2);
 	initClient();
 	initInventory(0, 0, 0, 0);
+	initTimer(0, 0, 0, 0);
 	
 	addButton(Rectangle(1650, 730, 1750, 780),
 		  Button::MENU_OPEN, L"Menu", OPEN_MENU);

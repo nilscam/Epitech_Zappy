@@ -20,6 +20,7 @@ public:
 	void	setPos(int pos);
 	int		getPos(void) const;
 	int getId() const;
+	void setVisible(bool id);
 private:
 	int _id;
 	long _idx;

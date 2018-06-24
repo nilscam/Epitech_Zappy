@@ -31,10 +31,10 @@
 #define TABLE_X2 1825 /* Param for table rectangle */
 #define TABLE_Y2 1055
 
-#define SCROLL_X 1300
-#define SCROLL_Y 100
-#define SCROLL_X2 1825 /* Param for SCROLL rectangle */
-#define SCROLL_Y2 150
+#define SCROLL_X 1290
+#define SCROLL_Y 80
+#define SCROLL_X2 1840 /* Param for SCROLL rectangle */
+#define SCROLL_Y2 140
 
 #define MENU_X 730
 #define MENU_Y 220
@@ -111,9 +111,12 @@ public:
 	void initSrv2(int x, int y, int x2, int y2);
 	void initClient();
 	void initInventory(int x, int y, int x2, int y2);
+	void initTimer(int x, int y, int x2, int y2);
 	
 	void setTableVisible(bool visible);
 	void setListBoxVisible(bool visible);
+	void updateTimer(int value);
+	void showTimer();
 
 	bool	scrollBarPosChanged();
 	int		getPort() const;
