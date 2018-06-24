@@ -38,6 +38,7 @@ IrrlichtDisplay::Player::Player(
 	,	_isMoving(false)
 	,	_isFalling(false)
 	,	_isDying(false)
+	,	_isIdle(false)
 	,	_timeNextIdle(0)
 	,	_level(1)
 	,	_isIncanting(false)
@@ -147,6 +148,7 @@ void	IrrlichtDisplay::Player::loop(void)
 	// scale
 	setMeshScale(getScaleLevel(_level));
 	// mesh
+	bool isIdle = false;
 	if (_isDying)
 	{
 		if (!_isDead && _deadClock.timeSinceMark() > 3000)
@@ -175,17 +177,22 @@ void	IrrlichtDisplay::Player::loop(void)
 	}
 	else
 	{
-		if (_idleClock.timeSinceMark() >= _timeNextIdle)
+		isIdle = true;
+		if (!_mesh || !_isIdle
+		|| (_mesh->getFrameNr() >= _mesh->getEndFrame()
+			&& _idleClock.timeSinceMark() >= _timeNextIdle))
 		{
 			_timeNextIdle = generateRandomTimeIdle();
 			_idleClock.mark();
 			changeMesh(randomIdle());
 			if (_mesh)
 			{
+				_mesh->setAnimationSpeed(30);
 				_mesh->setLoopMode(false);
 			}
 		}
 	}
+	_isIdle = isIdle;
 }
 
 void	IrrlichtDisplay::Player::animate(PlayerAnimationStyle const & how)
@@ -484,7 +491,7 @@ void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path) noexcept
 
 long long	IrrlichtDisplay::Player::generateRandomTimeIdle(void) const noexcept
 {
-	return Math::randomNumberBetween(1000, 5000);
+	return Math::randomNumberBetween(2500, 4500);
 }
 
 irr::io::path	IrrlichtDisplay::Player::randomIdle(void) const noexcept
