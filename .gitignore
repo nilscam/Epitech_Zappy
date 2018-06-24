@@ -48,7 +48,6 @@ GTAGS
 *.dSYM
 
 # Custom
-zappy_ai
 zappy_client
 zappy_server
 
