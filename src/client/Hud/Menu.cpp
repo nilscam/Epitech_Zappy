@@ -24,6 +24,7 @@ Menu::Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv,
 	isCreditsOpen = false;
 	isServerLaunch = false;
 	needToExit = false;
+	idSkyBox = 0;
 }
 
 Menu::~Menu()
@@ -396,4 +397,9 @@ bool	Menu::getExit() const
 std::shared_ptr<ServerHandler>	Menu::getServerHandler(void) const noexcept
 {
 	return _serverHandler;
+}
+
+void	Menu::nextSkyBox()
+{
+	++idSkyBox;
 }

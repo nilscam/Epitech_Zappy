@@ -26,6 +26,7 @@ IrrlichtDisplay::Player::Player(
 	,	_lastMeshRotation(-1)
 	,	_lastMeshPosition({ -1, -1, -1 })
 	,	_lastMeshScale({ -1, -1, -1 })
+	,	_particle(nullptr)
 	,	_randomPos(generateRandomPos())
 	,	_mapPos(pos)
 	,	_id(id)
@@ -64,6 +65,10 @@ IrrlichtDisplay::Player::~Player()
 	if (_mesh)
 	{
 		_mesh->remove();
+	}
+	if (_particle)
+	{
+		_particle->remove();
 	}
 }
 
@@ -249,6 +254,7 @@ void	IrrlichtDisplay::Player::kill(void)
 	_isDying = true;
 	_deadClock.mark();
 	changeMesh(IrrlichtDisplayConst::PERSO_DIE);
+	create_particle();
 }
 
 bool	IrrlichtDisplay::Player::isDead(void) const noexcept
@@ -501,4 +507,35 @@ irr::io::path	IrrlichtDisplay::Player::randomIdle(void) const noexcept
 	int max = sizeof(IrrlichtDisplayConst::PERSO_IDLES) / sizeof(*IrrlichtDisplayConst::PERSO_IDLES);
 	int r = Math::randomNumberBetween(0, max - 1);
 	return IrrlichtDisplayConst::PERSO_IDLES[r];
+}
+
+void	IrrlichtDisplay::Player::create_particle(void)
+{
+	_particle = _sceneManager.addParticleSystemSceneNode(false);
+	irr::scene::IParticleEmitter * em = _particle->createBoxEmitter(
+			irr::core::aabbox3d<irr::f32>(-10,0,-10,10,1,10), // emitter size
+			irr::core::vector3df(0.0f,0.06f,0.0f),   // initial direction
+			25, 40,                             // emit rate
+			irr::video::SColor(0,255,255,255),       // darkest color
+			irr::video::SColor(0,255,255,255),       // brightest color
+			800,1500,30,                         // min and max age, angle
+			irr::core::dimension2df(10.f,10.f),         // min size
+			irr::core::dimension2df(20.f,20.f));        // max size
+	if (em)
+	{
+		_particle->setEmitter(em); // this grabs the emitter
+		em->drop(); // so we can drop it here without deleting it
+	}
+	irr::scene::IParticleAffector * paf = _particle->createFadeOutParticleAffector();
+	if (paf)
+	{
+		_particle->addAffector(paf); // same goes for the affector
+		paf->drop();
+	}
+	_particle->setPosition(_lastMeshPosition);
+	_particle->setScale(irr::core::vector3df(2,2,2));
+	_particle->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	_particle->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
+	_particle->setMaterialTexture(0, _textures[IrrlichtDisplayConst::PARTICLE_WHITE_IDX]);
+	_particle->setMaterialType(irr::video::EMT_TRANSPARENT_ADD_COLOR);
 }

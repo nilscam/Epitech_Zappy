@@ -43,9 +43,9 @@ bool IrrlichtDisplay::init(void)
 		return false;
 	_sceneManager = _device->getSceneManager();
 	if (!_sceneManager
-		|| !this->create_sky()
+		|| !this->initTexture()
+		|| !this->create_sky(0))
 		//|| !this->create_camera()
-		|| !this->initTexture())
 		return false;
 	_device->getCursorControl()->setVisible(true);
 	_isInit = true;
@@ -128,6 +128,37 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_GREEN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_GREEN);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BROWN);
+	_texture[IrrlichtDisplayConst::SKY_UP_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_UP);
+	_texture[IrrlichtDisplayConst::SKY_DOWN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_DOWN);
+	_texture[IrrlichtDisplayConst::SKY_LEFT_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_LEFT);
+	_texture[IrrlichtDisplayConst::SKY_RIGHT_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_RIGHT);
+	_texture[IrrlichtDisplayConst::SKY_FORWARD_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD);
+	_texture[IrrlichtDisplayConst::SKY_BACKWARD_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD);
+	_texture[IrrlichtDisplayConst::SKY_UP1_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_UP1);
+	_texture[IrrlichtDisplayConst::SKY_DOWN1_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_DOWN1);
+	_texture[IrrlichtDisplayConst::SKY_LEFT1_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_LEFT1);
+	_texture[IrrlichtDisplayConst::SKY_RIGHT1_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_RIGHT1);
+	_texture[IrrlichtDisplayConst::SKY_FORWARD1_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD1);
+	_texture[IrrlichtDisplayConst::SKY_BACKWARD1_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD1);
+	_texture[IrrlichtDisplayConst::SKY_UP2_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_UP2);
+	_texture[IrrlichtDisplayConst::SKY_DOWN2_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_DOWN2);
+	_texture[IrrlichtDisplayConst::SKY_LEFT2_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_LEFT2);
+	_texture[IrrlichtDisplayConst::SKY_RIGHT2_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_RIGHT2);
+	_texture[IrrlichtDisplayConst::SKY_FORWARD2_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD2);
+	_texture[IrrlichtDisplayConst::SKY_BACKWARD2_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD2);
+	_texture[IrrlichtDisplayConst::SKY_UP3_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_UP3);
+	_texture[IrrlichtDisplayConst::SKY_DOWN3_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_DOWN3);
+	_texture[IrrlichtDisplayConst::SKY_LEFT3_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_LEFT3);
+	_texture[IrrlichtDisplayConst::SKY_RIGHT3_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_RIGHT3);
+	_texture[IrrlichtDisplayConst::SKY_FORWARD3_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD3);
+	_texture[IrrlichtDisplayConst::SKY_BACKWARD3_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD3);
+	_texture[IrrlichtDisplayConst::SKY_UP4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_UP4);
+	_texture[IrrlichtDisplayConst::SKY_DOWN4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_DOWN4);
+	_texture[IrrlichtDisplayConst::SKY_LEFT4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_LEFT4);
+	_texture[IrrlichtDisplayConst::SKY_RIGHT4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_RIGHT4);
+	_texture[IrrlichtDisplayConst::SKY_FORWARD4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD4);
+	_texture[IrrlichtDisplayConst::SKY_BACKWARD4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD4);
+	_texture[IrrlichtDisplayConst::PARTICLE_WHITE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::PARTICLE_WHITE);
 	for (auto const & pair : _texture)
 	{
 		auto const & texture = pair.second;
@@ -281,16 +312,6 @@ void IrrlichtDisplay::setTimeUnit(double unit)
 	{
 		auto & player = pair.second;
 		player->setDurationMillis(getMovementDuration(), _timeUnit);
-	}
-}
-
-void IrrlichtDisplay::display(void)
-{
-	if (_isInit && _device && _device->run())
-	{
-		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
-		_sceneManager->drawAll();
-		_driver->endScene();
 	}
 }
 
@@ -585,24 +606,56 @@ irr::scene::ICameraSceneNode *IrrlichtDisplay::create_camera()
 	return (_camera);
 }
 
-bool IrrlichtDisplay::create_sky()
+bool IrrlichtDisplay::create_sky(int idSkyBox)
 {
 	_driver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, false);
-	_sceneManager->addSkyBoxSceneNode(
-			_driver->getTexture(IrrlichtDisplayConst::SKY_UP),
-			_driver->getTexture(IrrlichtDisplayConst::SKY_DOWN),
-			_driver->getTexture(IrrlichtDisplayConst::SKY_LEFT),
-			_driver->getTexture(IrrlichtDisplayConst::SKY_RIGHT),
-			_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD),
-			_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD)
-	);
-	/*_sceneManager->addSkyBoxSceneNode(_driver->getTexture("./Ress/model/sor_cwd/cwd_up.JPG"),
-			_driver->getTexture("./Ress/model/sor_cwd/cwd_dn.JPG"),
-			_driver->getTexture("./Ress/model/sor_cwd/cwd_lf.JPG"),
-			_driver->getTexture("./Ress/model/sor_cwd/cwd_rt.JPG"),
-			_driver->getTexture("./Ress/model/sor_cwd/cwd_bk.JPG"),
-	        _driver->getTexture("./Ress/model/sor_cwd/cwd_ft.JPG")
-	);*/
+	idSkyBox %= 5;
+	if (idSkyBox == 0) {
+		_sceneManager->addSkyBoxSceneNode(
+			_texture[IrrlichtDisplayConst::SKY_UP_IDX],
+			_texture[IrrlichtDisplayConst::SKY_DOWN_IDX],
+			_texture[IrrlichtDisplayConst::SKY_LEFT_IDX],
+			_texture[IrrlichtDisplayConst::SKY_RIGHT_IDX],
+			_texture[IrrlichtDisplayConst::SKY_FORWARD_IDX],
+			_texture[IrrlichtDisplayConst::SKY_BACKWARD_IDX]
+		);
+	} else if (idSkyBox == 1) {
+		_sceneManager->addSkyBoxSceneNode(
+			_texture[IrrlichtDisplayConst::SKY_UP1_IDX],
+			_texture[IrrlichtDisplayConst::SKY_DOWN1_IDX],
+			_texture[IrrlichtDisplayConst::SKY_LEFT1_IDX],
+			_texture[IrrlichtDisplayConst::SKY_RIGHT1_IDX],
+			_texture[IrrlichtDisplayConst::SKY_FORWARD1_IDX],
+			_texture[IrrlichtDisplayConst::SKY_BACKWARD1_IDX]
+		);
+	} else if (idSkyBox == 2) {
+		_sceneManager->addSkyBoxSceneNode(
+			_texture[IrrlichtDisplayConst::SKY_UP2_IDX],
+			_texture[IrrlichtDisplayConst::SKY_DOWN2_IDX],
+			_texture[IrrlichtDisplayConst::SKY_LEFT2_IDX],
+			_texture[IrrlichtDisplayConst::SKY_RIGHT2_IDX],
+			_texture[IrrlichtDisplayConst::SKY_FORWARD2_IDX],
+			_texture[IrrlichtDisplayConst::SKY_BACKWARD2_IDX]
+		);
+	} else if (idSkyBox == 3) {
+		_sceneManager->addSkyBoxSceneNode(
+			_texture[IrrlichtDisplayConst::SKY_UP3_IDX],
+			_texture[IrrlichtDisplayConst::SKY_DOWN3_IDX],
+			_texture[IrrlichtDisplayConst::SKY_LEFT3_IDX],
+			_texture[IrrlichtDisplayConst::SKY_RIGHT3_IDX],
+			_texture[IrrlichtDisplayConst::SKY_FORWARD3_IDX],
+			_texture[IrrlichtDisplayConst::SKY_BACKWARD3_IDX]
+		);
+	} else if (idSkyBox == 4) {
+		_sceneManager->addSkyBoxSceneNode(
+			_texture[IrrlichtDisplayConst::SKY_UP4_IDX],
+			_texture[IrrlichtDisplayConst::SKY_DOWN4_IDX],
+			_texture[IrrlichtDisplayConst::SKY_LEFT4_IDX],
+			_texture[IrrlichtDisplayConst::SKY_RIGHT4_IDX],
+			_texture[IrrlichtDisplayConst::SKY_FORWARD4_IDX],
+			_texture[IrrlichtDisplayConst::SKY_BACKWARD4_IDX]
+		);
+	}
 	_driver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, true);
 	return true;
 }
@@ -819,3 +872,38 @@ void IrrlichtDisplay::Egg::create_fx(irr::core::vector3df pos, irr::core::vector
 }
 
 ///////egggggggg/////////////
+
+////particule///
+
+void		created_fire(float x, float y, irr::video::IVideoDriver *driver, irr::scene::ISceneManager *sceneManager)
+{
+	irr::scene::IParticleSystemSceneNode* ps =
+			sceneManager->addParticleSystemSceneNode(false);
+
+	irr::scene::IParticleEmitter* em = ps->createBoxEmitter(
+			irr::core::aabbox3d<irr::f32>(-10,0,-10,10,1,10), // emitter size
+			irr::core::vector3df(0.0f,0.06f,0.0f),   // initial direction
+			25, 40,                             // emit rate
+			irr::video::SColor(0,255,255,255),       // darkest color
+			irr::video::SColor(0,255,255,255),       // brightest color
+			800,1500,30,                         // min and max age, angle
+			irr::core::dimension2df(10.f,10.f),         // min size
+			irr::core::dimension2df(20.f,20.f));        // max size
+
+	ps->setEmitter(em); // this grabs the emitter
+	em->drop(); // so we can drop it here without deleting it
+
+	irr::scene::IParticleAffector* paf = ps->createFadeOutParticleAffector();
+
+	ps->addAffector(paf); // same goes for the affector
+	paf->drop();
+
+	ps->setPosition(irr::core::vector3df(x, 27.5, y));
+	ps->setScale(irr::core::vector3df(2,2,2));
+	ps->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	ps->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
+	ps->setMaterialTexture(0, driver->getTexture("./Ress/model/particlewhite.bmp"));
+	ps->setMaterialType(irr::video::EMT_TRANSPARENT_ADD_COLOR);
+}
+
+/////particule ////

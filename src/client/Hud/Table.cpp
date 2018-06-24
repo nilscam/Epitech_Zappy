@@ -33,11 +33,11 @@ void Table::addCol(const wchar_t* name)
 	_col += 1;
 }
 
-void Table::addRow(const wchar_t* name)
+void Table::addRow(const wchar_t* name, irr::video::SColor color)
 {
 	table->addRow(_row);
 	_rowName.push_back(name);
-	setValue(0, _row, wchar_to_string(name));
+	setValue(0, _row, wchar_to_string(name), color);
 	_row += 1;
 }
 
@@ -138,11 +138,23 @@ void Table::initTable()
 	addCol(L"Level 8");
 }
 
-void Table::addTeamName(std::vector<std::string> list)
+void Table::addTeamName(std::vector<std::string> list, int idxTeam)
 {
+	unsigned int	r = 0, g = 0, b = 0;
+	idxTeam %= 4;
+	if (idxTeam == 0) {
+		r = 255;
+	} else if (idxTeam == 1) {
+		b = 255;
+	} else if (idxTeam == 2) {
+		g = 255;
+	} else if (idxTeam == 3) {
+		r = 255;
+		g = 255;
+	}
 	for (auto it = list.begin(); it != list.end(); ++it) {
 		const wchar_t *text = char_to_wchar((*it).c_str());
-		addRow(text);
+		addRow(text, {255, r, g, b});
 		delete text;
 	}
 }

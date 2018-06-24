@@ -8,7 +8,8 @@
 #ifndef SOUNDMANAGER_HPP
 #define SOUNDMANAGER_HPP
 
-#define PATH_TO_SOUND "./Ress/musics/"
+#define PATH_TO_MUSICS "./Ress/musics/"
+#define PATH_TO_SOUNDS "./Ress/sounds/"
 
 #include "include.hpp"
 #include <iostream>
@@ -26,9 +27,13 @@ public:
 		MUSIC_SPYRO_3,
 		MUSIC_SPYRO_4,
 		MUSIC_SPYRO_5,
-		SOUND_PLOC,
-		SOUND_PLIC
-	};       
+		SOUND_POP,
+		SOUND_INVOCATION,
+		SOUND_YOSHI_KICK,
+		SOUND_YOSHI_POP,
+		SOUND_YOSHI_YOSH,
+		SOUND_YOSHI_WAAH
+	};
 	
 	SoundManager();
 	~SoundManager();

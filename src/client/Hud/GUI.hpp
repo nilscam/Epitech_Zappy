@@ -29,7 +29,7 @@
 #define TABLE_X 1300
 #define TABLE_Y 785 
 #define TABLE_X2 1825 /* Param for table rectangle */
-#define TABLE_Y2 955
+#define TABLE_Y2 1055
 
 #define SCROLL_X 1300
 #define SCROLL_Y 100
@@ -119,6 +119,7 @@ public:
 	int		getPort() const;
 
 	std::shared_ptr<ServerHandler>	getServerHandler(void) const noexcept;
+	void	playSound(SoundManager::Sound sound);
 	
 	ButtonManager buttonManager;
 	ImageManager imageManager;

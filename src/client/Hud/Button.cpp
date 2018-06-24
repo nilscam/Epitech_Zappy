@@ -57,6 +57,8 @@ void Button::pressed(Menu *menu)
 			menu->launch_game();
 		if (_action == NEXT_SONG)
 			menu->next_song();
+		if (_action == CHANGE_SKYBOX)
+			menu->nextSkyBox();
 	} else if (!isPressed && _active) {
 		_active = false;
 	}
