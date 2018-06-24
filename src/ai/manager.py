@@ -55,9 +55,8 @@ class IAManager(ai.ai):
         if self.canStartIncante():
             self.dropNecessary()
             self.castCmd("Incantation\n")
-
             # tant que j'ai pas fini d'incanter je fais rien
-            while self.incanting == True:
+            while self.incanting:
                 self.waitServerEvent()
         else:
             # remplacer ça par les règles de Paint
@@ -95,11 +94,17 @@ class IAManager(ai.ai):
         splitted = response.split()
 
         print (response)
-        if response == 'ko':
-            self.incanting = False
-        elif splitted[0] == 'Current':
+        if splitted[0] == 'Current':
             self.level = int(response.split()[2])
             self.listIncantationsDir[:] = []
+            self.incanting = False
+        elif response == 'Elevation underway':
+            # si je suis déjà en incantation j'ignore le mongole qui veut incanter avec moi
+            if self.incanting == False:
+                self.incanting = True
+                while self.incanting:
+                    self.waitServerEvent()
+        elif response == 'Elevation failed':
             self.incanting = False
         elif response == 'dead':
             print ('fuck im dead :(')
@@ -110,19 +115,26 @@ class IAManager(ai.ai):
 
     def interpreteCmd(self, cmdResponse):
         # modifier les variables de l'ia en fonction du message
-        command = cmdResponse['cmd'].split()[0]
-        response = cmdResponse['response']
-        if command == 'Connect_nbr' and self.Connect_nbr():
-            self.castCmd("Fork\n")
-        elif command in ['Forward', 'Left', 'Right', 'Eject', 'Fork']:
-            getattr(self, command)()
-        elif command in ['Look', 'Inventory', 'Incantation']:
-            getattr(self, command)(response)
-        elif command in ['Set', 'Take']:
-            getattr(self, command)(response, cmdResponse['cmd'].split()[1])
-        elif command == 'Broadcast':
-            #print ('broadcast with success')
-            pass
+        try:
+            command = cmdResponse['cmd'].split()[0]
+            response = cmdResponse['response']
+            if command == 'Connect_nbr' and self.Connect_nbr():
+                self.castCmd("Fork\n")
+            elif command in ['Forward', 'Left', 'Right', 'Eject', 'Fork']:
+                getattr(self, command)()
+            elif command in ['Look', 'Inventory', 'Incantation']:
+                getattr(self, command)(response)
+            elif command in ['Set', 'Take']:
+                getattr(self, command)(response, cmdResponse['cmd'].split()[1])
+            elif command == 'Broadcast':
+                #print ('broadcast with success')
+                pass
+        except:
+            print ("ERROR")
+            print (self.cmdManager.savecmdBuffer)
+            print (self.cmdManager.saveresponseBuffer)
+            print (self.cmdManager.cmdBuffer)
+            exit(84)
 
     # prend un exemplaire de chaque item dispo sur la case
     def takeAllItem(self):
@@ -136,6 +148,8 @@ class IAManager(ai.ai):
                     self.castCmd("Take " + item + "\n")
                     self.castCmd("Take " + item + "\n")
                     self.castCmd("Take " + item + "\n")
+                elif item == 'player':
+                    pass
                 else:
                     self.castCmd("Take " + item + "\n")
 
@@ -143,6 +157,7 @@ class IAManager(ai.ai):
         i = 0
         while i < nb and i < getattr(self.inventory, ressource):
             self.castCmd("Set " + ressource + "\n")
+            i += 1
 
     def dropNecessary(self):
         for ressource, nb in self.incantationsStats[self.level].items():
@@ -171,4 +186,4 @@ class IAManager(ai.ai):
             elif r['type'] == 'server':
                 self.interpreteServerEvent(r['response'])
             else:
-                print ('ERRORORORORORORRR')
+                self.interpreteCmd(r)

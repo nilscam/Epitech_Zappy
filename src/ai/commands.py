@@ -7,6 +7,8 @@ class commands:
 
     def __init__(self, port, ip):
         self.cmdBuffer = []
+        self.savecmdBuffer = []
+        self.saveresponseBuffer = []
         self.networkManager = network.network(port, ip)
 
     def getWelcome(self, teamname):
@@ -21,12 +23,14 @@ class commands:
         cmdResponses = []
         for r in responses:
             # rajouter le fait que si c'est un message d'un joueur on ne l'associe pas à une commande
-            if r.split()[0] != 'message':
-                if len(self.cmdBuffer) == 0  or r.split()[0] == 'Current':
+            firstWord = r.split()[0]
+            if firstWord != 'message':
+                if len(self.cmdBuffer) == 0  or firstWord in ['Current', 'Elevation', 'dead', 'eject']:
                     #eject, incantation ...
                     cmdResponses.append({ 'type': 'server', 'response': r })
                 else:
                     cmdResponses.append({ 'type': 'cmd', 'cmd': self.cmdBuffer[0], 'response': r })
+                    self.saveresponseBuffer.append(r)
                     self.cmdBuffer.pop(0)
             else:
                 cmdResponses.append({ 'type': 'message', 'message': r })
@@ -37,4 +41,5 @@ class commands:
             print("too many commands are already in queue")
         else:
             self.cmdBuffer.append(command)
+            self.savecmdBuffer.append(command)
             self.networkManager.sendMsg(command)

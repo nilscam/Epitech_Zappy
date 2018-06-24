@@ -19,18 +19,14 @@ class inventory:
         return str % (self.linemate, self.deraumere, self.sibur, self.mendiane, self.phiras, self.thystame)
 
     def update(self, response):
-        try:
-            splitted = response.strip("[]\n").split(',')
-            list_infos = dict()
-            for comb in splitted:
-                comb = comb.split()
-                list_infos[comb[0]] = int(comb[1])
+        splitted = response.strip("[]\n").split(',')
+        list_infos = dict()
+        for comb in splitted:
+            comb = comb.split()
+            list_infos[comb[0]] = int(comb[1])
 
-            for key, value in list_infos.items():
-                setattr(self, key, value)
-        except:
-            print ('error update ia.py l26')
-            print (response)
+        for key, value in list_infos.items():
+            setattr(self, key, value)
 
 class map:
     def __init__(self, x, y):
@@ -85,28 +81,22 @@ class map:
         ymove = actualCase[0]
         xmove = actualCase[1]
 
-        try:
-            if len(ymove) == 1:
-                while i <= level:
-                    rangex = list(range(i * 2 + 1))
-                    if xmove[0] != -1:
-                        rangex.reverse()
-                    for toto in rangex:
-                        self.setSquare(x - toto, y + (ymove[0] * i), infos[i])
-                    i += 1
-            else:
-                while i <= level:
-                    rangey = list(range(i * 2 + 1))
-                    if ymove[0] != -1:
-                        rangey.reverse()
-                    for toto in rangey:
-                        self.setSquare(x + (xmove[0] * i), y - toto, infos[i])
-                    i += 1
-        except:
-            print ('Error, lookResult was')
-            print (lookResult)
-            print (infos)
-            print (i)
+        if len(ymove) == 1:
+            while i <= level:
+                rangex = list(range(i * 2 + 1))
+                if xmove[0] != -1:
+                    rangex.reverse()
+                for toto in rangex:
+                    self.setSquare(x - toto, y + (ymove[0] * i), infos[i])
+                i += 1
+        else:
+            while i <= level:
+                rangey = list(range(i * 2 + 1))
+                if ymove[0] != -1:
+                    rangey.reverse()
+                for toto in rangey:
+                    self.setSquare(x + (xmove[0] * i), y - toto, infos[i])
+                i += 1
 
 class ai:
 
@@ -302,5 +292,5 @@ class ai:
                 setattr(self.inventory, ressource, getattr(self.inventory, ressource) + 1)
 
     def Incantation(self, response):
-        if response == 'Elevation underway':
+        if response == 'ok':
             self.incanting = True
