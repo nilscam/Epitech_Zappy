@@ -121,6 +121,9 @@ void	player_cmd_set_obj_down(player_cmd_arg_t *args);
 bool	validate_take(player_cmd_arg_t *args);
 void	player_cmd_take(player_cmd_arg_t *args);
 
+/* player_cmd/time_cmd.c */
+void	spectate_cmd_time(player_cmd_arg_t *args);
+
 /* player_cmd/time_unit_mod.c */
 void	spectate_cmd_time_unit_mod(player_cmd_arg_t *args);
 

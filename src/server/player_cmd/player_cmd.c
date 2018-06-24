@@ -68,7 +68,9 @@ static const player_cmd_t	SPECTATOR_CMDS[] = {
 	{ "pnw", spectate_cmd_players_pos, NULL, 0, 0,
 		"pnw", "position of all players" },
 	{ "egg", spectate_cmd_eggs_pos, NULL, 0, 0,
-		"egg", "position of all eggs" }
+		"egg", "position of all eggs" },
+	{ "time", spectate_cmd_time, NULL, 0, 0,
+		"time", "current time" }
 };
 static const player_cmd_t	DEFAULT_SPECTATOR_CMD = {
 	"", spectate_cmd_error, NULL, 0, 0, "ko", "ko"

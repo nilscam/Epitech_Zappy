@@ -55,6 +55,7 @@ struct			s_server
 	double		f;
 	team_t		*winner;
 	zclock_t	zclock;
+	long long	turn;
 };
 
 //				server.c

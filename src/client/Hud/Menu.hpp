@@ -14,6 +14,7 @@
 #include "ButtonManager.hpp"
 #include "ServPanel.hpp"
 #include "ServerHandler.hpp"
+#include "SoundManager.hpp"
 #include "utils.hpp"
 #include "EID.hpp"
 #include <iostream>
@@ -23,7 +24,8 @@ class Menu
 {
 public:
 	Menu();
-	Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv);
+	Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv,
+		SoundManager *snd);
 	~Menu();
 	void server_open();
 	void server_first_ok();
@@ -59,6 +61,7 @@ private:
 	ImageManager *_img;
 	ButtonManager *_btn;
 	ServPanel *_srv;
+	SoundManager *_snd;
 	std::shared_ptr<ServerHandler>	_serverHandler;
 };
 

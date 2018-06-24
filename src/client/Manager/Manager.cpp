@@ -415,6 +415,7 @@ bool	Manager::pnw()// #n X Y O L N\n connection of a new player
 		"New Player Connected : #" + std::to_string(_idxPlayers.back()),
 		getColorForTeam(teamName)
 	);
+	_gui->playSound(SoundManager::Sound::SOUND_YOSHI_YOSH);
 	return (true);
 }
 bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
@@ -495,6 +496,7 @@ bool	Manager::pex()// n\n explusion
 			+ " is aggressive today !",
 			getColorForTeam(_players[idxPlayer]->getNameTeam())
 		);
+		_gui->playSound(SoundManager::Sound::SOUND_YOSHI_KICK);
 	}
 	for(auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it)
 	{
@@ -562,6 +564,7 @@ bool	Manager::pic()// X Y L n n . . . \n start of an incantation (by the first p
 				+ " is incanting",
 				getColorForTeam(_players[idxPlayer]->getNameTeam())
 			);
+			_gui->playSound(SoundManager::Sound::SOUND_INVOCATION);
 		}
 	}
 	return (true);
@@ -651,6 +654,7 @@ bool	Manager::pdr()// n i\n resource dropping
 			+ " Dropped " + what,
 			getColorForTeam(_players[idxPlayer]->getNameTeam())
 		);
+		_gui->playSound(SoundManager::Sound::SOUND_POP);
 	}
 	return (true);
 }
@@ -702,6 +706,7 @@ bool	Manager::pgt()// n i\n resource collecting
 			+ " Took " + what,
 			getColorForTeam(_players[idxPlayer]->getNameTeam())
 		);
+		_gui->playSound(SoundManager::Sound::SOUND_POP);
 	}
 	return (true);
 }
@@ -725,6 +730,7 @@ bool	Manager::pdi()// n\n death of a player
 			+ " Died",
 			getColorForTeam(_players[idxPlayer]->getNameTeam())
 		);
+		_gui->playSound(SoundManager::Sound::SOUND_YOSHI_WAAH);
 	}
 	return (true);
 }
@@ -747,6 +753,7 @@ bool	Manager::enw()// e n X Y\n an egg was laid by a player
 		+ " has laid an egg",
 		getColorForTeam(_players[idxPlayer]->getNameTeam())
 	);
+	_gui->playSound(SoundManager::Sound::SOUND_YOSHI_POP);
 	return (true);
 }
 bool	Manager::eht()// e\n egg hatching
@@ -815,6 +822,7 @@ bool	Manager::ebo()// <egg_nb> <player_nb> <X> <Y> <dir> <lvl> <team>\n player c
 		+ " from egg #" + std::to_string(idxEgg),
 		getColorForTeam(teamName)
 	);
+	_gui->playSound(SoundManager::Sound::SOUND_YOSHI_YOSH);
 	return (true);
 }
 bool	Manager::edi()// e\n death of an hatched egg
