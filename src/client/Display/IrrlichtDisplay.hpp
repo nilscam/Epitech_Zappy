@@ -72,7 +72,8 @@ namespace IrrlichtDisplayConst
 		"././Ress/model/perso/MD3/idle3.MD3"
 	};
 	const irr::io::path PERSO_BACKFLIP = "././Ress/model/perso/MD3/backflip.MD3";
-	const irr::io::path PERSO_DIE = "././Ress/model/perso/MD3/die.MD3";
+	// const irr::io::path PERSO_DIE = "././Ress/model/perso/MD3/die.MD3"; //! not working
+	const irr::io::path PERSO_DIE = "././Ress/model/perso/MD3/fall_impact_kick.MD3";
 	// const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/falling.MD3"; //! not working
 	const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/backflip.MD3";
 	const irr::io::path PERSO_FALL_IMPACT = "././Ress/model/perso/MD3/fall_impact_down.MD3";
@@ -303,6 +304,9 @@ private:
 		void	animate(PlayerAnimationStyle const & how);
 		void 	setDurationMillis(long long movDurationMillis, double timeUnit);
 		void	fall(size_t height);
+		void	kill(void);
+		bool	isDead(void) const noexcept;
+		size_t	getId(void) const noexcept;
 
 	private:
 
@@ -363,6 +367,11 @@ private:
 		int						_fallHeight;
 		irr::core::vector3df	_fallInc;
 		Clock					_fallClock;
+
+		/* Die */
+		bool					_isDying;
+		bool					_isDead;
+		Clock					_deadClock;
 
 	};
 

@@ -36,6 +36,8 @@ IrrlichtDisplay::Player::Player(
 	,	_animationPath(IrrlichtDisplayConst::PERSO)
 	,	_isMoving(false)
 	,	_isFalling(false)
+	,	_isDying(false)
+	,	_isDead(false)
 {
 	switch (origin)
 	{
@@ -140,7 +142,14 @@ void	IrrlichtDisplay::Player::loop(void)
 	// rot
 	setMeshRotation(getRotationDegrees(_dir));
 	// mesh
-	if (_isAnimating)
+	if (_isDying)
+	{
+		if (!_isDead && _deadClock.timeSinceMark() > 3000)
+		{
+			_isDead = true;
+		}
+	}
+	else if (_isAnimating)
 	{
 		changeMesh(_animationPath);
 	}
@@ -206,6 +215,23 @@ void	IrrlichtDisplay::Player::fall(size_t height)
 {
 	_isFalling = true;
 	_fallHeight = height;
+}
+
+void	IrrlichtDisplay::Player::kill(void)
+{
+	_isDying = true;
+	_deadClock.mark();
+	changeMesh(IrrlichtDisplayConst::PERSO_DIE);
+}
+
+bool	IrrlichtDisplay::Player::isDead(void) const noexcept
+{
+	return _isDead;
+}
+
+size_t	IrrlichtDisplay::Player::getId(void) const noexcept
+{
+	return _id;
 }
 
 void	IrrlichtDisplay::Player::animate(irr::io::path const & path) noexcept
@@ -389,7 +415,11 @@ void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path) noexcept
 		else
 			_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX]);
 		auto maxFrames = _mesh->getEndFrame();
-		if (_movDurationMillis > 0)
+		if (_isDying)
+		{
+			_mesh->setLoopMode(false);
+		}
+		else if (_movDurationMillis > 0)
 		{
 			irr::f32 fps = (float)_timeUnit * maxFrames;
 			_mesh->setAnimationSpeed(fps);

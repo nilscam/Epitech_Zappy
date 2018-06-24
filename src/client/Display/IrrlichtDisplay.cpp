@@ -54,20 +54,38 @@ bool IrrlichtDisplay::init(void)
 
 void	IrrlichtDisplay::loop(void)
 {
-	if (_device && _device->run())
-	{
-		for (auto const & pair : _players)
-		{
-			auto & player = pair.second;
-			player->loop();
-		}
-	}
+	if (!_device || !_device->run())
+		return;
 	if (_rotateCamera && _cameraRotationClock.timeSinceMark() > 1)
 	{
 		_cameraRotationClock.mark();
 		_cameraRotationDegrees += 0.095;
 		if (_cameraRotationDegrees > 360)
 			_cameraRotationDegrees = 0;
+	}
+	for (auto it = _players.begin(); it != _players.end();)
+	{
+		auto & player = it->second;
+		player->loop();
+		if (player->isDead())
+		{
+			for (auto idxIt = _idxPlayers.begin(); idxIt != _idxPlayers.end();)
+			{
+				if (*idxIt == (int)player->getId())
+				{
+					idxIt = _idxPlayers.erase(idxIt);
+				}
+				else
+				{
+					++idxIt;
+				}
+			}
+			it = _players.erase(it);
+		}
+		else
+		{
+			++it;
+		}
 	}
 }
 
@@ -420,16 +438,10 @@ void	IrrlichtDisplay::addPlayer(
 
 void IrrlichtDisplay::killPlayer(size_t id)
 {
-	auto oldPlayer = _players.find(id);
-	if (oldPlayer != _players.end())
+	if (doesPlayerExist(id))
 	{
-		_players.erase(oldPlayer);
-	}
-	for (auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it) {
-		if (*it == static_cast<int>(id)) {
-			_idxPlayers.erase(it);
-			return;
-		}
+		auto player = getPlayer(id);
+		player->kill();
 	}
 }
 
