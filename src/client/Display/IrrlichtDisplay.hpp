@@ -91,25 +91,26 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	TEXTURE_PERSO_GREEN = "./Ress/model/perso/texture_perso_3.png";
 	const irr::io::path	TEXTURE_PERSO_YELLOW = "./Ress/model/perso/texture_perso_4.png";
 	const irr::io::path	TEXTURE_PERSO_BROWN = "./Ress/model/perso/texture_perso_5.png";
-	const irr::io::path	PERSO_RUN = "././Ress/model/perso/MD3/running.MD3";
-	const irr::io::path	PERSO_KICK1 = "././Ress/model/perso/MD3/mmakick.MD3";
-	const irr::io::path	PERSO_KICK2 = "././Ress/model/perso/MD3/mmakick2.MD3";
-	const irr::io::path	PERSO_HEADSPIN = "././Ress/model/perso/MD3/head_spin.MD3";
-	const irr::io::path	PERSO_DROP = "././Ress/model/perso/MD3/drop.MD3";
-	const irr::io::path	PERSO_TAKE = "././Ress/model/perso/MD3/take.MD3";
-	const irr::io::path	PERSO_FALL = "././Ress/model/perso/MD3/fall_impact_kick.MD3";
+	const irr::io::path	PERSO_RUN = "./Ress/model/perso/MD3/running.MD3";
+	const irr::io::path	PERSO_KICK1 = "./Ress/model/perso/MD3/mmakick.MD3";
+	const irr::io::path	PERSO_KICK2 = "./Ress/model/perso/MD3/mmakick2.MD3";
+	const irr::io::path	PERSO_HEADSPIN = "./Ress/model/perso/MD3/head_spin.MD3";
+	const irr::io::path	PERSO_DROP = "./Ress/model/perso/MD3/drop.MD3";
+	const irr::io::path	PERSO_TAKE = "./Ress/model/perso/MD3/take.MD3";
+	const irr::io::path	PERSO_FALL = "./Ress/model/perso/MD3/fall_impact_kick.MD3";
 	const irr::io::path PERSO_IDLES[] = {
-		"././Ress/model/perso/MD3/idle1.MD3",
-		"././Ress/model/perso/MD3/idle2.MD3",
-		"././Ress/model/perso/MD3/idle3.MD3"
+		"./Ress/model/perso/MD3/idle1.MD3",
+		"./Ress/model/perso/MD3/idle2.MD3",
+		"./Ress/model/perso/MD3/idle3.MD3"
 	};
-	const irr::io::path PERSO_BACKFLIP = "././Ress/model/perso/MD3/backflip.MD3";
-	// const irr::io::path PERSO_DIE = "././Ress/model/perso/MD3/die.MD3"; //! not working
-	const irr::io::path PERSO_DIE = "././Ress/model/perso/MD3/fall_impact_kick.MD3";
-	// const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/falling.MD3"; //! not working
-	const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/backflip.MD3";
-	const irr::io::path PERSO_FALL_IMPACT = "././Ress/model/perso/MD3/fall_impact_down.MD3";
-	const irr::io::path PERSO_FALL_GET_UP = "././Ress/model/perso/MD3/fall_get_up.MD3";
+	const irr::io::path PERSO_BACKFLIP = "./Ress/model/perso/MD3/backflip.MD3";
+	// const irr::io::path PERSO_DIE = "./Ress/model/perso/MD3/die.MD3"; //! not working
+	const irr::io::path PERSO_DIE = "./Ress/model/perso/MD3/fall_impact_kick.MD3";
+	// const irr::io::path PERSO_FALLING = "./Ress/model/perso/MD3/falling.MD3"; //! not working
+	const irr::io::path PERSO_FALLING = "./Ress/model/perso/MD3/backflip.MD3";
+	const irr::io::path PERSO_FALL_IMPACT = "./Ress/model/perso/MD3/fall_impact_down.MD3";
+	const irr::io::path PERSO_FALL_GET_UP = "./Ress/model/perso/MD3/fall_get_up.MD3";
+	const irr::io::path PARTICLE_WHITE = "./Ress/model/particlewhite.bmp";
 
 	enum TexIdx {
 		TEXTURE_BASE_IDX,
@@ -166,7 +167,8 @@ namespace IrrlichtDisplayConst
 		SKY_LEFT4_IDX,
 		SKY_RIGHT4_IDX,
 		SKY_FORWARD4_IDX,
-		SKY_BACKWARD4_IDX
+		SKY_BACKWARD4_IDX,
+		PARTICLE_WHITE_IDX
 	};
 
 	struct FoodTexture
@@ -454,6 +456,7 @@ private:
 		void					changeMesh(irr::io::path const & path) noexcept;
 		long long				generateRandomTimeIdle(void) const noexcept;
 		irr::io::path			randomIdle(void) const noexcept;
+		void					create_particle(void);
 
 		/* Irrlicht */
 		irr::scene::ISceneManager &					_sceneManager;
@@ -465,6 +468,9 @@ private:
 		irr::core::vector3df					_lastMeshRotation;
 		irr::core::vector3df					_lastMeshPosition;
 		irr::core::vector3df					_lastMeshScale;
+
+		/* Particles */
+		irr::scene::IParticleSystemSceneNode *	_particle;
 
 		/* Data */
 		Point		_randomPos;

@@ -128,7 +128,6 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_GREEN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_GREEN);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_YELLOW);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BROWN);
-
 	_texture[IrrlichtDisplayConst::SKY_UP_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_UP);
 	_texture[IrrlichtDisplayConst::SKY_DOWN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_DOWN);
 	_texture[IrrlichtDisplayConst::SKY_LEFT_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_LEFT);
@@ -159,6 +158,7 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::SKY_RIGHT4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_RIGHT4);
 	_texture[IrrlichtDisplayConst::SKY_FORWARD4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD4);
 	_texture[IrrlichtDisplayConst::SKY_BACKWARD4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD4);
+	_texture[IrrlichtDisplayConst::PARTICLE_WHITE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::PARTICLE_WHITE);
 	for (auto const & pair : _texture)
 	{
 		auto const & texture = pair.second;
