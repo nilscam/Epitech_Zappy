@@ -84,6 +84,7 @@ private:
 	bool	suc();//\n unknown command
 	bool	sbp();//\n command parameter
 	bool	egg();// e X Y
+	bool	time();// t \n time since beginning of the game
 	//! --------- 
 
 	//! Variables
@@ -103,6 +104,7 @@ private:
 	std::list<int>									_idxEggs;
 	std::vector<std::string>						_teams;
 	int												_freq;
+	int												_timeSinceBegin;
 	std::string										_winner;
 	int												_followCamPlayer;
 	int												_lastSkyBox;
