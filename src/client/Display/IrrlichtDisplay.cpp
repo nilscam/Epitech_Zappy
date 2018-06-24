@@ -88,10 +88,17 @@ void	IrrlichtDisplay::loop(void)
 			++it;
 		}
 	}
-	if (_cursor && doesPlayerExist(_followCam))
+	if (_cursor)
 	{
-		auto player = getPlayer(_followCam);
-		_cursor->setPosition(player->getPosMesh() + irr::core::vector3df(0, 35, 0));
+		if (doesPlayerExist(_followCam))
+		{
+			auto player = getPlayer(_followCam);
+			_cursor->setPosition(player->getPosMesh() + irr::core::vector3df(0, IrrlichtDisplayConst::CURSOR_INC_Y, 0));
+		}
+		else
+		{
+			removePlayerCursor();
+		}
 	}
 }
 
@@ -714,6 +721,9 @@ void	IrrlichtDisplay::setPlayerCursor(size_t playerId)
 			_cursor->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			_cursor->setScale(IrrlichtDisplayConst::CURSOR_SCALE);
 			_cursor->setMaterialTexture(0, _texture[IrrlichtDisplayConst::CURSOR_TEXTURE_IDX]);
+			irr::scene::ISceneNodeAnimator * ani = _sceneManager->createRotationAnimator({ 0, 1, 0 });
+			_cursor->addAnimator(ani);
+			ani->drop();
 		}
 	}
 }

@@ -22,6 +22,7 @@ namespace IrrlichtDisplayConst
 	const irr::core::vector3df	STONE_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	EGG_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	CURSOR_SCALE = { 30, 30, 30 };
+	const float	CURSOR_INC_Y = 45;
 	const float MIN_PLAYER_SCALE = 2.2;
 	const float MAX_PLAYER_SCALE = 5.0;
 	const irr::core::vector3df	BLOCK_SCALE = { 5, 5, 5 };
