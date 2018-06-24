@@ -8,6 +8,15 @@
 #include "parsing.h"
 #include "str_to_tab.h"
 
+static const parsing_info_t	PARSING_INFOS[] = {
+	{ "-p", 2, get_port },
+	{ "-x", 2, get_width },
+	{ "-y", 2, get_height },
+	{ "-n", 2, get_team_name },
+	{ "-c", 2, get_max_per_team },
+	{ "-f", 2, get_freq }
+};
+
 static void	check_error(t_infos *i)
 {
 	if (i->_port <= 0 || i->_width <= 0 || i->_height <= 0
@@ -16,7 +25,7 @@ static void	check_error(t_infos *i)
 		i->_err = 0;
 }
 
-int			get_team_name(t_infos *infos, int *i, int ac, char **av)
+int	get_team_name(t_infos *infos, int *i, int ac, char **av)
 {
 	int		start = *i, end = 0, idx_tab = -1;
 
@@ -52,19 +61,17 @@ void		init_infos(t_infos *infos)
 
 void		parse_info(t_infos *infos, int *i, int ac, char **av)
 {
+	int max = SIZE_ARRAY(PARSING_INFOS);
+	const parsing_info_t *info;
+
 	infos->_err = 0;
-	if (!strncmp(av[*i], "-p", 2))
-		infos->_err = get_port(infos, i, ac, av);
-	else if (!strncmp(av[*i], "-x", 2))
-		infos->_err = get_width(infos, i, ac, av);
-	else if (!strncmp(av[*i], "-y", 2))
-		infos->_err = get_height(infos, i, ac, av);
-	else if (!strncmp(av[*i], "-n", 2))
-		infos->_err = get_team_name(infos, i, ac, av);
-	else if (!strncmp(av[*i], "-c", 2))
-		infos->_err = get_max_per_team(infos, i, ac, av);
-	else if (!strncmp(av[*i], "-f", 2))
-		infos->_err = get_freq(infos, i, ac, av);
+	for (int p = 0; p < max; ++p) {
+		info = &PARSING_INFOS[p];
+		if (!strncmp(av[*i], info->flag, info->size)) {
+			infos->_err = info->fct(infos, i, ac, av);
+			return;
+		}
+	}
 }
 
 t_infos		parse_args(int ac, char **av)
@@ -73,7 +80,7 @@ t_infos		parse_args(int ac, char **av)
 
 	init_infos(&infos);
 	infos._is_help = check_is_help(ac, av);
-	if (infos._is_help) 
+	if (infos._is_help)
 		return (infos);
 	for (int i = 1; i < ac; ++i) {
 		parse_info(&infos, &i, ac, av);

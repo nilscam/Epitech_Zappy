@@ -7,10 +7,7 @@
 
 NAME	=	zappy_ai
 MAIN	=	main.c
-SRC	=		parsing/get_infos.c				\
-			parsing/help.c				\
-			parsing/main.c				\
-			parsing/parsing.c
+SRC	=
 
 INC	=	-I include
 F	=	-W -Wall -Werror -Wextra

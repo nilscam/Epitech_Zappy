@@ -5,13 +5,8 @@
 ** main.c
 */
 
-#include <unistd.h>
-
-int	test_parsing(int ac, char **av);
-
-int	main(int ac, char **av)
+int	main(__attribute__((unused))int ac,
+	__attribute__((unused))char **av)
 {
-	(void)ac; (void)av;
-	return test_parsing(ac, av);
 	return 0;
 }

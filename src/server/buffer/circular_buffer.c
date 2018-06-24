@@ -44,7 +44,7 @@ char	*buff_get(t_buffer *cbuf)
 
 int	buff_init(t_buffer *cbuf, int size)
 {
-	if(cbuf) {
+	if (cbuf) {
 		cbuf->buffer = malloc(size + 1);
 		memset(cbuf->buffer, 0, size);
 		cbuf->size = size;

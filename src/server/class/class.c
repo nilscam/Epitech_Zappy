@@ -7,7 +7,8 @@
 
 #include "class.h"
 
-static bool	va_new_class(const class_t *class, object_t *obj, va_list *ap)
+static bool	va_new_class(const class_t *class,
+	object_t *obj, va_list *ap)
 {
 	if (!class || !obj)
 		return false;
@@ -26,7 +27,7 @@ object_t	*new_class(const class_t *class, ...)
 	if (!va_new_class(class, obj, &args)) {
 		delete_class(obj);
 		obj = NULL;
-	} 
+	}
 	va_end(args);
 	return (obj);
 }
@@ -59,4 +60,4 @@ void	deinit_class(object_t *ptr)
 		if (((class_t *)ptr)->__deinit__)
 			((class_t *)ptr)->__deinit__(ptr);
 	}
- }
+}

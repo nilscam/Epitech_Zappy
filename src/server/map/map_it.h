@@ -10,6 +10,7 @@
 
 #include "map.h"
 #include "player.h"
+#include "big_buff.h"
 
 typedef void	(*map_it_pl_t)(player_t *, va_list *);
 
@@ -24,7 +25,15 @@ player_t	*add_player_to_map_at(map_t *map, point_t pos,
 	const team_t *team, client_t *client);
 
 /* vision.c */
+void	print_stones(map_content_t *content, big_buff_t *buff, int vis_len);
+void	print_food(map_content_t *content, big_buff_t *buff);
 char	*look(map_t *this, player_t *player);
+
+/* vision_dir.c */
+char	*look_left(map_t *this, player_t *player);
+char	*look_right(map_t *this, player_t *player);
+char	*look_down(map_t *this, player_t *player);
+char	*look_up(map_t *this, player_t *player);
 
 /* elevation.c */
 bool	player_can_elevate(map_t *self, player_t *player);

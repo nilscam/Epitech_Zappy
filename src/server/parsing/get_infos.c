@@ -7,7 +7,7 @@
 
 #include "parsing.h"
 
-int			get_port(t_infos *infos, int *i, int ac, char **av)
+int	get_port(t_infos *infos, int *i, int ac, char **av)
 {
 	if (!(*i + 1 < ac))
 		return (0);
@@ -19,7 +19,7 @@ int			get_port(t_infos *infos, int *i, int ac, char **av)
 	return (1);
 }
 
-int			get_width(t_infos *infos, int *i, int ac, char **av)
+int	get_width(t_infos *infos, int *i, int ac, char **av)
 {
 	if (!(*i + 1 < ac))
 		return (0);
@@ -31,7 +31,7 @@ int			get_width(t_infos *infos, int *i, int ac, char **av)
 	return (1);
 }
 
-int			get_height(t_infos *infos, int *i, int ac, char **av)
+int	get_height(t_infos *infos, int *i, int ac, char **av)
 {
 	if (!(*i + 1 < ac))
 		return (0);
@@ -43,7 +43,7 @@ int			get_height(t_infos *infos, int *i, int ac, char **av)
 	return (1);
 }
 
-int			get_max_per_team(t_infos *infos, int *i, int ac, char **av)
+int	get_max_per_team(t_infos *infos, int *i, int ac, char **av)
 {
 	if (!(*i + 1 < ac))
 		return (0);
@@ -55,7 +55,7 @@ int			get_max_per_team(t_infos *infos, int *i, int ac, char **av)
 	return (1);
 }
 
-int			get_freq(t_infos *infos, int *i, int ac, char **av)
+int	get_freq(t_infos *infos, int *i, int ac, char **av)
 {
 	if (!(*i + 1 < ac))
 		return (0);
