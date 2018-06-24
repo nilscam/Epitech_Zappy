@@ -148,9 +148,9 @@ void	IrrlichtDisplay::Player::loop(void)
 	// scale
 	setMeshScale(getScaleLevel(_level));
 	// mesh
-	bool isIdle = false;
 	if (_isDying)
 	{
+		_isIdle = false;
 		if (!_isDead && _deadClock.timeSinceMark() > 3000)
 		{
 			_isDead = true;
@@ -158,14 +158,17 @@ void	IrrlichtDisplay::Player::loop(void)
 	}
 	else if (_isAnimating)
 	{
+		_isIdle = false;
 		changeMesh(_animationPath);
 	}
 	else if (_isFalling)
 	{
+		_isIdle = false;
 		changeMesh(IrrlichtDisplayConst::PERSO_FALLING);
 	}
 	else if (_isMoving)
 	{
+		_isIdle = false;
 		if (_movIsPushed)
 			changeMesh(IrrlichtDisplayConst::PERSO_FALL);
 		else
@@ -173,26 +176,22 @@ void	IrrlichtDisplay::Player::loop(void)
 	}
 	else if (_isIncanting)
 	{
+		_isIdle = false;
 		changeMesh(IrrlichtDisplayConst::PERSO_HEADSPIN);
 	}
 	else
 	{
-		isIdle = true;
-		if (!_mesh || !_isIdle
+		bool wasIdle = _isIdle;
+		_isIdle = true;
+		if (!_mesh || !wasIdle
 		|| (_mesh->getFrameNr() >= _mesh->getEndFrame()
 			&& _idleClock.timeSinceMark() >= _timeNextIdle))
 		{
 			_timeNextIdle = generateRandomTimeIdle();
 			_idleClock.mark();
 			changeMesh(randomIdle());
-			if (_mesh)
-			{
-				_mesh->setAnimationSpeed(30);
-				_mesh->setLoopMode(false);
-			}
 		}
 	}
-	_isIdle = isIdle;
 }
 
 void	IrrlichtDisplay::Player::animate(PlayerAnimationStyle const & how)
@@ -434,7 +433,10 @@ void	IrrlichtDisplay::Player::loopFalling(void) noexcept
 
 void	IrrlichtDisplay::Player::loopAnimate(void) noexcept
 {
-	if (_isAnimating && _startAnimationClock.timeSinceMark() > _movDurationMillis)
+	if (_isAnimating
+	&& (!_mesh
+		|| (_startAnimationClock.timeSinceMark() > _movDurationMillis
+			&& _mesh->getFrameNr() >= _mesh->getEndFrame())))
 	{
 		_isAnimating = false;
 		if (_animationPath == IrrlichtDisplayConst::PERSO_FALL_IMPACT)
@@ -473,18 +475,18 @@ void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path) noexcept
 		else
 			_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX]);
 		auto maxFrames = _mesh->getEndFrame();
-		if (_isDying)
+		if (_isDying || _isAnimating || _isIdle)
 		{
 			_mesh->setLoopMode(false);
 		}
-		else if (_timeUnit > 0)
+		if (_isDying || _isIdle || _timeUnit <= 0)
 		{
-			irr::f32 fps = (float)_timeUnit * maxFrames;
-			_mesh->setAnimationSpeed(fps);
+			_mesh->setAnimationSpeed(30);
 		}
 		else
 		{
-			_mesh->setAnimationSpeed(maxFrames / 2);
+			irr::f32 fps = (float)_timeUnit * maxFrames;
+			_mesh->setAnimationSpeed(fps);
 		}
 	}
 }
