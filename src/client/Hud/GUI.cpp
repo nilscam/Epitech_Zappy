@@ -237,7 +237,7 @@ void GUI::initClient()
 	addButton(Rectangle(1000, 890,  1280, 990),
 		  Button::ADD_TEAM4, L"",
 		  ADD_TEAM4);
-	addButton(Rectangle(1535, 730, 1635, 780),
+	addButton(Rectangle(1410, 730, 1510, 780),
 		  Button::LAUNCH_GAME, L"Start",
 		  LAUNCH_GAME);
 	
@@ -343,8 +343,8 @@ Menu GUI::addMenu(Rectangle rect)
 	initClient();
 	addButton(Rectangle(1650, 730, 1750, 780),
 		  Button::MENU_OPEN, L"Menu", OPEN_MENU);
-	addButton(Rectangle(1650, 730, 1750, 780),
-		  Button::NEXT_SONG, L"Next song", BTN_PNG);
+	addButton(Rectangle(1530, 730, 1630, 780),
+		  Button::NEXT_SONG, L"Next song", NEXT_SONG);
 
 	buttonManager.setImage(driver->getTexture(PATH_TO_RES BTN_PNG),
 			       OPEN_MENU);
