@@ -20,7 +20,9 @@ int	main(int ac, char **av)
 		} else if (ac == 1) {
 			auto man = std::make_shared<Manager>();
 			man->init();
-			man->spectateGame();
+			if (!man->needToExit()) {
+				man->spectateGame();
+			}
 		}
 	} catch (std::exception &e) {
 		std::cerr << e.what() << std::endl;

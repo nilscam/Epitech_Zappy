@@ -9,6 +9,7 @@
 
 Manager::Manager()
 {
+	_needToExit = false;
 	_client = std::make_unique<Client>();
 	_readBuffer = std::make_unique<Buffer>(LIMIT_READ);
 	_sendBuffer = std::make_unique<Buffer>(LIMIT_SEND);
@@ -47,7 +48,8 @@ bool	Manager::initServer()
 		if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
 			_display->display(_gui);
 		} else {
-			exit(0);
+			_needToExit = true;
+			return (true);
 		}
 	}
 	std::cout << _gui->getPort() << std::endl;
@@ -65,8 +67,20 @@ Manager::~Manager()
 
 int		Manager::connectClient(const char *ip, int port)
 {
-	if (_client->connectServer(ip, port) == -1) {
-		return (0);
+	bool connected = false;
+	Clock timeout;
+	Clock retry;
+	while (!connected && timeout.timeSinceMark() < 2000)
+	{
+		connected = (_client->connectServer(ip, port) != -1);
+		std::cout << "Connecting to " << ip << ":" << port << "... : " << connected << std::endl;
+		while (!connected && retry.timeSinceMark() < 250);
+		retry.mark();
+	}
+	if (!connected)
+	{
+		std::cout << "Failed to connect to " << ip << ":" << port << std::endl;
+		return 0;
 	}
 	while ("Cyril > Thery") {
 		Select select;
@@ -100,8 +114,6 @@ int		Manager::connectClient(const char *ip, int port)
 }
 void	Manager::spectateGame()
 {
-	Clock refresh;
-	refresh.mark();
 	_stop = false;
 	_gui->launchGui();
 	while (!_stop)
@@ -131,20 +143,21 @@ void	Manager::spectateGame()
 		{
 			_stop = true;
 		}
-		_display->loop();
-		if (refresh.timeSinceMark() > 1) {
-			if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
-				_display->display(_gui);
-				this->updateGUILevelPlayer();
-				this->updateGUITimeUnit();
-				this->manageCamOnPlayer();
-				//_display->getTeamClicked(_idxPlayers);
-			} else {
-				_stop = true;
-			}
-			refresh.mark();
+		if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
+			_display->loop();
+			_display->display(_gui);
+			this->updateGUILevelPlayer();
+			this->updateGUITimeUnit();
+			this->manageCamOnPlayer();
+			//_display->getTeamClicked(_idxPlayers);
+		} else {
+			_stop = true;
 		}
 	}
+}
+bool	Manager::needToExit(void) const noexcept
+{
+	return _needToExit;
 }
 void	Manager::readInFd(int fd)
 {
@@ -274,6 +287,7 @@ void	Manager::manageCamOnPlayer()
 	}
 	auto playerFollowCam = _display->getIdPlayerFollowCam();
 	if (playerFollowCam != _followCamPlayer && playerFollowCam >= 0) {
+		std::cout << "ASK INVENTORY" << std::endl;
 		char str[20];
 		sprintf(str, "pin %d\n", playerFollowCam);
 		_sendBuffer->Put(str);

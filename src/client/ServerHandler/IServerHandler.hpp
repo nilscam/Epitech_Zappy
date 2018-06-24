@@ -17,7 +17,7 @@ public:
 
 	virtual ~IServerHandler() = default;
 
-	virtual void	startServer(
+	virtual bool	startServer(
 		int width, int height, unsigned short port,
 		std::vector<std::string> const & teams,
 		int playerPerTeam, double freq
