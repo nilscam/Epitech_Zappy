@@ -66,11 +66,9 @@ bool	client_read(client_t *client)
 		DEBUG("client %d left", client->_fd);
 		return false;
 	}
-	DEBUG("read %lu bytes from %d: '%.*s'", size_read, client->_fd,
-		size_read, buff);
+	DEBUG("read %lu bytes from %d", size_read, client->_fd, size_read);
 	data = read_data(client, buff, size_read);
 	if (data) {
-		DEBUG("got '%s' from %d", data, client->_fd);
 		list_push_back(client->read_buff, data);
 	}
 	return true;
