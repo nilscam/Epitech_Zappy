@@ -54,20 +54,38 @@ bool IrrlichtDisplay::init(void)
 
 void	IrrlichtDisplay::loop(void)
 {
-	if (_device && _device->run())
-	{
-		for (auto const & pair : _players)
-		{
-			auto & player = pair.second;
-			player->loop();
-		}
-	}
+	if (!_device || !_device->run())
+		return;
 	if (_rotateCamera && _cameraRotationClock.timeSinceMark() > 1)
 	{
 		_cameraRotationClock.mark();
 		_cameraRotationDegrees += 0.095;
 		if (_cameraRotationDegrees > 360)
 			_cameraRotationDegrees = 0;
+	}
+	for (auto it = _players.begin(); it != _players.end();)
+	{
+		auto & player = it->second;
+		player->loop();
+		if (player->isDead())
+		{
+			for (auto idxIt = _idxPlayers.begin(); idxIt != _idxPlayers.end();)
+			{
+				if (*idxIt == (int)player->getId())
+				{
+					idxIt = _idxPlayers.erase(idxIt);
+				}
+				else
+				{
+					++idxIt;
+				}
+			}
+			it = _players.erase(it);
+		}
+		else
+		{
+			++it;
+		}
 	}
 }
 
@@ -95,8 +113,16 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::GREEN_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::GREEN_GEM);
 	_texture[IrrlichtDisplayConst::YELLOW_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::YELLOW_GEM);
 	_texture[IrrlichtDisplayConst::BLUE_GEM_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::BLUE_GEM);
-	_texture[IrrlichtDisplayConst::YOSHI_EGG_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG);
-	_texture[IrrlichtDisplayConst::FOOD_BASE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::FOOD_BASE);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_RED_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_RED);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_BLUE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_BLUE);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_GREEN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_GREEN);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_YELLOW_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_YELLOW);
+	_texture[IrrlichtDisplayConst::YOSHI_EGG_BROWN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_YOSHI_EGG_BROWN);
+	for (size_t i = 0; i < sizeof(IrrlichtDisplayConst::FOODS) / sizeof(*IrrlichtDisplayConst::FOODS); ++i)
+	{
+		auto const & food = IrrlichtDisplayConst::FOODS[i];
+		_texture[food.idx] = this->_driver->getTexture(food.base);
+	}
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_RED);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_BLUE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_BLUE);
 	_texture[IrrlichtDisplayConst::TEXTURE_PERSO_GREEN_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::TEXTURE_PERSO_GREEN);
@@ -258,16 +284,6 @@ void IrrlichtDisplay::setTimeUnit(double unit)
 	}
 }
 
-void IrrlichtDisplay::display(void)
-{
-	if (_isInit && _device && _device->run())
-	{
-		_driver->beginScene(true, true, irr::video::SColor(0, 135, 206, 235));
-		_sceneManager->drawAll();
-		_driver->endScene();
-	}
-}
-
 void IrrlichtDisplay::display(std::shared_ptr<GUI> gui)
 {
 	this->manageEvent();
@@ -302,12 +318,14 @@ void	IrrlichtDisplay::setFoodTile(
 	int after = content._food;
 	while (before < after)
 	{
+		auto const & food = getRandomFood();
 		m->foods().push_back(
 			std::make_shared<Food>(
-				create_food(
-						IrrlichtDisplayConst::FOOD_BASE_IDX,
-					getRandomPos(pos, IrrlichtDisplayConst::FOOD_Z),
-					IrrlichtDisplayConst::FOOD_SCALE
+				create_mesh(
+					food.idx,
+					getRandomPos(pos, food.z),
+					food.scale,
+					food.mesh
 				)
 			)
 		);
@@ -420,16 +438,10 @@ void	IrrlichtDisplay::addPlayer(
 
 void IrrlichtDisplay::killPlayer(size_t id)
 {
-	auto oldPlayer = _players.find(id);
-	if (oldPlayer != _players.end())
+	if (doesPlayerExist(id))
 	{
-		_players.erase(oldPlayer);
-	}
-	for (auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it) {
-		if (*it == static_cast<int>(id)) {
-			_idxPlayers.erase(it);
-			return;
-		}
+		auto player = getPlayer(id);
+		player->kill();
 	}
 }
 
@@ -478,6 +490,7 @@ void IrrlichtDisplay::addEgg(size_t idEgg, size_t idPlayerFrom)
 		auto const & pos = player->getPos();
 		_eggs[idEgg] = std::make_shared<Egg>(
 			idEgg,
+			player->getTeamIdx(),
 			player->getPos(),
 			/*create_egg(
 					IrrlichtDisplayConst::YOSHI_EGG_IDX,
@@ -527,15 +540,6 @@ irr::scene::IMeshSceneNode *	IrrlichtDisplay::create_egg(
 	return (create_mesh(texture, pos, scale, IrrlichtDisplayConst::EGG_MESH));
 }
 
-irr::scene::IMeshSceneNode *IrrlichtDisplay::create_food(
-	int texture,
-	irr::core::vector3df pos,
-	irr::core::vector3df scale
-)
-{
-	return (create_mesh(texture, pos, scale, IrrlichtDisplayConst::FOOD_MESH));
-}
-
 irr::scene::IMeshSceneNode *IrrlichtDisplay::create_mesh(
 	int texture,
 	irr::core::vector3df pos,
@@ -582,6 +586,13 @@ bool IrrlichtDisplay::create_sky()
 			_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD),
 			_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD)
 	);
+	/*_sceneManager->addSkyBoxSceneNode(_driver->getTexture("./Ress/model/sor_cwd/cwd_up.JPG"),
+			_driver->getTexture("./Ress/model/sor_cwd/cwd_dn.JPG"),
+			_driver->getTexture("./Ress/model/sor_cwd/cwd_lf.JPG"),
+			_driver->getTexture("./Ress/model/sor_cwd/cwd_rt.JPG"),
+			_driver->getTexture("./Ress/model/sor_cwd/cwd_bk.JPG"),
+	        _driver->getTexture("./Ress/model/sor_cwd/cwd_ft.JPG")
+	);*/
 	_driver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, true);
 	return true;
 }
@@ -694,6 +705,13 @@ irr::core::vector2df	IrrlichtDisplay::rotatePoint(
 	return point;
 }
 
+IrrlichtDisplayConst::FoodTexture	IrrlichtDisplay::getRandomFood(void)
+{
+	int max = sizeof(IrrlichtDisplayConst::FOODS) / sizeof(*IrrlichtDisplayConst::FOODS);
+	int r = Math::randomNumberBetween(0, max - 1);
+	return IrrlichtDisplayConst::FOODS[r];
+}
+
 bool	IrrlichtDisplay::doesMapContentExist(Point const & pos) const noexcept
 {
 	int x = pos.getX();
@@ -707,7 +725,7 @@ std::shared_ptr<IrrlichtDisplay::MapContent>	IrrlichtDisplay::getMapContent(Poin
 }
 
 ////////////////////////////////////// eggg/////////////////////////////////
-IrrlichtDisplay::Egg::Egg(size_t id,
+IrrlichtDisplay::Egg::Egg(size_t id, int teamIdx,
 						  Point const & pos, irr::video::IVideoDriver * _driver,
 						  irr::scene::ISceneManager & sceneManager,
 						  std::map<int, irr::video::ITexture *> & textures)
@@ -718,7 +736,7 @@ IrrlichtDisplay::Egg::Egg(size_t id,
 		,	_sceneManager(sceneManager)
 		,	_textures(textures)
 		,	_fx_egg(nullptr)
-
+		,	_teamIdx(teamIdx)
 {
 	positionNode(_pos);
 	create_fx(_meshPos, IrrlichtDisplayConst::EGG_FX_SCALE);
@@ -746,7 +764,16 @@ void IrrlichtDisplay::Egg::change_texture(irr::io::path const &path) {
 			 _mesh->setPosition(_meshPos);
 			 _mesh->setScale(IrrlichtDisplayConst::EGG_SCALE);
 			 _mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-			 _mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_IDX]);
+			if (_teamIdx == 0)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_RED_IDX]);
+			else if (_teamIdx == 1)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_BLUE_IDX]);
+			else if (_teamIdx == 2)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_GREEN_IDX]);
+			else if (_teamIdx == 3)
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_YELLOW_IDX]);
+			else
+				_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::YOSHI_EGG_BROWN_IDX]);
 		 }
 	 }
 }
@@ -782,3 +809,38 @@ void IrrlichtDisplay::Egg::create_fx(irr::core::vector3df pos, irr::core::vector
 }
 
 ///////egggggggg/////////////
+
+////particule///
+
+void		created_fire(float x, float y, irr::video::IVideoDriver *driver, irr::scene::ISceneManager *sceneManager)
+{
+	irr::scene::IParticleSystemSceneNode* ps =
+			sceneManager->addParticleSystemSceneNode(false);
+
+	irr::scene::IParticleEmitter* em = ps->createBoxEmitter(
+			irr::core::aabbox3d<irr::f32>(-10,0,-10,10,1,10), // emitter size
+			irr::core::vector3df(0.0f,0.06f,0.0f),   // initial direction
+			25, 40,                             // emit rate
+			irr::video::SColor(0,255,255,255),       // darkest color
+			irr::video::SColor(0,255,255,255),       // brightest color
+			800,1500,30,                         // min and max age, angle
+			irr::core::dimension2df(10.f,10.f),         // min size
+			irr::core::dimension2df(20.f,20.f));        // max size
+
+	ps->setEmitter(em); // this grabs the emitter
+	em->drop(); // so we can drop it here without deleting it
+
+	irr::scene::IParticleAffector* paf = ps->createFadeOutParticleAffector();
+
+	ps->addAffector(paf); // same goes for the affector
+	paf->drop();
+
+	ps->setPosition(irr::core::vector3df(x, 27.5, y));
+	ps->setScale(irr::core::vector3df(2,2,2));
+	ps->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	ps->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
+	ps->setMaterialTexture(0, driver->getTexture("./Ress/model/particlewhite.bmp"));
+	ps->setMaterialType(irr::video::EMT_TRANSPARENT_ADD_COLOR);
+}
+
+/////particule ////

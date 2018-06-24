@@ -25,6 +25,7 @@ IrrlichtDisplay::Player::Player(
 	,	_lastMeshPath("")
 	,	_lastMeshRotation(-1)
 	,	_lastMeshPosition({ -1, -1, -1 })
+	,	_lastMeshScale({ -1, -1, -1 })
 	,	_randomPos(generateRandomPos())
 	,	_mapPos(pos)
 	,	_id(id)
@@ -36,6 +37,11 @@ IrrlichtDisplay::Player::Player(
 	,	_animationPath(IrrlichtDisplayConst::PERSO)
 	,	_isMoving(false)
 	,	_isFalling(false)
+	,	_isDying(false)
+	,	_isIdle(false)
+	,	_timeNextIdle(0)
+	,	_level(1)
+	,	_isIncanting(false)
 {
 	switch (origin)
 	{
@@ -47,7 +53,7 @@ IrrlichtDisplay::Player::Player(
 		default:
 		case TELEPORT:
 		{
-			fall(200);
+			fall(150);
 			break;
 		}
 	}
@@ -105,10 +111,10 @@ void	IrrlichtDisplay::Player::pushTo(Point const & pos, Direction const & dir)
 	}
 }
 
-void	IrrlichtDisplay::Player::setLevel(
-	__attribute__((unused)) size_t level
-)
-{}
+void	IrrlichtDisplay::Player::setLevel(size_t level)
+{
+	_level = level;
+}
 
 void	IrrlichtDisplay::Player::setDir(Direction const & dir)
 {
@@ -139,27 +145,52 @@ void	IrrlichtDisplay::Player::loop(void)
 	setMeshPosition(pos);
 	// rot
 	setMeshRotation(getRotationDegrees(_dir));
+	// scale
+	setMeshScale(getScaleLevel(_level));
 	// mesh
-	if (_isAnimating)
+	if (_isDying)
 	{
+		_isIdle = false;
+		if (!_isDead && _deadClock.timeSinceMark() > 3000)
+		{
+			_isDead = true;
+		}
+	}
+	else if (_isAnimating)
+	{
+		_isIdle = false;
 		changeMesh(_animationPath);
 	}
 	else if (_isFalling)
 	{
+		_isIdle = false;
 		changeMesh(IrrlichtDisplayConst::PERSO_FALLING);
-		// changeMesh(IrrlichtDisplayConst::PERSO_FALL_IMPACT);
-		// changeMesh(IrrlichtDisplayConst::PERSO_FALL_GET_UP);
 	}
 	else if (_isMoving)
 	{
+		_isIdle = false;
 		if (_movIsPushed)
 			changeMesh(IrrlichtDisplayConst::PERSO_FALL);
 		else
 			changeMesh(IrrlichtDisplayConst::PERSO_RUN);
 	}
+	else if (_isIncanting)
+	{
+		_isIdle = false;
+		changeMesh(IrrlichtDisplayConst::PERSO_HEADSPIN);
+	}
 	else
 	{
-		changeMesh(IrrlichtDisplayConst::PERSO);
+		bool wasIdle = _isIdle;
+		_isIdle = true;
+		if (!_mesh || !wasIdle
+		|| (_mesh->getFrameNr() >= _mesh->getEndFrame()
+			&& _idleClock.timeSinceMark() >= _timeNextIdle))
+		{
+			_timeNextIdle = generateRandomTimeIdle();
+			_idleClock.mark();
+			changeMesh(randomIdle());
+		}
 	}
 }
 
@@ -167,9 +198,14 @@ void	IrrlichtDisplay::Player::animate(PlayerAnimationStyle const & how)
 {
 	switch (how)
 	{
-		case INCANTATION:
+		case START_INCANTATION:
 		{
-			animate(IrrlichtDisplayConst::PERSO_HEADSPIN);
+			_isIncanting = true;
+			break;
+		}
+		case END_INCANTATION:
+		{
+			_isIncanting = false;
 			break;
 		}
 		case EGG_LAYING:
@@ -206,6 +242,28 @@ void	IrrlichtDisplay::Player::fall(size_t height)
 {
 	_isFalling = true;
 	_fallHeight = height;
+}
+
+void	IrrlichtDisplay::Player::kill(void)
+{
+	_isDying = true;
+	_deadClock.mark();
+	changeMesh(IrrlichtDisplayConst::PERSO_DIE);
+}
+
+bool	IrrlichtDisplay::Player::isDead(void) const noexcept
+{
+	return _isDead;
+}
+
+size_t	IrrlichtDisplay::Player::getId(void) const noexcept
+{
+	return _id;
+}
+
+int		IrrlichtDisplay::Player::getTeamIdx(void) const noexcept
+{
+	return _teamIdx;
 }
 
 void	IrrlichtDisplay::Player::animate(irr::io::path const & path) noexcept
@@ -249,6 +307,16 @@ irr::core::vector3df	IrrlichtDisplay::Player::getRotationDegrees(
 	return { 0, (float) IrrlichtDisplay::getRotationDegrees(dir), 0 };
 }
 
+irr::core::vector3df	IrrlichtDisplay::Player::getScaleLevel(size_t level) const noexcept
+{
+	float maxLevel = IrrlichtDisplayConst::MAX_LEVEL;
+	float minScale = IrrlichtDisplayConst::MIN_PLAYER_SCALE;
+	float maxScale = IrrlichtDisplayConst::MAX_PLAYER_SCALE;
+	float lvl = (float)(level);
+	float scale = (lvl * ((maxScale - minScale) / maxLevel)) + minScale;
+	return { scale, scale, scale };
+}
+
 void	IrrlichtDisplay::Player::setMeshPosition(
 	irr::core::vector3df const & pos,
 	bool force
@@ -275,6 +343,21 @@ void	IrrlichtDisplay::Player::setMeshRotation(
 		if (_mesh)
 		{
 			_mesh->setRotation(rot);
+		}
+	}
+}
+
+void	IrrlichtDisplay::Player::setMeshScale(
+	irr::core::vector3df const & scale,
+	bool force
+)
+{
+	if (force || _lastMeshScale != scale)
+	{
+		_lastMeshScale = scale;
+		if (_mesh)
+		{
+			_mesh->setScale(scale);
 		}
 	}
 }
@@ -339,7 +422,7 @@ void	IrrlichtDisplay::Player::loopFalling(void) noexcept
 			_fallClock.mark();
 			_fallHeight -= 2;
 		}
-		if (_fallHeight <= 0)
+		if (_fallHeight <= 10)
 		{
 			animate(IrrlichtDisplayConst::PERSO_FALL_IMPACT);
 			_isFalling = false;
@@ -350,7 +433,10 @@ void	IrrlichtDisplay::Player::loopFalling(void) noexcept
 
 void	IrrlichtDisplay::Player::loopAnimate(void) noexcept
 {
-	if (_isAnimating && _startAnimationClock.timeSinceMark() > _movDurationMillis)
+	if (_isAnimating
+	&& (!_mesh
+		|| (_startAnimationClock.timeSinceMark() > _movDurationMillis
+			&& _mesh->getFrameNr() >= _mesh->getEndFrame())))
 	{
 		_isAnimating = false;
 		if (_animationPath == IrrlichtDisplayConst::PERSO_FALL_IMPACT)
@@ -376,7 +462,7 @@ void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path) noexcept
 	{
 		setMeshPosition(_lastMeshPosition, true);
 		setMeshRotation(_lastMeshRotation, true);
-		_mesh->setScale(IrrlichtDisplayConst::PLAYER_SCALE);
+		setMeshScale(_lastMeshScale, true);
 		_mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 		if (_teamIdx == 0)
 			_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX]);
@@ -389,10 +475,30 @@ void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path) noexcept
 		else
 			_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_BROWN_IDX]);
 		auto maxFrames = _mesh->getEndFrame();
-		if (_movDurationMillis > 0)
+		if (_isDying || _isAnimating || _isIdle)
+		{
+			_mesh->setLoopMode(false);
+		}
+		if (_isDying || _isIdle || _timeUnit <= 0)
+		{
+			_mesh->setAnimationSpeed(30);
+		}
+		else
 		{
 			irr::f32 fps = (float)_timeUnit * maxFrames;
 			_mesh->setAnimationSpeed(fps);
 		}
 	}
+}
+
+long long	IrrlichtDisplay::Player::generateRandomTimeIdle(void) const noexcept
+{
+	return Math::randomNumberBetween(2500, 4500);
+}
+
+irr::io::path	IrrlichtDisplay::Player::randomIdle(void) const noexcept
+{
+	int max = sizeof(IrrlichtDisplayConst::PERSO_IDLES) / sizeof(*IrrlichtDisplayConst::PERSO_IDLES);
+	int r = Math::randomNumberBetween(0, max - 1);
+	return IrrlichtDisplayConst::PERSO_IDLES[r];
 }

@@ -41,6 +41,7 @@ public:
 	bool	initServer();
 	int		connectClient(const char *ip, int port);
 	void	spectateGame();
+	bool	needToExit(void) const noexcept;
 
 private:
 	//! Methodes
@@ -107,6 +108,7 @@ private:
 	bool						_stop;
 	int							_char_read;
 	char						**_args;
+	bool						_needToExit;
 	//! --------- 
 };
 

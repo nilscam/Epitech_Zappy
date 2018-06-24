@@ -16,10 +16,14 @@
 
 namespace IrrlichtDisplayConst
 {
+	const int MIN_LEVEL = 8;
+	const int MAX_LEVEL = 8;
 	const irr::core::vector3df	FOOD_SCALE = { 1.5, 1.5, 1.5 };
 	const irr::core::vector3df	STONE_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	EGG_SCALE = { 0.1, 0.1, 0.1 };
-	const irr::core::vector3df	PLAYER_SCALE = { 2.2, 2.2, 2.2 };
+	// const irr::core::vector3df	PLAYER_SCALE = { 2.2, 2.2, 2.2 };
+	const float MIN_PLAYER_SCALE = 2.2;
+	const float MAX_PLAYER_SCALE = 5.0;
 	const irr::core::vector3df	BLOCK_SCALE = { 5, 5, 5 };
 	const irr::core::vector3df	EGG_FX_SCALE = {20.0f, 20.0f, 20.0f};
 	const int SIZE_MAP_TILE = 50;
@@ -42,10 +46,12 @@ namespace IrrlichtDisplayConst
 	const irr::io::path	GREEN_GEM = "./Ress/model/Gem1/Green.png";
 	const irr::io::path	YELLOW_GEM = "./Ress/model/Gem1/Yellow.png";
 	const irr::io::path	BLUE_GEM = "./Ress/model/Gem1/Blue.png";
-	const irr::io::path	TEXTURE_YOSHI_EGG = "./Ress/model/Egg/YoshSS00.png";
-	const irr::io::path	FOOD_BASE = "./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG_RED = "./Ress/model/Egg/Yoshi_egg_red.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG_BLUE = "./Ress/model/Egg/Yoshi_egg_blue.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG_GREEN = "./Ress/model/Egg/Yoshi_egg_green.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG_YELLOW = "./Ress/model/Egg/Yoshi_egg_yellow.png";
+	const irr::io::path	TEXTURE_YOSHI_EGG_BROWN = "./Ress/model/Egg/Yoshi_egg_brown.png";
 	const irr::io::path	GEM_MESH = "./Ress/model/PowerGem/gem.dae";
-	const irr::io::path	FOOD_MESH = "./Ress/model/Food/Watermelon/Watermelon.obj";
 	const irr::io::path	EGG_MESH = "./Ress/model/Egg/YoshiEgg.obj";
 	const irr::io::path	SKY_UP = "./Ress/model/irrlicht2_up.jpg";
 	const irr::io::path	SKY_DOWN = "./Ress/model/irrlicht2_dn.jpg";
@@ -72,7 +78,8 @@ namespace IrrlichtDisplayConst
 		"././Ress/model/perso/MD3/idle3.MD3"
 	};
 	const irr::io::path PERSO_BACKFLIP = "././Ress/model/perso/MD3/backflip.MD3";
-	const irr::io::path PERSO_DIE = "././Ress/model/perso/MD3/die.MD3";
+	// const irr::io::path PERSO_DIE = "././Ress/model/perso/MD3/die.MD3"; //! not working
+	const irr::io::path PERSO_DIE = "././Ress/model/perso/MD3/fall_impact_kick.MD3";
 	// const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/falling.MD3"; //! not working
 	const irr::io::path PERSO_FALLING = "././Ress/model/perso/MD3/backflip.MD3";
 	const irr::io::path PERSO_FALL_IMPACT = "././Ress/model/perso/MD3/fall_impact_down.MD3";
@@ -88,13 +95,76 @@ namespace IrrlichtDisplayConst
 		GREEN_GEM_IDX,
 		YELLOW_GEM_IDX,
 		BLUE_GEM_IDX,
-		YOSHI_EGG_IDX,
-		FOOD_BASE_IDX,
+		YOSHI_EGG_RED_IDX,
+		YOSHI_EGG_BLUE_IDX,
+		YOSHI_EGG_GREEN_IDX,
+		YOSHI_EGG_YELLOW_IDX,
+		YOSHI_EGG_BROWN_IDX,
+		FOOD_BASE_IDX_1,
+		FOOD_BASE_IDX_2,
+		FOOD_BASE_IDX_3,
+		FOOD_BASE_IDX_4,
+		FOOD_BASE_IDX_5,
+		FOOD_BASE_IDX_6,
 		TEXTURE_PERSO_RED_IDX,
 		TEXTURE_PERSO_BLUE_IDX,
 		TEXTURE_PERSO_GREEN_IDX,
 		TEXTURE_PERSO_YELLOW_IDX,
 		TEXTURE_PERSO_BROWN_IDX
+	};
+
+	struct FoodTexture
+	{
+		irr::io::path			base;
+		irr::io::path			mesh;
+		TexIdx					idx;
+		float					z;
+		irr::core::vector3df	scale;
+	};
+
+	const FoodTexture FOODS[] = {
+		{
+			"./Ress/model/Food/Watermelon/Texture/WatermelonTexture.png",
+			"./Ress/model/Food/Watermelon/Watermelon.obj",
+			FOOD_BASE_IDX_1,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		},
+		{
+			"./Ress/model/Food/Banana/Texture/Banana Texture.png",
+			"./Ress/model/Food/Banana/Banana.obj",
+			FOOD_BASE_IDX_2,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		},
+		{
+			"./Ress/model/Food/Carrot/Texture/Carrot Texture.png",
+			"./Ress/model/Food/Carrot/Carrot.obj",
+			FOOD_BASE_IDX_3,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		},
+		{
+			"./Ress/model/Food/Green Pepper/Texture/Green Pepper Texture.png",
+			"./Ress/model/Food/Green Pepper/Green Pepper.obj",
+			FOOD_BASE_IDX_4,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		},
+		{
+			"./Ress/model/Food/Melon/Texture/Melon Texture.png",
+			"./Ress/model/Food/Melon/Melon.obj",
+			FOOD_BASE_IDX_5,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		},
+		{
+			"./Ress/model/Food/Onion/Texture/Onion Texture.png",
+			"./Ress/model/Food/Onion/Onion.obj",
+			FOOD_BASE_IDX_6,
+			IrrlichtDisplayConst::FOOD_Z,
+			IrrlichtDisplayConst::FOOD_SCALE
+		}
 	};
 
 }
@@ -116,7 +186,7 @@ public:
 	int		getIdPlayerFollowCam(void) const;
 	void	setTeams(std::vector<std::string> const & teams) override;
 	void	setTimeUnit(double unit) override;
-	void	display(void) override;
+	void	display(std::shared_ptr<GUI> gui) override;
 	void	setMapTile(
 		Point const & pos,
 		Map::MapCase const & content
@@ -141,18 +211,11 @@ public:
 		PlayerAnimationStyle const & what
 	) override;
 
-	void	display(std::shared_ptr<GUI> gui);
-
 	/* Init */
 	bool							initTexture();
 	irr::scene::ICameraSceneNode	*create_camera();
 	bool 							create_sky();
 	irr::scene::ISceneNode			*create_block(
-		int texture,
-		irr::core::vector3df pos,
-		irr::core::vector3df scale
-	);
-	irr::scene::IMeshSceneNode		*create_food(
 		int texture,
 		irr::core::vector3df pos,
 		irr::core::vector3df scale
@@ -195,6 +258,7 @@ public:
 		double angle,
 		irr::core::vector2df point
 	);
+	static IrrlichtDisplayConst::FoodTexture	getRandomFood(void);
 
 private:
 
@@ -303,6 +367,10 @@ private:
 		void	animate(PlayerAnimationStyle const & how);
 		void 	setDurationMillis(long long movDurationMillis, double timeUnit);
 		void	fall(size_t height);
+		void	kill(void);
+		bool	isDead(void) const noexcept;
+		size_t	getId(void) const noexcept;
+		int		getTeamIdx(void) const noexcept;
 
 	private:
 
@@ -311,6 +379,7 @@ private:
 		irr::core::vector3df	getTileCenter(Point const & mapPos) const noexcept;
 		irr::core::vector3df	getTileCenter(void) const noexcept;
 		irr::core::vector3df	getRotationDegrees(Direction const & dir) const noexcept;
+		irr::core::vector3df	getScaleLevel(size_t level) const noexcept;
 		void					setMeshPosition(
 			irr::core::vector3df const & pos,
 			bool force = false
@@ -319,10 +388,16 @@ private:
 			irr::core::vector3df const & rot,
 			bool force = false
 		);
+		void					setMeshScale(
+			irr::core::vector3df const & scale,
+			bool force = false
+		);
 		void					loopMoving(void) noexcept;
 		void					loopFalling(void) noexcept;
 		void					loopAnimate(void) noexcept;
 		void					changeMesh(irr::io::path const & path) noexcept;
+		long long				generateRandomTimeIdle(void) const noexcept;
+		irr::io::path			randomIdle(void) const noexcept;
 
 		/* Irrlicht */
 		irr::scene::ISceneManager &					_sceneManager;
@@ -333,6 +408,7 @@ private:
 		irr::io::path							_lastMeshPath;
 		irr::core::vector3df					_lastMeshRotation;
 		irr::core::vector3df					_lastMeshPosition;
+		irr::core::vector3df					_lastMeshScale;
 
 		/* Data */
 		Point		_randomPos;
@@ -364,13 +440,29 @@ private:
 		irr::core::vector3df	_fallInc;
 		Clock					_fallClock;
 
+		/* Die */
+		bool					_isDying;
+		bool					_isDead;
+		Clock					_deadClock;
+
+		/* Idle */
+		bool					_isIdle;
+		long long				_timeNextIdle;
+		Clock					_idleClock;
+
+		/* Level */
+		size_t					_level;
+
+		/* Incantation */
+		bool					_isIncanting;
+
 	};
 
 	class Egg
 	{
 	public:
 
-		Egg(size_t id, Point const & pos,
+		Egg(size_t id, int teamIdx, Point const & pos,
 			irr::video::IVideoDriver * _driver,
 			irr::scene::ISceneManager & sceneManager,
 			std::map<int, irr::video::ITexture *> & textures);
@@ -399,6 +491,7 @@ private:
 		irr::scene::ISceneManager &				_sceneManager;
 		std::map<int, irr::video::ITexture *> &	_textures;
 		irr::scene::IVolumeLightSceneNode * 		_fx_egg;
+		int											_teamIdx;
 	};
 
 	class MapContent

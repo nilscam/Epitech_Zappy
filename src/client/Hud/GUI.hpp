@@ -107,9 +107,13 @@ public:
 
 	bool	scrollBarPosChanged();
 	int		getPort() const;
+
+	std::shared_ptr<ServerHandler>	getServerHandler(void) const noexcept;
+	void	playSound(SoundManager::Sound sound);
 	
 	ButtonManager buttonManager;
 	ImageManager imageManager;
+	SoundManager soundManager;
 	Table table;
 	ListBox listBox;
 	ScrollBar	scrollBar;

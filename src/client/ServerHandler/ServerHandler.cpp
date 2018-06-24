@@ -6,6 +6,7 @@
 */
 
 #include "ServerHandler.hpp"
+#include "Clock.hpp"
 
 ServerHandler::~ServerHandler()
 {
@@ -18,25 +19,31 @@ ServerHandler::~ServerHandler()
 	stopServer();
 }
 
-void	ServerHandler::startServer(
+bool	ServerHandler::startServer(
 	int width, int height, unsigned short port,
 	std::vector<std::string> const & teams,
 	int playerPerTeam, double freq
 )
 {
+	bool success = false;
 	_server.terminate();
 	_port = port;
 	_teams = teams;
 	int pid = fork();
-	if (pid == -1)
+	if (pid > 0)
 	{
-		throw ExceptFork("fork: " + std::string(strerror(errno)));
+		Clock timeout;
+		int k = -1;
+		do {
+			k = kill(pid, 0);
+		} while (k != 0 && timeout.timeSinceMark() > 2000);
+		success = k == 0;
+		if (success)
+		{
+			_server.setPid(pid);
+		}
 	}
-	else if (pid > 0)
-	{
-		_server.setPid(pid);
-	}
-	else
+	else if (pid == 0)
 	{
 		char const ** argv = (char const **)malloc(sizeof(char *) * (13 + teams.size()));
 		if (!argv)
@@ -65,6 +72,7 @@ void	ServerHandler::startServer(
 		free(argv);
 		exit(0);
 	}
+	return success;
 }
 
 void	ServerHandler::stopServer(void) noexcept

@@ -9,6 +9,7 @@
 
 Manager::Manager()
 {
+	_needToExit = false;
 	_client = std::make_unique<Client>();
 	_readBuffer = std::make_unique<Buffer>(LIMIT_READ);
 	_sendBuffer = std::make_unique<Buffer>(LIMIT_SEND);
@@ -47,7 +48,8 @@ bool	Manager::initServer()
 		if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
 			_display->display(_gui);
 		} else {
-			exit(0);
+			_needToExit = true;
+			return (true);
 		}
 	}
 	std::cout << _gui->getPort() << std::endl;
@@ -65,8 +67,20 @@ Manager::~Manager()
 
 int		Manager::connectClient(const char *ip, int port)
 {
-	if (_client->connectServer(ip, port) == -1) {
-		return (0);
+	bool connected = false;
+	Clock timeout;
+	Clock retry;
+	while (!connected && timeout.timeSinceMark() < 2000)
+	{
+		connected = (_client->connectServer(ip, port) != -1);
+		std::cout << "Connecting to " << ip << ":" << port << "... : " << connected << std::endl;
+		while (!connected && retry.timeSinceMark() < 250);
+		retry.mark();
+	}
+	if (!connected)
+	{
+		std::cout << "Failed to connect to " << ip << ":" << port << std::endl;
+		return 0;
 	}
 	while ("Cyril > Thery") {
 		Select select;
@@ -100,8 +114,6 @@ int		Manager::connectClient(const char *ip, int port)
 }
 void	Manager::spectateGame()
 {
-	Clock refresh;
-	refresh.mark();
 	_stop = false;
 	_gui->launchGui();
 	while (!_stop)
@@ -131,20 +143,21 @@ void	Manager::spectateGame()
 		{
 			_stop = true;
 		}
-		_display->loop();
-		if (refresh.timeSinceMark() > 1) {
-			if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
-				_display->display(_gui);
-				this->updateGUILevelPlayer();
-				this->updateGUITimeUnit();
-				this->manageCamOnPlayer();
-				//_display->getTeamClicked(_idxPlayers);
-			} else {
-				_stop = true;
-			}
-			refresh.mark();
+		if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
+			_display->loop();
+			_display->display(_gui);
+			this->updateGUILevelPlayer();
+			this->updateGUITimeUnit();
+			this->manageCamOnPlayer();
+			//_display->getTeamClicked(_idxPlayers);
+		} else {
+			_stop = true;
 		}
 	}
+}
+bool	Manager::needToExit(void) const noexcept
+{
+	return _needToExit;
 }
 void	Manager::readInFd(int fd)
 {
@@ -274,6 +287,7 @@ void	Manager::manageCamOnPlayer()
 	}
 	auto playerFollowCam = _display->getIdPlayerFollowCam();
 	if (playerFollowCam != _followCamPlayer && playerFollowCam >= 0) {
+		std::cout << "ASK INVENTORY" << std::endl;
 		char str[20];
 		sprintf(str, "pin %d\n", playerFollowCam);
 		_sendBuffer->Put(str);
@@ -389,6 +403,7 @@ bool	Manager::pnw()// #n X Y O L N\n connection of a new player
 		"New Player Connected : #" + std::to_string(_idxPlayers.back()),
 		getColorForTeam(teamName)
 	);
+	_gui->playSound(SoundManager::Sound::SOUND_YOSHI_YOSH);
 	return (true);
 }
 bool	Manager::ppo()//! n X Y O\n || ppo #n\n player’s position
@@ -468,6 +483,7 @@ bool	Manager::pex()// n\n explusion
 			+ " is aggressive today !",
 			getColorForTeam(_players[idxPlayer]->getNameTeam())
 		);
+		_gui->playSound(SoundManager::Sound::SOUND_YOSHI_KICK);
 	}
 	for(auto it = _idxPlayers.begin(); it != _idxPlayers.end(); ++it)
 	{
@@ -528,13 +544,14 @@ bool	Manager::pic()// X Y L n n . . . \n start of an incantation (by the first p
 		int idxPlayer = atoi(_args[i]);
 		if (_players.find(idxPlayer) != _players.end()) {
 			_display->setPlayerAction(
-				idxPlayer, IDisplay::PlayerAnimationStyle::INCANTATION);
+				idxPlayer, IDisplay::PlayerAnimationStyle::START_INCANTATION);
 			_players[idxPlayer]->setIsIncanting(true);
 			_gui->addListBoxMessage(
 				"Player #" + std::to_string(idxPlayer)
 				+ " is incanting",
 				getColorForTeam(_players[idxPlayer]->getNameTeam())
 			);
+			_gui->playSound(SoundManager::Sound::SOUND_INVOCATION);
 		}
 	}
 	return (true);
@@ -549,6 +566,8 @@ bool	Manager::pie()// X Y R\n end of an incantation
 	{
 		if (_players[*it]->getPos() == pos && _players[*it]->getIsIncanting()) {
 			_players[*it]->setIsIncanting(false);
+			_display->setPlayerAction(
+				*it, IDisplay::PlayerAnimationStyle::END_INCANTATION);
 			_gui->addListBoxMessage(
 				"Player #" + std::to_string(*it)
 				+ " has finished his incantation",
@@ -622,6 +641,7 @@ bool	Manager::pdr()// n i\n resource dropping
 			+ " Dropped " + what,
 			getColorForTeam(_players[idxPlayer]->getNameTeam())
 		);
+		_gui->playSound(SoundManager::Sound::SOUND_POP);
 	}
 	return (true);
 }
@@ -673,6 +693,7 @@ bool	Manager::pgt()// n i\n resource collecting
 			+ " Took " + what,
 			getColorForTeam(_players[idxPlayer]->getNameTeam())
 		);
+		_gui->playSound(SoundManager::Sound::SOUND_POP);
 	}
 	return (true);
 }
@@ -696,6 +717,7 @@ bool	Manager::pdi()// n\n death of a player
 			+ " Died",
 			getColorForTeam(_players[idxPlayer]->getNameTeam())
 		);
+		_gui->playSound(SoundManager::Sound::SOUND_YOSHI_WAAH);
 	}
 	return (true);
 }
@@ -718,6 +740,7 @@ bool	Manager::enw()// e n X Y\n an egg was laid by a player
 		+ " has laid an egg",
 		getColorForTeam(_players[idxPlayer]->getNameTeam())
 	);
+	_gui->playSound(SoundManager::Sound::SOUND_YOSHI_POP);
 	return (true);
 }
 bool	Manager::eht()// e\n egg hatching
@@ -726,6 +749,12 @@ bool	Manager::eht()// e\n egg hatching
 		return (false);
 	}
 	int idxEgg = atoi(_args[1]);
+	int idxPlayer = _eggs[idxEgg]->getIdxPlayerFrom();
+	if (_players.find(idxPlayer) != _players.end()) {
+		auto team = _players[idxPlayer]->getNameTeam();
+		_gui->getServerHandler()->addAi(team);
+		std::cout << "Added ai" << std::endl;
+	}
 	_gui->addListBoxMessage(
 		"Egg #" + std::to_string(idxEgg) + " is hatched"
 	);
@@ -780,6 +809,7 @@ bool	Manager::ebo()// <egg_nb> <player_nb> <X> <Y> <dir> <lvl> <team>\n player c
 		+ " from egg #" + std::to_string(idxEgg),
 		getColorForTeam(teamName)
 	);
+	_gui->playSound(SoundManager::Sound::SOUND_YOSHI_YOSH);
 	return (true);
 }
 bool	Manager::edi()// e\n death of an hatched egg

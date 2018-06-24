@@ -14,6 +14,9 @@
 
 #include <vector>
 #include <string>
+#include <memory>
+
+class GUI;
 
 class IDisplay
 {
@@ -23,7 +26,16 @@ public:
 
 	enum PlayerOrigin { TELEPORT, EGG };
 	enum PlayerAnimationStyle
-	{ NONE, BROADCAST, INCANTATION, EGG_LAYING, DROP_RESOURCE, TAKE_RESOURCE, PUSH_PLAYER };
+	{
+		NONE,
+		BROADCAST,
+		START_INCANTATION,
+		END_INCANTATION,
+		EGG_LAYING,
+		DROP_RESOURCE,
+		TAKE_RESOURCE,
+		PUSH_PLAYER
+	};
 
 	/* Init */
 	virtual bool	init(void) = 0;
@@ -34,7 +46,7 @@ public:
 
 	/* Runtime */
 	virtual void	setTimeUnit(double unit) = 0;
-	virtual void	display(void) = 0;
+	virtual void	display(std::shared_ptr<GUI> gui) = 0;
 	virtual void	setMapTile(
 		Point const & pos,
 		Map::MapCase const & content
