@@ -18,7 +18,8 @@ static void	call_fct(list_it_fct_t fct, void *data, va_list *args)
 	}
 }
 
-static bool	call_fct_bool(list_it_fct_bool_t fct, void *data, va_list *args)
+static bool	call_fct_bool(list_it_fct_bool_t fct,
+	void *data, va_list *args)
 {
 	bool	res = false;
 	va_list	cp_args;

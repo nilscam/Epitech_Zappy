@@ -13,13 +13,13 @@
 
 int	tests(int ac, char **av);
 
-static map_t	*infos_init_map(t_infos *infos)
+static map_t	*infos_init_map(t_infos *i)
 {
 	int	nb_teams = 0;
 
 	srand((unsigned int)time(NULL));
-	while (infos->_team_name && infos->_team_name[++nb_teams]);
-	return NEW(MAP, infos->_width, infos->_height, infos->_max_per_team, nb_teams);
+	while (i->_team_name && i->_team_name[++nb_teams]);
+	return NEW(MAP, i->_width, i->_height, i->_max_per_team, nb_teams);
 }
 
 static t_server	*infos_init_server(map_t *map, t_infos *infos)
@@ -46,8 +46,7 @@ static int	start_server_loop(t_server *server)
 		if (can_simulate_game(server)) {
 			handle_players_action(server);
 			handle_eggs_action(server);
-			clients_callback(CB_TIME,
-				server->spectators_clients, ++server->turn);
+			++server->turn;
 		}
 	}
 	clients_callback(CB_END_OF_GAME, server->spectators_clients,
@@ -58,7 +57,6 @@ static int	start_server_loop(t_server *server)
 
 int	main(int ac, char **av)
 {
-	// return tests(ac, av);
 	t_infos		infos = parse_args(ac, av);
 	t_server	*server;
 

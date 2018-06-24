@@ -21,7 +21,8 @@ namespace IrrlichtDisplayConst
 	const irr::core::vector3df	FOOD_SCALE = { 1.5, 1.5, 1.5 };
 	const irr::core::vector3df	STONE_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	EGG_SCALE = { 0.1, 0.1, 0.1 };
-	// const irr::core::vector3df	PLAYER_SCALE = { 2.2, 2.2, 2.2 };
+	const irr::core::vector3df	CURSOR_SCALE = { 30, 30, 30 };
+	const float	CURSOR_INC_Y = 45;
 	const float MIN_PLAYER_SCALE = 2.2;
 	const float MAX_PLAYER_SCALE = 5.0;
 	const irr::core::vector3df	BLOCK_SCALE = { 5, 5, 5 };
@@ -111,6 +112,9 @@ namespace IrrlichtDisplayConst
 	const irr::io::path PERSO_FALL_IMPACT = "./Ress/model/perso/MD3/fall_impact_down.MD3";
 	const irr::io::path PERSO_FALL_GET_UP = "./Ress/model/perso/MD3/fall_get_up.MD3";
 	const irr::io::path PARTICLE_WHITE = "./Ress/model/particlewhite.bmp";
+	const irr::io::path CURSOR = "./Ress/model/BattleCursor/SelectMonster.dae";
+	// const irr::io::path CURSOR = "./Ress/model/PowerGem/gem.dae";
+	const irr::io::path CURSOR_TEXTURE = "./Ress/model/BattleCursor/Battle_Arrow.png";
 
 	enum TexIdx {
 		TEXTURE_BASE_IDX,
@@ -168,7 +172,8 @@ namespace IrrlichtDisplayConst
 		SKY_RIGHT4_IDX,
 		SKY_FORWARD4_IDX,
 		SKY_BACKWARD4_IDX,
-		PARTICLE_WHITE_IDX
+		PARTICLE_WHITE_IDX,
+		CURSOR_TEXTURE_IDX
 	};
 
 	struct FoodTexture
@@ -301,6 +306,8 @@ public:
 	irr::video::IVideoDriver	*getDriver(void) const;
 	long long					getMovementDuration(void) const noexcept;
 	int							getTeamIdx(std::string const & name) const noexcept;
+	void						setPlayerCursor(size_t playerId);
+	void						removePlayerCursor();
 
 	static int						random_pos();
 	static int						getRotationDegrees(Direction const & dir);
@@ -632,7 +639,7 @@ private:
 
 	irr::IrrlichtDevice *					_device;
 	irr::video::IVideoDriver *				_driver;
-	irr::scene::ISceneManager *			_sceneManager;
+	irr::scene::ISceneManager *				_sceneManager;
 	irr::scene::ICameraSceneNode *			_camera;
 	MyEventReceiver							_receiver;
 	std::map<int, irr::video::ITexture *>	_texture;
@@ -646,6 +653,8 @@ private:
 	bool					_rotateCamera;
 	double					_cameraRotationDegrees;
 	Clock					_cameraRotationClock;
+
+	irr::scene::IMeshSceneNode *	_cursor;
 
 };
 

@@ -16,7 +16,7 @@ void	add_client(t_server *this)
 	client_t		*client;
 
 	fd = accept(this->_fd_server,
-		(struct sockaddr *)&address, (socklen_t*)&addrlen);
+		(struct sockaddr *)&address, (socklen_t *)&addrlen);
 	if (fd < 0)
 		return;
 	DEBUG("New connection to fd %d\n", fd);

@@ -52,3 +52,17 @@ elevation_tab_t	*get_elevation_at_level(int level)
 	}
 	return NULL;
 }
+
+void	consume_inventory_elevation(inventory_t *inv, int level)
+{
+	elevation_tab_t *t = get_elevation_at_level(level);
+
+	if (t) {
+		inv->stones[LINEMATE] -= t->stones[LINEMATE];
+		inv->stones[DERAUMERE] -= t->stones[DERAUMERE];
+		inv->stones[SIBUR] -= t->stones[SIBUR];
+		inv->stones[MENDIANE] -= t->stones[MENDIANE];
+		inv->stones[PHIRAS] -= t->stones[PHIRAS];
+		inv->stones[THYSTAME] -= t->stones[THYSTAME];
+	}
+}

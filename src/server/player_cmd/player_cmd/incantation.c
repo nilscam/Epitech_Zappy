@@ -11,69 +11,87 @@
 #include "player.h"
 #include "map_it.h"
 
-static void	elevation_underway(player_t *pl, va_list *args)
+static void 	underway_validate(player_t *pl, va_list *args)
+{
+	int		*remaining_players = va_arg(*args, int *);
+	int		level = va_arg(*args, int);
+	int		id = va_arg(*args, int);
+	bool		valid = va_arg(*args, int);
+
+	if (pl->id == id || (*remaining_players > 1 && pl->level == level))
+	{
+		*remaining_players -= (pl->id != id);
+		if (pl->id == id) {
+			client_callback(valid ? CB_OK : CB_KO, pl->client);
+		} else if (valid) {
+			client_callback(CB_ELEVATION_UNDERWAY, pl->client);
+		}
+	}
+}
+
+static void 	underway_confirm(player_t *pl, va_list *args)
 {
 	t_server	*server = va_arg(*args, t_server *);
 	int		*remaining_players = va_arg(*args, int *);
 	int		level = va_arg(*args, int);
 	int		id = va_arg(*args, int);
-	bool		is_validating = va_arg(*args, int);
-	inventory_t	trash;
+	bool		valid = va_arg(*args, int);
 
-	if (pl->id == id || (*remaining_players > 1 && pl->level == level)) {
-		if (is_validating) {
-			--(*remaining_players);
-			client_callback(CB_ELEVATION_UNDERWAY, pl->client);
-			return;
+	if (pl->id == id || (*remaining_players > 1 && pl->level == level))
+	{
+		*remaining_players -= (pl->id != id);
+		if (valid) {
+			client_callback(CB_CURRENT_LVL, pl->client,
+				++pl->level);
+			clients_callback(CB_PLAYER_LEVEL,
+				server->spectators_clients, pl->id,
+				pl->level);
+		} else {
+			client_callback(CB_ELEVATION_FAILED, pl->client);
 		}
-		remove_inv_from_to(&pl->pos->inventory, &trash);
-		client_callback(CB_CURRENT_LVL, pl->client, ++pl->level);
-		clients_callback(CB_PLAYER_LEVEL,
-			server->spectators_clients, pl->id, pl->level);
 	}
 }
 
-bool	validate_incant(player_cmd_arg_t *args)
+bool	validate_incant(player_cmd_arg_t *a)
 {
-	elevation_tab_t	*tab = get_elevation_at_level(args->player->level);
+	elevation_tab_t	*tab = get_elevation_at_level(a->player->level);
 	int		remaining_players = tab ? tab->nb_players : 0;
+	bool		is_valid = false;
 
-	if (player_can_elevate(args->server->map, args->player)) {
-		map_it_players_at(args->server->map, args->player->pos->pos,
-			(map_it_pl_t)elevation_underway, args->server,
-			&remaining_players, args->player->level,
-			args->player->id, true);
+	if (player_can_elevate(a->server->map, a->player)) {
+		is_valid = true;
+		a->player->is_elevating = true;
 		clients_callback(CB_START_INCANTATION,
-			args->server->spectators_clients,
-			args->player->pos->pos.x, args->player->pos->pos.y,
-			args->player->level, args->player->id,
-			args->server->map);
-		args->player->is_elevating = true;
-		return true;
-	} else {
-		client_callback(CB_KO, args->client);
-		return false;
+			a->server->spectators_clients,
+			a->player->pos->pos.x, a->player->pos->pos.y,
+			a->player->level, a->player->id,
+			a->server->map);
 	}
+	map_it_players_at(a->server->map, a->player->pos->pos,
+		(map_it_pl_t)underway_validate,
+		&remaining_players, a->player->level,
+		a->player->id, is_valid);
+	return is_valid;
 }
 
-void	player_cmd_incantation(player_cmd_arg_t *args)
+void	player_cmd_incantation(player_cmd_arg_t *a)
 {
-	bool		success = false;
-	elevation_tab_t	*tab = get_elevation_at_level(args->player->level);
+	elevation_tab_t	*tab = get_elevation_at_level(a->player->level);
 	int		remaining_players = tab ? tab->nb_players : 0;
+	bool		is_valid = false;
 
-	args->player->is_elevating = false;
-	if (player_can_elevate(args->server->map, args->player)) {
-		success = true;
-		map_it_players_at(args->server->map, args->player->pos->pos,
-			(map_it_pl_t)elevation_underway, args->server,
-			&remaining_players, args->player->level,
-			args->player->id, false);
-	} else {
-		client_callback(CB_KO, args->client);
+	if (player_can_elevate(a->server->map, a->player)) {
+		is_valid = true;
+		a->player->is_elevating = false;
+		consume_inventory_elevation(&a->player->pos->inventory,
+			a->player->level);
 	}
+	map_it_players_at(a->server->map, a->player->pos->pos,
+		(map_it_pl_t)underway_confirm, a->server,
+		&remaining_players, a->player->level,
+		a->player->id, is_valid);
 	clients_callback(CB_END_INCANTATION,
-		args->server->spectators_clients,
-		args->player->pos->pos.x, args->player->pos->pos.y,
-		success ? "ok" : "ko");
+		a->server->spectators_clients,
+		a->player->pos->pos.x, a->player->pos->pos.y,
+		is_valid ? "ok" : "ko");
 }

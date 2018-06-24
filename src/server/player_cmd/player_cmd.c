@@ -147,8 +147,6 @@ static void	call_client_cmd(player_cmd_arg_t *args)
 		player_set_is_busy_callback(player,
 			(pl_callback_t)client_callback_cmd, args_cp);
 	} else {
-		DEBUG("calling to %d : %s - %s (exec=%d)",
-			args->client->_fd, c->prototype, c->description, exec);
 		if (exec)
 			c->fct(args);
 		free_tab(args->args);
@@ -156,7 +154,8 @@ static void	call_client_cmd(player_cmd_arg_t *args)
 	}
 }
 
-bool	client_cmd(t_server *serv, client_t *client, char *cmd, player_t *pl)
+bool	client_cmd(t_server *serv, client_t *client,
+	char *cmd, player_t *pl)
 {
 	char			**tab = str_to_tab(cmd, " \t");
 	const player_cmd_t	*c = get_client_cmd(tab, client);

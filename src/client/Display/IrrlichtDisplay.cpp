@@ -16,6 +16,7 @@ IrrlichtDisplay::IrrlichtDisplay()
 	,	_zoomCam(150)
 	,	_rotateCamera(true)
 	,	_cameraRotationDegrees(0)
+	,	_cursor(nullptr)
 {
 	_antiSpamCam.mark();
 }
@@ -85,6 +86,18 @@ void	IrrlichtDisplay::loop(void)
 		else
 		{
 			++it;
+		}
+	}
+	if (_cursor)
+	{
+		if (doesPlayerExist(_followCam))
+		{
+			auto player = getPlayer(_followCam);
+			_cursor->setPosition(player->getPosMesh() + irr::core::vector3df(0, IrrlichtDisplayConst::CURSOR_INC_Y, 0));
+		}
+		else
+		{
+			removePlayerCursor();
 		}
 	}
 }
@@ -159,6 +172,7 @@ bool	IrrlichtDisplay::initTexture()
 	_texture[IrrlichtDisplayConst::SKY_FORWARD4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_FORWARD4);
 	_texture[IrrlichtDisplayConst::SKY_BACKWARD4_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::SKY_BACKWARD4);
 	_texture[IrrlichtDisplayConst::PARTICLE_WHITE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::PARTICLE_WHITE);
+	_texture[IrrlichtDisplayConst::CURSOR_TEXTURE_IDX] = this->_driver->getTexture(IrrlichtDisplayConst::CURSOR_TEXTURE);
 	for (auto const & pair : _texture)
 	{
 		auto const & texture = pair.second;
@@ -208,9 +222,11 @@ int	IrrlichtDisplay::getTeamClicked(std::list<int> idxPlayers)
 		auto posPlayer = player->getPosMesh();
 		if (posNode.X == posPlayer.X && posNode.Z == posPlayer.Z && posNode.Z == posPlayer.Z) {
 			_followCam = *it;
+			setPlayerCursor(_followCam);
 			return (*it);
 		}
 	}
+	removePlayerCursor();
 	_followCam = IrrlichtDisplayConst::CLICK_ON_MAP;
 	return (IrrlichtDisplayConst::CLICK_ON_MAP);
 }
@@ -692,6 +708,35 @@ int	IrrlichtDisplay::getTeamIdx(std::string const & name) const noexcept
 	return -1;
 }
 
+void	IrrlichtDisplay::setPlayerCursor(size_t playerId)
+{
+	if (doesPlayerExist(playerId))
+	{
+		auto player = getPlayer(playerId);
+		removePlayerCursor();
+		irr::scene::IAnimatedMesh * mesh =_sceneManager->getMesh(IrrlichtDisplayConst::CURSOR);
+		if (mesh)
+		{
+			_cursor = _sceneManager->addMeshSceneNode(mesh->getMesh(0));
+			_cursor->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+			_cursor->setScale(IrrlichtDisplayConst::CURSOR_SCALE);
+			_cursor->setMaterialTexture(0, _texture[IrrlichtDisplayConst::CURSOR_TEXTURE_IDX]);
+			irr::scene::ISceneNodeAnimator * ani = _sceneManager->createRotationAnimator({ 0, 1, 0 });
+			_cursor->addAnimator(ani);
+			ani->drop();
+		}
+	}
+}
+
+void	IrrlichtDisplay::removePlayerCursor()
+{
+	if (_cursor)
+	{
+		_cursor->remove();
+		_cursor = nullptr;
+	}
+}
+
 void	IrrlichtDisplay::remove_block(irr::scene::ISceneNode * node)
 {
 	node->remove();
@@ -815,15 +860,10 @@ void IrrlichtDisplay::Egg::change_texture(irr::io::path const &path) {
 		_mesh->remove();
 	}
 	_mesh = nullptr;
-	std::cout << "1" << std::endl;
 	auto *mesh = _sceneManager.getMesh(path);
-	std::cout << "2" << std::endl;
 	 if (mesh) {
-		 std::cout << "3" << std::endl;
 		 _mesh = _sceneManager.addMeshSceneNode(mesh);
-		 std::cout << "4" << std::endl;
 		 if (_mesh) {
-			 std::cout << "5" << std::endl;
 			 _mesh->setPosition(_meshPos);
 			 _mesh->setScale(IrrlichtDisplayConst::EGG_SCALE);
 			 _mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
