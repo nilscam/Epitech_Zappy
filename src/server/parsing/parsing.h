@@ -14,6 +14,8 @@
 # include <string.h>
 # include <stdbool.h>
 
+#define SIZE_ARRAY(x)	(sizeof(x) / sizeof(*x))
+
 typedef struct	s_infos		t_infos;
 
 struct 				s_infos
@@ -28,19 +30,23 @@ struct 				s_infos
 	int				_err;
 };
 
-//				help.c
+typedef struct
+{
+	char	*flag;
+	int	size;
+	int	(*fct)(t_infos *, int *, int, char **);
+}	parsing_info_t;
+
 bool	check_is_help(int ac, char **av);
 int	help(char *self);
 
-//				get_infos.c
-int			get_port(t_infos *infos, int *i, int ac, char **av);
-int			get_width(t_infos *infos, int *i, int ac, char **av);
-int			get_height(t_infos *infos, int *i, int ac, char **av);
-int			get_max_per_team(t_infos *infos, int *i, int ac, char **av);
-int			get_freq(t_infos *infos, int *i, int ac, char **av);
+int	get_port(t_infos *infos, int *i, int ac, char **av);
+int	get_width(t_infos *infos, int *i, int ac, char **av);
+int	get_height(t_infos *infos, int *i, int ac, char **av);
+int	get_max_per_team(t_infos *infos, int *i, int ac, char **av);
+int	get_freq(t_infos *infos, int *i, int ac, char **av);
 
-//				parsing.c
-int			get_team_name(t_infos *infos, int *i, int ac, char **av);
+int		get_team_name(t_infos *infos, int *i, int ac, char **av);
 void		init_infos(t_infos *infos);
 void		parse_info(t_infos *infos, int *i, int ac, char **av);
 t_infos		parse_args(int ac, char **av);

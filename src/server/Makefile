@@ -16,11 +16,11 @@ SRC	=	big_buff/big_buff.c					\
 		client/client.c						\
 		egg/egg_hatch.c						\
 		egg/egg.c						\
-		list/list_iterator/list_iterator_erase.c			\
+		list/list_iterator/list_iterator_erase.c		\
 		list/list_iterator/list_iterator_it.c			\
 		list/list_iterator/list_iterator_move.c			\
 		list/list_iterator/list_iterator_ops.c			\
-		list/list_iterator/list_iterator.c				\
+		list/list_iterator/list_iterator.c			\
 		list/list_extract.c					\
 		list/list_get.c						\
 		list/list_node.c					\
@@ -40,6 +40,7 @@ SRC	=	big_buff/big_buff.c					\
 		map/map_utils.c						\
 		map/map.c						\
 		map/stat.c						\
+		map/vision_dir.c					\
 		map/vision.c						\
 		parsing/help.c						\
 		parsing/parsing.c					\
@@ -98,21 +99,6 @@ SRC	=	big_buff/big_buff.c					\
 		team/team_find.c					\
 		team/team_utils.c					\
 		team/team.c						\
-		tests/test_big_buff.c					\
-		tests/test_list_alloc.c					\
-		tests/test_list_extract.c				\
-		tests/test_list.c					\
-		tests/test_map_it.c					\
-		tests/test_map_sound.c					\
-		tests/test_map.c					\
-		tests/test_parsing.c					\
-		tests/test_player_move.c				\
-		tests/test_player.c					\
-		tests/test_tcp_connection.c				\
-		tests/test_unique_id.c					\
-		tests/test_vision.c					\
-		tests/test_zclock.c					\
-		tests/tests.c						\
 		unique_id/unique_id.c					\
 		utils/debug.c						\
 		utils/direction_to_int.c				\

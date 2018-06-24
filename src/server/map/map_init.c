@@ -9,7 +9,7 @@
 #include "map.h"
 
 static bool	init_map_content(map_content_t *self, point_t pos,
-	inventory_t* inv)
+	inventory_t *inv)
 {
 	self->pos = pos;
 	init_map_inventory(&self->inventory, inv);
@@ -17,12 +17,7 @@ static bool	init_map_content(map_content_t *self, point_t pos,
 	return self->players != NULL;
 }
 
-/*
-max = [REQUIS] * [rand entre 1 et nb_max_joueurs] * nb_teams
-to_place = rand(max / 2, max)
-*/
-
-void	init_total_map_content(inventory_t *inv,int players, int nb_teams,
+void	init_total_map_content(inventory_t *inv, int players, int nb_teams,
 	map_t *map)
 {
 	inv->stones[0] = 33 * players * nb_teams;

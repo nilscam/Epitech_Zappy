@@ -31,7 +31,7 @@ bool	big_buff_add_data(big_buff_t *self, char *data, size_t size_data)
 	}
 }
 
-bool	big_buff_add_format(big_buff_t *self, char *format, ...)
+bool	bb_add(big_buff_t *self, char *format, ...)
 {
 	char	data[10000];
 	size_t	size_data = 0;

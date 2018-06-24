@@ -29,7 +29,7 @@ typedef struct
 /* big_buff.c */
 void	big_buff_init(big_buff_t *buff);
 bool	big_buff_add_data(big_buff_t *buff, char *data, size_t size_data);
-bool	big_buff_add_format(big_buff_t *buff, char *format, ...);
+bool	bb_add(big_buff_t *buff, char *format, ...);
 char	*big_buff_cpy_data(big_buff_t *buff);
 void	big_buff_deinit(big_buff_t *buff);
 
