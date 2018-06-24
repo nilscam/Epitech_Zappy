@@ -9,6 +9,7 @@
 
 Manager::Manager()
 {
+	_needToExit = false;
 	_client = std::make_unique<Client>();
 	_readBuffer = std::make_unique<Buffer>(LIMIT_READ);
 	_sendBuffer = std::make_unique<Buffer>(LIMIT_SEND);
@@ -47,7 +48,8 @@ bool	Manager::initServer()
 		if (_display->isDeviceRunning() && !_gui->menu.getExit()) {
 			_display->display(_gui);
 		} else {
-			exit(0);
+			_needToExit = true;
+			return (true);
 		}
 	}
 	std::cout << _gui->getPort() << std::endl;
@@ -152,6 +154,10 @@ void	Manager::spectateGame()
 			_stop = true;
 		}
 	}
+}
+bool	Manager::needToExit(void) const noexcept
+{
+	return _needToExit;
 }
 void	Manager::readInFd(int fd)
 {
