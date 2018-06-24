@@ -38,7 +38,7 @@ namespace IrrlichtDisplayConst
 	const float PLAYER_Z = 27.5;
 	const float BLOCK_Z = 0;
 	const irr::io::path	TEXTURE_BASE = "./Ress/model/wood.jpg";
-	const irr::io::path	IRON_BOX = "./Ress/model/iron_box.png";
+	const irr::io::path	IRON_BOX = "./Ress/model/texture_grass.jpg";
 	const irr::io::path	GRASS = "./Ress/model/grass.jpg";
 	const irr::io::path	PURPLE_GEM = "./Ress/model/PowerGem/purplegem.png";
 	const irr::io::path	PINK_GEM = "./Ress/model/PowerGem/pinkgem.png";
