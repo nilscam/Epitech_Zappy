@@ -16,10 +16,14 @@
 
 namespace IrrlichtDisplayConst
 {
+	const int MIN_LEVEL = 8;
+	const int MAX_LEVEL = 8;
 	const irr::core::vector3df	FOOD_SCALE = { 1.5, 1.5, 1.5 };
 	const irr::core::vector3df	STONE_SCALE = { 0.1, 0.1, 0.1 };
 	const irr::core::vector3df	EGG_SCALE = { 0.1, 0.1, 0.1 };
-	const irr::core::vector3df	PLAYER_SCALE = { 2.2, 2.2, 2.2 };
+	// const irr::core::vector3df	PLAYER_SCALE = { 2.2, 2.2, 2.2 };
+	const float MIN_PLAYER_SCALE = 2.2;
+	const float MAX_PLAYER_SCALE = 5.0;
 	const irr::core::vector3df	BLOCK_SCALE = { 5, 5, 5 };
 	const irr::core::vector3df	EGG_FX_SCALE = {20.0f, 20.0f, 20.0f};
 	const int SIZE_MAP_TILE = 50;
@@ -315,12 +319,17 @@ private:
 		irr::core::vector3df	getTileCenter(Point const & mapPos) const noexcept;
 		irr::core::vector3df	getTileCenter(void) const noexcept;
 		irr::core::vector3df	getRotationDegrees(Direction const & dir) const noexcept;
+		irr::core::vector3df	getScaleLevel(size_t level) const noexcept;
 		void					setMeshPosition(
 			irr::core::vector3df const & pos,
 			bool force = false
 		);
 		void					setMeshRotation(
 			irr::core::vector3df const & rot,
+			bool force = false
+		);
+		void					setMeshScale(
+			irr::core::vector3df const & scale,
 			bool force = false
 		);
 		void					loopMoving(void) noexcept;
@@ -339,6 +348,7 @@ private:
 		irr::io::path							_lastMeshPath;
 		irr::core::vector3df					_lastMeshRotation;
 		irr::core::vector3df					_lastMeshPosition;
+		irr::core::vector3df					_lastMeshScale;
 
 		/* Data */
 		Point		_randomPos;
@@ -378,6 +388,12 @@ private:
 		/* Idle */
 		long long				_timeNextIdle;
 		Clock					_idleClock;
+
+		/* Level */
+		size_t					_level;
+
+		/* Incantation */
+		bool					_isIncanting;
 
 	};
 

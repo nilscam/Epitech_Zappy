@@ -524,7 +524,7 @@ bool	Manager::pic()// X Y L n n . . . \n start of an incantation (by the first p
 		int idxPlayer = atoi(_args[i]);
 		if (_players.find(idxPlayer) != _players.end()) {
 			_display->setPlayerAction(
-				idxPlayer, IDisplay::PlayerAnimationStyle::INCANTATION);
+				idxPlayer, IDisplay::PlayerAnimationStyle::START_INCANTATION);
 			_players[idxPlayer]->setIsIncanting(true);
 			_gui->addListBoxMessage(
 				"Player #" + std::to_string(idxPlayer)
@@ -545,6 +545,8 @@ bool	Manager::pie()// X Y R\n end of an incantation
 	{
 		if (_players[*it]->getPos() == pos && _players[*it]->getIsIncanting()) {
 			_players[*it]->setIsIncanting(false);
+			_display->setPlayerAction(
+				*it, IDisplay::PlayerAnimationStyle::END_INCANTATION);
 			_gui->addListBoxMessage(
 				"Player #" + std::to_string(*it)
 				+ " has finished his incantation",

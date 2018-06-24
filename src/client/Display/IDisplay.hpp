@@ -23,7 +23,16 @@ public:
 
 	enum PlayerOrigin { TELEPORT, EGG };
 	enum PlayerAnimationStyle
-	{ NONE, BROADCAST, INCANTATION, EGG_LAYING, DROP_RESOURCE, TAKE_RESOURCE, PUSH_PLAYER };
+	{
+		NONE,
+		BROADCAST,
+		START_INCANTATION,
+		END_INCANTATION,
+		EGG_LAYING,
+		DROP_RESOURCE,
+		TAKE_RESOURCE,
+		PUSH_PLAYER
+	};
 
 	/* Init */
 	virtual bool	init(void) = 0;

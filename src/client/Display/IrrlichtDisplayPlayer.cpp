@@ -25,6 +25,7 @@ IrrlichtDisplay::Player::Player(
 	,	_lastMeshPath("")
 	,	_lastMeshRotation(-1)
 	,	_lastMeshPosition({ -1, -1, -1 })
+	,	_lastMeshScale({ -1, -1, -1 })
 	,	_randomPos(generateRandomPos())
 	,	_mapPos(pos)
 	,	_id(id)
@@ -38,6 +39,8 @@ IrrlichtDisplay::Player::Player(
 	,	_isFalling(false)
 	,	_isDying(false)
 	,	_timeNextIdle(0)
+	,	_level(1)
+	,	_isIncanting(false)
 {
 	switch (origin)
 	{
@@ -49,7 +52,7 @@ IrrlichtDisplay::Player::Player(
 		default:
 		case TELEPORT:
 		{
-			fall(200);
+			fall(150);
 			break;
 		}
 	}
@@ -107,10 +110,10 @@ void	IrrlichtDisplay::Player::pushTo(Point const & pos, Direction const & dir)
 	}
 }
 
-void	IrrlichtDisplay::Player::setLevel(
-	__attribute__((unused)) size_t level
-)
-{}
+void	IrrlichtDisplay::Player::setLevel(size_t level)
+{
+	_level = level;
+}
 
 void	IrrlichtDisplay::Player::setDir(Direction const & dir)
 {
@@ -141,6 +144,8 @@ void	IrrlichtDisplay::Player::loop(void)
 	setMeshPosition(pos);
 	// rot
 	setMeshRotation(getRotationDegrees(_dir));
+	// scale
+	setMeshScale(getScaleLevel(_level));
 	// mesh
 	if (_isDying)
 	{
@@ -164,6 +169,10 @@ void	IrrlichtDisplay::Player::loop(void)
 		else
 			changeMesh(IrrlichtDisplayConst::PERSO_RUN);
 	}
+	else if (_isIncanting)
+	{
+		changeMesh(IrrlichtDisplayConst::PERSO_HEADSPIN);
+	}
 	else
 	{
 		if (_idleClock.timeSinceMark() >= _timeNextIdle)
@@ -183,9 +192,14 @@ void	IrrlichtDisplay::Player::animate(PlayerAnimationStyle const & how)
 {
 	switch (how)
 	{
-		case INCANTATION:
+		case START_INCANTATION:
 		{
-			animate(IrrlichtDisplayConst::PERSO_HEADSPIN);
+			_isIncanting = true;
+			break;
+		}
+		case END_INCANTATION:
+		{
+			_isIncanting = false;
 			break;
 		}
 		case EGG_LAYING:
@@ -282,6 +296,16 @@ irr::core::vector3df	IrrlichtDisplay::Player::getRotationDegrees(
 	return { 0, (float) IrrlichtDisplay::getRotationDegrees(dir), 0 };
 }
 
+irr::core::vector3df	IrrlichtDisplay::Player::getScaleLevel(size_t level) const noexcept
+{
+	float maxLevel = IrrlichtDisplayConst::MAX_LEVEL;
+	float minScale = IrrlichtDisplayConst::MIN_PLAYER_SCALE;
+	float maxScale = IrrlichtDisplayConst::MAX_PLAYER_SCALE;
+	float lvl = (float)(level);
+	float scale = (lvl * ((maxScale - minScale) / maxLevel)) + minScale;
+	return { scale, scale, scale };
+}
+
 void	IrrlichtDisplay::Player::setMeshPosition(
 	irr::core::vector3df const & pos,
 	bool force
@@ -308,6 +332,21 @@ void	IrrlichtDisplay::Player::setMeshRotation(
 		if (_mesh)
 		{
 			_mesh->setRotation(rot);
+		}
+	}
+}
+
+void	IrrlichtDisplay::Player::setMeshScale(
+	irr::core::vector3df const & scale,
+	bool force
+)
+{
+	if (force || _lastMeshScale != scale)
+	{
+		_lastMeshScale = scale;
+		if (_mesh)
+		{
+			_mesh->setScale(scale);
 		}
 	}
 }
@@ -409,7 +448,7 @@ void	IrrlichtDisplay::Player::changeMesh(irr::io::path const & path) noexcept
 	{
 		setMeshPosition(_lastMeshPosition, true);
 		setMeshRotation(_lastMeshRotation, true);
-		_mesh->setScale(IrrlichtDisplayConst::PLAYER_SCALE);
+		setMeshScale(_lastMeshScale, true);
 		_mesh->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 		if (_teamIdx == 0)
 			_mesh->setMaterialTexture(0, _textures[IrrlichtDisplayConst::TEXTURE_PERSO_RED_IDX]);
