@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-# define ACTIVATE_DEBUG	1
+# define ACTIVATE_DEBUG	0
 # define _DEBUG_FD	1
 # define _DEBUG_FORMAT	"Debug: [%s:%d - %s]: "
 # define _DEBUG_ARGS	__FILE__, __LINE__, __func__
