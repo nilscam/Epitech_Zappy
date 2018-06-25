@@ -29,7 +29,7 @@ Menu::Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv,
 	isCreditsOpen = false;
 	isServerLaunch = false;
 	needToExit = false;
-	started = true;
+	start = true;
 	idSkyBox = 0;
 }
 
@@ -49,7 +49,7 @@ void Menu::test(int id)
 
 void Menu::show_timer()
 {
-	if (started) {
+	if (start) {
 		_img->setVisible(true, TIMER_PANEL);	
 		_txt->setVisible(true, TIMER_TEXT_1);
 		_txt->setVisible(true, TIMER_TEXT_2);
@@ -67,7 +67,7 @@ void Menu::hide_timer()
 
 void Menu::show_table()
 {
-	if (started) {
+	if (start) {
 		_tbl->setVisible(true);
 		_img->setVisible(true, TABLE_PANEL);
 	}
@@ -81,7 +81,7 @@ void Menu::hide_table()
 
 void Menu::show_listBox()
 {
-	if (started) {
+	if (start) {
 		_lstBx->setVisible(true);
 		_img->setVisible(true, LISTBOX_PANEL);
 	}
@@ -216,7 +216,7 @@ void Menu::credits_open()
 
 void Menu::server_open()
 {
-	started = false;
+	start = false;
 	isMenuOpen = false;
 	isOptionsOpen = false;
 	isCreditsOpen = false;
@@ -337,7 +337,7 @@ void Menu::server_second_ok()
 			_btn->setVisible(true, ADD_TEAM4);
 		}
 	}
-	started = true;
+	start = true;
 	/* EXECUTE SERVER */
 }
 

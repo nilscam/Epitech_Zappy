@@ -84,7 +84,7 @@ private:
 	ImageManager *_img;
 	ButtonManager *_btn;
 	ServPanel *_srv;
-	bool started;
+	bool start;
 	std::shared_ptr<ServerHandler>	_serverHandler;
 };
 
