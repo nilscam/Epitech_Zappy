@@ -12,18 +12,24 @@ Menu::Menu()
 }
 
 Menu::Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv,
-	   SoundManager *snd, StaticTextManager *txt)
+	   SoundManager *snd, StaticTextManager *txt, CheckBoxManager *bx,
+	   Table *tl, ListBox *lstB, ScrollBar *scrllB)
 {
 	_img = img;
 	_btn = btn;
 	_srv = srv;
 	_snd = snd;
 	_txt = txt;
+	_bx = bx;
+	_tbl = tl;
+	_lstBx = lstB;
+	_scrllBr = scrllB;
 	isMenuOpen = false;
 	isOptionsOpen = false;
 	isCreditsOpen = false;
 	isServerLaunch = false;
 	needToExit = false;
+	started = true;
 	idSkyBox = 0;
 }
 
@@ -39,6 +45,52 @@ void Menu::isButtonPressed()
 void Menu::test(int id)
 {
 	std::cout << "Button " << id << " is testing\n";
+}
+
+void Menu::show_timer()
+{
+	if (started) {
+		_img->setVisible(true, TIMER_PANEL);	
+		_txt->setVisible(true, TIMER_TEXT_1);
+		_txt->setVisible(true, TIMER_TEXT_2);
+		_scrllBr->setVisible(true);
+	}
+}
+
+void Menu::hide_timer()
+{	
+	_img->setVisible(false, TIMER_PANEL);	
+	_txt->setVisible(false, TIMER_TEXT_1);
+	_txt->setVisible(false, TIMER_TEXT_2);
+	_scrllBr->setVisible(false);
+}
+
+void Menu::show_table()
+{
+	if (started) {
+		_tbl->setVisible(true);
+		_img->setVisible(true, TABLE_PANEL);
+	}
+}
+
+void Menu::hide_table()
+{
+	_tbl->setVisible(false);
+	_img->setVisible(false, TABLE_PANEL);
+}
+
+void Menu::show_listBox()
+{
+	if (started) {
+		_lstBx->setVisible(true);
+		_img->setVisible(true, LISTBOX_PANEL);
+	}
+}
+
+void Menu::hide_listBox()
+{
+	_lstBx->setVisible(false);
+	_img->setVisible(false, LISTBOX_PANEL);
 }
 
 void Menu::menu_open()
@@ -91,6 +143,18 @@ void Menu::options_cancel()
 		_btn->setVisible(true, MENU_BTN_CANCEL_MENU);
 		_img->setVisible(false, MENU_OPTIONS_TEXT);
 		_img->setVisible(true, MENU_MENU_TEXT);
+		_bx->setVisible(false, MENU_OPTIONS_CHECKBOX_TIMER);
+		_bx->setVisible(false, MENU_OPTIONS_CHECKBOX_TABLE);
+		_bx->setVisible(false, MENU_OPTIONS_CHECKBOX_LISTBOX);
+		_bx->setVisible(false, MENU_OPTIONS_CHECKBOX_MUSIC);
+		_txt->setVisible(false, MENU_OPTIONS_TEXT_TABLE);
+		_txt->setVisible(false, MENU_OPTIONS_TEXT_TIMER);
+		_txt->setVisible(false, MENU_OPTIONS_TEXT_MUSIC);
+		_txt->setVisible(false, MENU_OPTIONS_TEXT_LISTBOX);
+		_bx->isCheck(this, MENU_OPTIONS_CHECKBOX_TIMER);
+		_bx->isCheck(this, MENU_OPTIONS_CHECKBOX_LISTBOX);
+		_bx->isCheck(this, MENU_OPTIONS_CHECKBOX_MUSIC);
+		_bx->isCheck(this, MENU_OPTIONS_CHECKBOX_TABLE);		
 	}
 	std::cout << "Options cancel\n";
 }
@@ -105,7 +169,15 @@ void Menu::options_open()
 		_btn->setVisible(false, MENU_BTN_CANCEL_MENU);
 		_btn->setVisible(true, MENU_BTN_CANCEL_OPTIONS);
 		_img->setVisible(false, MENU_MENU_TEXT);
-		_img->setVisible(true, MENU_OPTIONS_TEXT);	
+		_img->setVisible(true, MENU_OPTIONS_TEXT);
+		_txt->setVisible(true, MENU_OPTIONS_TEXT_TABLE);
+		_txt->setVisible(true, MENU_OPTIONS_TEXT_TIMER);
+		_txt->setVisible(true, MENU_OPTIONS_TEXT_MUSIC);
+		_txt->setVisible(true, MENU_OPTIONS_TEXT_LISTBOX);
+		_bx->setVisible(true, MENU_OPTIONS_CHECKBOX_LISTBOX);
+		_bx->setVisible(true, MENU_OPTIONS_CHECKBOX_TIMER);
+		_bx->setVisible(true, MENU_OPTIONS_CHECKBOX_TABLE);
+		_bx->setVisible(true, MENU_OPTIONS_CHECKBOX_MUSIC);
 	}
 	std::cout << "Options open\n";
 }
@@ -121,6 +193,7 @@ void Menu::credits_cancel()
 		_btn->setVisible(true, MENU_BTN_CANCEL_MENU);
 		_img->setVisible(false, MENU_CREDITS_TEXT);
 		_img->setVisible(true, MENU_MENU_TEXT);
+		_img->setVisible(false, MENU_CREDITS_IMG);
 	}
 	std::cout << "Credits cancel\n";
 }
@@ -135,13 +208,15 @@ void Menu::credits_open()
 		_btn->setVisible(false, MENU_BTN_CANCEL_MENU);
 		_btn->setVisible(true, MENU_BTN_CANCEL_CREDITS);
 		_img->setVisible(false, MENU_MENU_TEXT);
-		_img->setVisible(true, MENU_CREDITS_TEXT);	
+		_img->setVisible(true, MENU_CREDITS_TEXT);
+		_img->setVisible(true, MENU_CREDITS_IMG);
 	}
 	std::cout << "Credits open\n";
 }
 
 void Menu::server_open()
 {
+	started = false;
 	isMenuOpen = false;
 	isOptionsOpen = false;
 	isCreditsOpen = false;
@@ -262,6 +337,7 @@ void Menu::server_second_ok()
 			_btn->setVisible(true, ADD_TEAM4);
 		}
 	}
+	started = true;
 	/* EXECUTE SERVER */
 }
 

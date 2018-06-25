@@ -15,7 +15,11 @@
 #include "ServPanel.hpp"
 #include "ServerHandler.hpp"
 #include "SoundManager.hpp"
+#include "CheckBoxManager.hpp"
 #include "StaticTextManager.hpp"
+#include "ListBox.hpp"
+#include "Table.hpp"
+#include "ScrollBar.hpp"
 #include "utils.hpp"
 #include "EID.hpp"
 #include <iostream>
@@ -26,14 +30,22 @@ class Menu
 public:
 	Menu();
 	Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv,
-	     SoundManager *snd, StaticTextManager *txt);
+	     SoundManager *snd, StaticTextManager *txt, CheckBoxManager *bx,
+	     Table *tbl, ListBox *lstBx, ScrollBar *scrllBr);
 	~Menu();
+	
 	void server_open();
 	void server_first_ok();
 	void server_second_ok();
 	void setVisible(int id);
 	void isButtonPressed();
 	void test(int id);
+	void show_table();
+	void hide_table();
+	void show_listBox();
+	void hide_listBox();
+	void show_timer();
+	void hide_timer();
 	void menu_cancel();
 	void menu_open();
 	void options_cancel();
@@ -64,10 +76,15 @@ public:
 	SoundManager *_snd;
 	
 private:
+	Table *_tbl;
+	ListBox *_lstBx;
+	ScrollBar *_scrllBr;
+	CheckBoxManager *_bx;
 	StaticTextManager *_txt;
 	ImageManager *_img;
 	ButtonManager *_btn;
 	ServPanel *_srv;
+	bool started;
 	std::shared_ptr<ServerHandler>	_serverHandler;
 };
 
