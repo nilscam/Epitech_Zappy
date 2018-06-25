@@ -62,6 +62,7 @@ SRC	=	big_buff/big_buff.c					\
 		player_cmd/player_cmd/eggs_pos.c			\
 		player_cmd/player_cmd/eject.c				\
 		player_cmd/player_cmd/error.c				\
+		player_cmd/player_cmd/food.c				\
 		player_cmd/player_cmd/fork.c				\
 		player_cmd/player_cmd/forward.c				\
 		player_cmd/player_cmd/incantation.c			\

@@ -70,6 +70,9 @@ void	player_cmd_eject(player_cmd_arg_t *args);
 void	spectate_cmd_error(player_cmd_arg_t *args);
 void	player_cmd_error(player_cmd_arg_t *args);
 
+/* player_cmd/food.c */
+void	spectate_cmd_food(player_cmd_arg_t *args);
+
 /* player_cmd/fork.c */
 void	player_cmd_fork(player_cmd_arg_t *args);
 

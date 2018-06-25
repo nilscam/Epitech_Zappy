@@ -70,7 +70,9 @@ static const player_cmd_t	SPECTATOR_CMDS[] = {
 	{ "egg", spectate_cmd_eggs_pos, NULL, 0, 0,
 		"egg", "position of all eggs" },
 	{ "time", spectate_cmd_time, NULL, 0, 0,
-		"time", "current time" }
+		"time", "current time" },
+	{ "food", spectate_cmd_food, NULL, 0, 1,
+		"food X", "add food in map" }
 };
 static const player_cmd_t	DEFAULT_SPECTATOR_CMD = {
 	"", spectate_cmd_error, NULL, 0, 0, "ko", "ko"

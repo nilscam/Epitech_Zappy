@@ -55,8 +55,8 @@ bool	init_map_contents(map_t *self, int players_per_team, int nb_teams)
 		for (int y = 0; y < size_y ; ++y) {
 			for (int x = 0; x < size_x ; ++x) {
 				content = &self->cases[y][x];
-				if (!init_map_content(content, (point_t){x, y},
-					&inv))
+				if (!init_map_content(content,
+					(point_t){x, y}, &inv))
 					return false;
 			}
 		}
