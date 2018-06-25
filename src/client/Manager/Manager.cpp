@@ -791,8 +791,10 @@ bool	Manager::eht()// e\n egg hatching
 	int idxPlayer = _eggs[idxEgg]->getIdxPlayerFrom();
 	if (_players.find(idxPlayer) != _players.end()) {
 		auto team = _players[idxPlayer]->getNameTeam();
-		_gui->getServerHandler()->addAi(team);
-		std::cout << "Added ai" << std::endl;
+		if (_gui->getServerHandler()) {
+			std::cout << "Added ai" << std::endl;
+			_gui->getServerHandler()->addAi(team);
+		}
 	}
 	_gui->addListBoxMessage(
 		"Egg #" + std::to_string(idxEgg) + " is hatched"

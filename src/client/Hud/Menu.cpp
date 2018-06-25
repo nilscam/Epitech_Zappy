@@ -25,6 +25,7 @@ Menu::Menu(ImageManager *img, ButtonManager *btn, ServPanel *srv,
 	isServerLaunch = false;
 	needToExit = false;
 	idSkyBox = 0;
+	_serverHandler = nullptr;
 }
 
 Menu::~Menu()
