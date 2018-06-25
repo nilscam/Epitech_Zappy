@@ -453,11 +453,8 @@ void IrrlichtDisplay::setMapTile(Point const &pos, Map::MapCase const &content)
 
 int	IrrlichtDisplay::random_pos()
 {
-	int pos = rand() % 20;
-	if (rand() & 1) {
-		return -pos;
-	}
-	return (pos);
+	int pos = rand() % (IrrlichtDisplayConst::SIZE_MAP_TILE / 2);
+	return (rand() & 1 ? -pos : pos);
 }
 
 int IrrlichtDisplay::getRotationDegrees(Direction const & dir)
