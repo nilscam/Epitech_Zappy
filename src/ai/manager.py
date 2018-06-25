@@ -43,6 +43,7 @@ class IAManager(ai):
 
     def exploreStep(self, mode):
         self.broadcastInfos()
+        self.castCmd("Connect_nbr\n")
         self.castCmd("Look\n")
         self.castCmd("Inventory\n")
         self.takeAllItem()
@@ -74,8 +75,10 @@ class IAManager(ai):
     def play(self):
         while self.level < 8:
             if self.canIncante():
+                print ('regroup , id = %d' % self.randomNumber)
                 self.reGroup()
             else:
+                print ('explore')
                 self.exploreStep('explore')
 
     def broadcastInfos(self):
@@ -126,7 +129,7 @@ class IAManager(ai):
         # modifier les variables de l'ia en fonction du message
         command = cmdResponse['cmd'].split()[0]
         response = cmdResponse['response']
-        if command == 'Connect_nbr' and self.Connect_nbr():
+        if command == 'Connect_nbr' and self.Connect_nbr(response):
             self.castCmd("Fork\n")
         elif command in ['Forward', 'Left', 'Right', 'Eject', 'Fork']:
             getattr(self, command)()
