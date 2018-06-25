@@ -31,4 +31,5 @@ void	spectate_cmd_food(player_cmd_arg_t *args)
 			inv->food += randome_between(0, food);
 		}
 	}
+	spectate_cmd_content_map(args);
 }
