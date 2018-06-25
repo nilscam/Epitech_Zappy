@@ -574,8 +574,8 @@ Menu GUI::addMenu(Rectangle rect)
 	
 	initMenu(x, y, x2, y2);
 
-	imageManager.setVisible(LISTBOX_PANEL, false);
-	imageManager.setVisible(TABLE_PANEL, false);
+	// imageManager.setVisible(LISTBOX_PANEL, false);
+	// imageManager.setVisible(TABLE_PANEL, false);
 
 	menu = Menu(&imageManager, &buttonManager, &servPanel, &soundManager,
 		    &staticTextManager, &checkBoxManager, &table, &listBox,
