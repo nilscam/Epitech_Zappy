@@ -26,6 +26,8 @@ SRC	=	Display/IrrlichtDisplay.cpp			\
 		Hud/SoundManager.cpp				\
 		Hud/StaticTextManager.cpp			\
 		Hud/StaticText.cpp				\
+		Hud/CheckBox.cpp				\
+		Hud/CheckBoxManager.cpp				\
 		Manager/Buffer.cpp				\
 		Manager/Manager.cpp				\
 		Manager/Map.cpp					\
