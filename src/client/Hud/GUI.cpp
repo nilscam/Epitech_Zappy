@@ -7,8 +7,6 @@
 
 #include "GUI.hpp"
 
-// CYRIL updateTimer(timer) // showTimer();
-
 GUI::GUI(irr::IrrlichtDevice *dev, irr::video::IVideoDriver *driv)
 {
 	device = dev;
@@ -19,8 +17,21 @@ GUI::GUI(irr::IrrlichtDevice *dev, irr::video::IVideoDriver *driv)
 	listBoxId = 0;
 	buttonId = 0;
 	imageId = 0;
+	this->createListBox(Rectangle(LISTBOX_X, LISTBOX_Y, LISTBOX_X2,
+				      LISTBOX_Y2),
+			    driver->getTexture(PATH_TO_RES PANEL_PNG),
+		LISTBOX_PANEL);
+	this->createTable(Rectangle(TABLE_X, TABLE_Y, TABLE_X2, TABLE_Y2),
+			  driver->getTexture(PATH_TO_RES PANEL_PNG),
+		TABLE_PANEL);
+			   
+	listBox.setVisible(false);
+	table.setVisible(false);
+	imageManager.setVisible(false, LISTBOX_PANEL);
+	imageManager.setVisible(false, TABLE_PANEL);
 	this->setFont(PATH_TO_RES GLOBAL_FONT);
 	this->addMenu(Rectangle(MENU_X, MENU_Y, MENU_X2, MENU_Y2));
+	
 	menu.next_song();
 }
 
@@ -30,8 +41,10 @@ GUI::~GUI()
 
 void	GUI::launchGui()
 {
-	this->createListBox(Rectangle(LISTBOX_X, LISTBOX_Y, LISTBOX_X2, LISTBOX_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
-	this->createTable(Rectangle(TABLE_X, TABLE_Y, TABLE_X2, TABLE_Y2), driver->getTexture(PATH_TO_RES PANEL_PNG));
+	imageManager.setVisible(true, LISTBOX_PANEL);
+	imageManager.setVisible(true, TABLE_PANEL);
+	listBox.setVisible(true);
+	table.setVisible(true);
 	this->showTimer();
 	scrollBar.setPos(1);
 	_posScrollBar = 1;
@@ -122,7 +135,9 @@ void GUI::createTable(Rectangle rect, irr::video::ITexture *texture, int id)
 			    rect.getX2() - 75, rect.getY2() - 13);
 	addTable(tableRect);
 	table.initTable();
-	imageManager.setScaleImage(true, getLastImageId());
+	(void)texture;
+	(void)id;
+	imageManager.setScaleImage(true, id);
 }
 
 void GUI::createListBox(Rectangle rect, irr::video::ITexture *texture, int id)
@@ -131,18 +146,19 @@ void GUI::createListBox(Rectangle rect, irr::video::ITexture *texture, int id)
 	Rectangle listBoxRect(rect.getX() + 100, rect.getY() + 20,
 			      rect.getX2() - 100, rect.getY2() - 20);
 	addListBox(listBoxRect);
-	imageManager.setScaleImage(true, getLastImageId());
+	imageManager.setScaleImage(true, id);
+	imageManager.setScaleImage(true, id);
+	(void)texture;
+	(void)id;
 }
 
 void GUI::createScrollbar(Rectangle rect, irr::video::ITexture *texture, int id)
 {
 	(void)texture;
 	(void)id;
-//	addImage(rect, texture, id);
 	Rectangle scrollbarRect(rect.getX() + 100, rect.getY() + 20,
 			      rect.getX2() - 100, rect.getY2() - 20);
 	auto scroll = addScrollBar(scrollbarRect);
-//	imageManager.setScaleImage(true, getLastImageId());
 }
 
 void GUI::addListBoxMessage(const std::string &str, ListBox::MSGtype type)
@@ -160,6 +176,14 @@ int GUI::getLastImageId() const
 int GUI::getLastButtonId() const
 {
 	return buttonId;
+}
+
+CheckBox GUI::addCheckBox(Rectangle rect, int id)
+{
+	irr::gui::IGUICheckBox *chk = env->addCheckBox(false, rect.get(), 0, id);
+	CheckBox box = CheckBox(chk, id);
+	checkBoxManager.addCheckBox(box);
+	return box;
 }
 
 EditBox GUI::addEditBox(const wchar_t *str, const wchar_t *preview,
@@ -190,7 +214,13 @@ void GUI::initMenu(int x, int y, int x2, int y2)
 	addImage(Rectangle(x - 130, y - 60, x2 + 120, y2 - 440),
 		 driver->getTexture(PATH_TO_RES CREDITS_TITLE_PNG),
 		 MENU_CREDITS_TEXT);
-	
+
+		addImage(Rectangle(765, 350, 1150, 750),
+		 driver->getTexture(PATH_TO_RES CREDITS_TEXT_PNG),
+		 MENU_CREDITS_IMG);
+	imageManager.setVisible(false, MENU_CREDITS_IMG);
+	imageManager.setScaleImage(true, MENU_CREDITS_IMG);
+		
 	addButton(Rectangle(x + 90, y + 175, x2 - 90, y2 - 405),
 		  Button::OPTIONS_OPEN, L"Options", MENU_BTN_OPTIONS);
 	addButton(Rectangle(x + 90, y + 275, x2 - 90, y2 - 305),
@@ -201,7 +231,7 @@ void GUI::initMenu(int x, int y, int x2, int y2)
 		  Button::MENU_CANCEL, L"Cancel", MENU_BTN_CANCEL_MENU);
 	addButton(Rectangle(x + 90, y + 475, x2 - 90, y2 - 105),
 		  Button::OPTIONS_CANCEL,
-		  L"Cancel", MENU_BTN_CANCEL_OPTIONS);
+		  L"Ok", MENU_BTN_CANCEL_OPTIONS);
 	addButton(Rectangle(x + 90, y + 475, x2 - 90, y2 - 105),
 		  Button::CREDITS_CANCEL,
 		  L"Cancel", MENU_BTN_CANCEL_CREDITS);
@@ -239,6 +269,41 @@ void GUI::initMenu(int x, int y, int x2, int y2)
 	imageManager.setVisible(false, MENU_MENU_TEXT);
 	imageManager.setVisible(false, MENU_OPTIONS_TEXT);
 	imageManager.setVisible(false, MENU_CREDITS_TEXT);
+	
+	addStaticText(Rectangle(875, 388, 1300, 448), MENU_OPTIONS_TEXT_MUSIC);
+	staticTextManager.setText("Mute sound", MENU_OPTIONS_TEXT_MUSIC);
+	staticTextManager.setVisible(false, MENU_OPTIONS_TEXT_MUSIC);
+	
+	addStaticText(Rectangle(875, 468, 1300, 528),
+		      MENU_OPTIONS_TEXT_LISTBOX);
+	staticTextManager.setText("Hide Tchat", MENU_OPTIONS_TEXT_LISTBOX);
+	staticTextManager.setVisible(false, MENU_OPTIONS_TEXT_LISTBOX);   
+
+	addStaticText(Rectangle(875, 548, 1300, 608), MENU_OPTIONS_TEXT_TABLE);
+	staticTextManager.setText("Hide Scoreboard",MENU_OPTIONS_TEXT_TABLE);
+	staticTextManager.setVisible(false, MENU_OPTIONS_TEXT_TABLE);   
+
+	addStaticText(Rectangle(875, 628, 1300, 678), MENU_OPTIONS_TEXT_TIMER);
+	staticTextManager.setText("Hide Timer",MENU_OPTIONS_TEXT_TIMER);
+	staticTextManager.setVisible(false, MENU_OPTIONS_TEXT_TIMER);   
+	
+	addCheckBox(Rectangle(830, 375, 860, 425),
+		    MENU_OPTIONS_CHECKBOX_MUSIC);
+	addCheckBox(Rectangle(830, 455, 860, 505),
+		    MENU_OPTIONS_CHECKBOX_LISTBOX);
+	addCheckBox(Rectangle(830, 535, 860, 585),
+		    MENU_OPTIONS_CHECKBOX_TABLE);
+	addCheckBox(Rectangle(830, 615, 860, 665),
+		    MENU_OPTIONS_CHECKBOX_TIMER);
+	
+	checkBoxManager.setVisible(false, MENU_OPTIONS_CHECKBOX_LISTBOX);
+	checkBoxManager.setVisible(false, MENU_OPTIONS_CHECKBOX_TABLE);
+	checkBoxManager.setVisible(false, MENU_OPTIONS_CHECKBOX_TIMER);
+	checkBoxManager.setVisible(false, MENU_OPTIONS_CHECKBOX_MUSIC);
+	checkBoxManager.check(false, MENU_OPTIONS_CHECKBOX_LISTBOX);
+	checkBoxManager.check(false, MENU_OPTIONS_CHECKBOX_TABLE);
+	checkBoxManager.check(false, MENU_OPTIONS_CHECKBOX_TIMER);
+	checkBoxManager.check(false, MENU_OPTIONS_CHECKBOX_MUSIC);
 }
 
 void GUI::initClient()
@@ -469,7 +534,6 @@ void GUI::showTimer()
 	staticTextManager.setVisible(true, TIMER_TEXT_1);
 	staticTextManager.setVisible(true, TIMER_TEXT_2);
 	scrollBar.setVisible(true);
-
 }
 
 void GUI::updateTimer(int value)
@@ -509,8 +573,13 @@ Menu GUI::addMenu(Rectangle rect)
 	buttonManager.setVisible(true, NEXT_SONG);
 	
 	initMenu(x, y, x2, y2);
+
+	// imageManager.setVisible(LISTBOX_PANEL, false);
+	// imageManager.setVisible(TABLE_PANEL, false);
+
 	menu = Menu(&imageManager, &buttonManager, &servPanel, &soundManager,
-		    &staticTextManager);	
+		    &staticTextManager, &checkBoxManager, &table, &listBox,
+		    &scrollBar);	
 
 	return menu;
 }

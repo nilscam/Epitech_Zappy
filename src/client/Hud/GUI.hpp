@@ -59,6 +59,8 @@
 #define OPTIONS_TITLE_PNG "options.png"
 #define CREDITS_TITLE_PNG "credits.png"
 
+#define CREDITS_TEXT_PNG "credits_cyril.png"
+
 #define FOOD_PNG "inventory/food.png"
 #define LINEMATE_PNG "inventory/linemate.png"
 #define DERAUMERE_PNG "inventory/deraumere.png"
@@ -86,6 +88,7 @@ public:
 	void createScrollbar(Rectangle rect, irr::video::ITexture *texture, /* Create the chat with a panel.png and coressponding enum*/
 			   int id = -1);
 
+	CheckBox addCheckBox(Rectangle rect, int id = -1);
 	Image addImage(Rectangle rect, irr::video::ITexture *texture,
 		       int id = -1, const wchar_t *str = NULL);
 	Table addTable(Rectangle rect);
@@ -128,6 +131,7 @@ public:
 	ImageManager imageManager;
 	SoundManager soundManager;
 	StaticTextManager staticTextManager;
+	CheckBoxManager checkBoxManager;
 	Table table;
 	ListBox listBox;
 	ScrollBar	scrollBar;
